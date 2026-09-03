@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Supprimer ton compte — Urson</title>
+  <!--
+    Page statique autonome (HTML + CSS + JS inline, aucune dépendance
+    externe) — le chemin de suppression WEB exigé par Google Play (une URL
+    utilisable SANS avoir l'app). Hébergée hors Supabase (GitHub Pages,
+    adresse visée https://ursonapp.fr/suppression-de-compte/) : les Edge
+    Functions et le Storage Supabase réécrivent toute réponse HTML en
+    text/plain (mesuré en production, 2026-09-03, doc Supabase
+    guides/functions/http-methods — "HTML content is not supported") ; rien
+    sur supabase.co ne peut servir cette page. Elle appelle donc en `fetch`
+    l'API JSON `supabase/functions/supprimer-mon-compte/index.ts`.
+
+    Deux règles non négociables :
+      - RIEN ne se déclenche au chargement avec un jeton dans l'URL — un
+        client mail ou un antivirus visite les liens qu'il reçoit ; seul un
+        clic explicite sur le bouton de confirmation appelle l'API.
+      - Le jeton n'est JAMAIS réinjecté dans le document (ni attribut, ni
+        texte) — il ne vit qu'en mémoire JS, le temps du clic.
+
+    La clé `apikey` ci-dessous est la clé anon PUBLIQUE du projet Supabase —
+    déjà publique dans le bundle de l'app (EXPO_PUBLIC_SUPABASE_ANON_KEY),
+    aucune fuite nouvelle à l'inscrire ici en dur.
+  -->
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 24px 16px;
+      background: #FAFAF8;
+      color: #1F2937;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+    }
+    .card {
+      max-width: 480px;
+      width: 100%;
+      background: #FFFFFF;
+      border-radius: 20px;
+      padding: 32px 24px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    }
+    h1 { font-size: 22px; margin: 0 0 16px; color: #1F2937; }
+    p { line-height: 1.5; margin: 0 0 16px; }
+    ul { margin: 0 0 16px; padding-left: 20px; line-height: 1.6; }
+    label { display: block; font-weight: 600; margin-bottom: 8px; }
+    input[type="email"] {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid #E5E7EB;
+      border-radius: 12px;
+      font-size: 16px;
+      margin-bottom: 16px;
+    }
+    button {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 999px;
+      background: #FF6B47;
+      color: #FFFFFF;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    button:disabled { opacity: 0.6; cursor: default; }
+    a { color: #FF6B47; }
+  </style>
+</head>
+<body>
+  <div class="card" id="card"></div>
+
+  <script>
+  (function () {
+    'use strict';
+
+    // Domaine pas encore branché au moment où ce fichier est écrit — l'API
+    // reste en dur ici, jamais déduite de `window.location`.
+    var API_URL = 'https://cvycoezoimrbgpbxzrez.supabase.co/functions/v1/supprimer-mon-compte';
+    var ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN2eWNvZXpvaW1yYmdwYnh6cmV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1NTg2ODIsImV4cCI6MjA5MzEzNDY4Mn0.hq5fGRpHi6xe07BxXdAYBN6o3m6LZbqPzCCxfLwWWyo';
+
+    var card = document.getElementById('card');
+
+    var WHAT_LEAVES = [
+      'Ton profil',
+      'Tes enfants, ton agenda et tes présences — sauf si un autre parent partage ton foyer (voir ci-dessous)',
+      'Tes favoris',
+      'Tes amis',
+      'Tes groupes',
+      'Tes sorties planifiées'
+    ];
+
+    var WHAT_STAYS = [
+      'Les fiches et photos que tu as publiées au catalogue restent en ligne, mais sans ton nom.',
+      "Si un autre parent partage ton foyer, il le garde : enfants, agenda et présences lui restent, et il est prévenu de ton départ."
+    ];
+
+    function listHtml(items) {
+      return '<ul>' + items.map(function (item) { return '<li>' + item + '</li>'; }).join('') + '</ul>';
+    }
+
+    function whatLeavesAndStaysHtml() {
+      return (
+        '<p>Cette suppression est <strong>définitive</strong>. Elle emporte :</p>' +
+        listHtml(WHAT_LEAVES) +
+        '<p>Ce qui reste :</p>' +
+        listHtml(WHAT_STAYS)
+      );
+    }
+
+    // ── États ────────────────────────────────────────────────────────────
+
+    function renderForm() {
+      card.innerHTML =
+        '<h1>Supprimer ton compte Urson</h1>' +
+        whatLeavesAndStaysHtml() +
+        '<form id="request-form">' +
+          '<label for="email">Ton adresse e-mail Urson</label>' +
+          '<input id="email" name="email" type="email" required autocomplete="email" />' +
+          '<button type="submit" id="request-submit">Recevoir le lien de suppression</button>' +
+        '</form>';
+      document.getElementById('request-form').addEventListener('submit', onRequestSubmit);
+    }
+
+    function renderSent() {
+      card.innerHTML =
+        '<h1>Vérifie ta boîte mail</h1>' +
+        '<p>Si un compte Urson existe pour cette adresse, un e-mail vient de partir avec un lien de confirmation.</p>' +
+        '<p>Ce lien expire dans 1 heure. Pense à vérifier tes courriers indésirables.</p>';
+    }
+
+    // `token` ne vit qu'en mémoire (fermeture de `onConfirmClick`) — jamais
+    // écrit dans le DOM, ni en attribut ni en texte.
+    function renderConfirm(token) {
+      card.innerHTML =
+        '<h1>Confirmer la suppression</h1>' +
+        '<p>Cette action est <strong>définitive</strong> et ne peut pas être annulée.</p>' +
+        whatLeavesAndStaysHtml() +
+        '<button type="button" id="confirm-button">Supprimer définitivement mon compte</button>';
+      document.getElementById('confirm-button').addEventListener('click', function () {
+        onConfirmClick(token);
+      });
+    }
+
+    function renderDeleted() {
+      card.innerHTML =
+        '<h1>Compte supprimé</h1>' +
+        "<p>Ton compte Urson a été supprimé. Merci d'avoir utilisé l'app.</p>";
+    }
+
+    function renderInvalid() {
+      card.innerHTML =
+        '<h1>Lien invalide ou expiré</h1>' +
+        "<p>Ce lien de suppression n'est plus valide — il a peut-être déjà été utilisé, ou a expiré au bout d'une heure.</p>" +
+        '<p><a href="./">Redemander un lien</a></p>';
+    }
+
+    function renderRetryable() {
+      card.innerHTML =
+        "<h1>La suppression n'a pas abouti</h1>" +
+        "<p>Une erreur technique a interrompu la suppression de ton compte — rien n'est perdu de ton côté.</p>" +
+        '<p>Reclique sur le lien reçu par e-mail : il reste valable. S\'il ne fonctionne toujours pas, <a href="./">redemande un nouveau lien</a>.</p>';
+    }
+
+    // ── Appels API ───────────────────────────────────────────────────────
+
+    function onRequestSubmit(event) {
+      event.preventDefault();
+      var emailInput = document.getElementById('email');
+      var submitButton = document.getElementById('request-submit');
+      var email = emailInput ? emailInput.value : '';
+
+      submitButton.disabled = true;
+      submitButton.textContent = 'Envoi…';
+
+      fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', apikey: ANON_KEY },
+        body: JSON.stringify({ action: 'request', email: email })
+      })
+        .catch(function () {
+          // Best effort réseau — un échec de fetch ne doit jamais devenir un
+          // oracle sur l'existence du compte : même page dans tous les cas,
+          // exactement comme la réponse serveur.
+        })
+        .then(function () {
+          renderSent();
+        });
+    }
+
+    function onConfirmClick(token) {
+      var button = document.getElementById('confirm-button');
+      button.disabled = true;
+      button.textContent = 'Suppression en cours…';
+
+      fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', apikey: ANON_KEY },
+        body: JSON.stringify({ action: 'confirm', token: token })
+      })
+        .then(function (response) {
+          return response
+            .json()
+            .catch(function () { return null; });
+        })
+        .then(function (data) {
+          if (data && data.status === 'deleted') {
+            renderDeleted();
+          } else if (data && data.status === 'invalid') {
+            renderInvalid();
+          } else {
+            renderRetryable();
+          }
+        })
+        .catch(function () {
+          renderRetryable();
+        });
+    }
+
+    // ── Point d'entrée — un jeton dans l'URL ouvre l'état de confirmation,
+    // SANS appeler l'API : seul le clic sur le bouton la déclenche. ────────
+    var token = new URLSearchParams(window.location.search).get('token');
+    if (token && token.trim()) {
+      renderConfirm(token.trim());
+    } else {
+      renderForm();
+    }
+  })();
+  </script>
+</body>
+</html>
