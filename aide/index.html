@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Aide &amp; conseils — Urson</title>
+  <meta name="description" content="L'aide de l'application Urson : régler l'âge des enfants, le rayon de recherche, la météo, « J'y vais », les amis, les contributions et les rappels. Et comment nous joindre." />
+  <meta name="theme-color" content="#FFF8F3" />
+  <link rel="canonical" href="https://ursonapp.fr/aide/" />
+  <link rel="icon" href="/assets/favicon.png" />
+  <link rel="apple-touch-icon" href="/assets/urson-icone.png" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Urson" />
+  <meta property="og:locale" content="fr_FR" />
+  <meta property="og:title" content="Aide &amp; conseils — Urson" />
+  <meta property="og:description" content="L'aide de l'application Urson : régler l'âge des enfants, le rayon de recherche, la météo, « J'y vais », les amis, les contributions et les rappels. Et comment nous joindre." />
+  <meta property="og:url" content="https://ursonapp.fr/aide/" />
+  <meta property="og:image" content="https://ursonapp.fr/assets/urson-icone.png" />
+  <meta name="twitter:card" content="summary" />
+  <!--
+    Page générée par scripts/build-web-pages.mjs dans le dépôt applicatif.
+    Ne pas modifier ici : la correction serait écrasée à la publication
+    suivante. Les textes de « Confidentialité » et « Aide » viennent de
+    app-activites-enfants/lib/{confidentialite,aide}Content.ts, qui servent
+    aussi les écrans de l'app.
+  -->
+  <style>
+    :root {
+      --coral: #FF6B6B;
+      --coral-deep: #E84D4D;
+      --peach-pale: #FFB088;
+      --bg-app: #FFF8F3;
+      --bg-surface: #FFFFFF;
+      --bg-soft: #FFF1E8;
+      --fg-1: #1F2937;
+      --fg-2: #6B7280;
+      --fg-3: #9CA3AF;
+      --line-soft: #F3F4F6;
+      --line-medium: #E5E7EB;
+      --success: #7FB069;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg-app);
+      color: var(--fg-1);
+      /* Pile système : charger une police distante enverrait l'adresse IP du
+         visiteur à un tiers, ce que la page Confidentialité dit ne pas faire. */
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: 17px;
+      line-height: 1.6;
+      -webkit-text-size-adjust: 100%;
+    }
+    /*
+      Les liens de contenu gardent le soulignement du navigateur : coral-deep
+      sur le crème mesure 3,85:1, sous le seuil AA du texte courant — la couleur
+      ne peut donc pas être le seul signal. Le survol épaissit le trait au lieu
+      d'éclaircir la teinte, qui tomberait à 2,64:1.
+    */
+    a { color: var(--coral-deep); }
+    a:hover { text-decoration-thickness: 2px; }
+    img { max-width: 100%; height: auto; }
+    .enveloppe { max-width: 720px; margin: 0 auto; padding: 0 20px; }
+
+    /* En-tête */
+    .entete {
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--line-soft);
+      position: sticky; top: 0; z-index: 10;
+    }
+    .entete .enveloppe {
+      display: flex; align-items: center; gap: 16px;
+      flex-wrap: wrap; padding-top: 12px; padding-bottom: 12px;
+    }
+    .marque {
+      display: flex; align-items: center; gap: 10px;
+      font-weight: 800; font-size: 19px; color: var(--fg-1);
+      text-decoration: none; margin-right: auto;
+    }
+    .marque img { width: 34px; height: 34px; border-radius: 10px; }
+    .nav { display: flex; gap: 18px; flex-wrap: wrap; }
+    .nav a { color: var(--fg-2); text-decoration: none; font-size: 15px; font-weight: 600; }
+    .nav a:hover, .nav a[aria-current="page"] {
+      color: var(--coral-deep);
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+
+    /* Contenu */
+    main { padding: 40px 0 8px; }
+    h1 { font-size: 30px; line-height: 1.25; margin: 0 0 12px; letter-spacing: -0.5px; }
+    h2 { font-size: 21px; line-height: 1.3; margin: 36px 0 12px; }
+    h3 { font-size: 17px; margin: 24px 0 8px; }
+    p, ul, ol { margin: 0 0 16px; }
+    ul, ol { padding-left: 22px; }
+    li { margin-bottom: 6px; }
+    .chapeau { font-size: 19px; color: var(--fg-2); margin-bottom: 28px; }
+    .date-maj { color: var(--fg-3); font-size: 15px; margin-bottom: 32px; }
+
+    .carte {
+      background: var(--bg-surface);
+      border: 1px solid var(--line-soft);
+      border-radius: 20px;
+      padding: 24px;
+      margin-bottom: 16px;
+    }
+    .carte h2, .carte h3 { margin-top: 0; }
+    .carte :last-child { margin-bottom: 0; }
+    .carte-douce { background: var(--bg-soft); border-color: transparent; }
+
+    .titre-emoji { display: flex; align-items: baseline; gap: 10px; }
+    .titre-emoji .emoji { font-size: 22px; line-height: 1; }
+
+    /* Pied de page */
+    .pied {
+      margin-top: 56px;
+      border-top: 1px solid var(--line-medium);
+      background: var(--bg-surface);
+      padding: 32px 0 40px;
+      font-size: 15px;
+      color: var(--fg-2);
+    }
+    .pied-liens { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-bottom: 20px; }
+    .pied-liens a { font-weight: 600; text-decoration: none; }
+    .pied p { margin: 0 0 8px; }
+    .pied .mentions { color: var(--fg-3); font-size: 14px; }
+
+    @media (max-width: 480px) {
+      body { font-size: 16px; }
+      h1 { font-size: 26px; }
+      main { padding-top: 28px; }
+      .carte { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="entete">
+    <div class="enveloppe">
+      <a class="marque" href="/">
+        <img src="/assets/urson-icone.png" alt="" width="34" height="34" />
+        Urson
+      </a>
+      <nav class="nav" aria-label="Pages du site">
+        <a href="/aide/" aria-current="page">Aide</a>
+        <a href="/confidentialite/">Confidentialité</a>
+        <a href="/conditions/">Conditions</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="enveloppe">
+      <h1>Aide &amp; conseils</h1>
+      <p class="chapeau">Les mêmes réponses que dans l'app, accessibles sans l'installer. Si la tienne n'y est pas, écris-nous : on répond.</p>
+
+      <section class="carte" id="a-quoi-sert">
+        <h2 class="titre-emoji"><span class="emoji" aria-hidden="true">🧭</span> À quoi sert Urson ?</h2>
+        <p>Urson rassemble les sorties et les lieux à faire avec des enfants autour de Bourges : musées, parcs, spectacles, fermes, piscines, et les restaurants qui accueillent vraiment les familles. Tu dis qui t'accompagne et jusqu'où tu veux aller — l'app propose.</p>
+      </section>
+
+      <section class="carte" id="tes-enfants">
+        <h2 class="titre-emoji"><span class="emoji" aria-hidden="true">👶</span> Commence par renseigner tes enfants</h2>
+        <p>Le prénom et l'âge de chaque enfant se règlent dans ton profil. L'âge sert partout : il présélectionne les filtres de recherche et écarte ce qui n'est pas adapté.</p>
+      <p>Tu peux aussi indiquer les week-ends où chaque enfant est présent chez toi, pour ne voir que les sorties qui tombent au bon moment.</p>
+      </section>
+
+      <section class="carte" id="rayon-depart">
+        <h2 class="titre-emoji"><span class="emoji" aria-hidden="true">📍</span> Le rayon et le point de départ</h2>
+        <p>Par défaut, les distances sont mesurées depuis ta position du moment. Si tu préfères un repère fixe, renseigne l'adresse de la maison dans ton profil et choisis-la comme point de départ.</p>
+      <p>Le rayon se règle au même endroit, et se retrouve dans les filtres de recherche.</p>
+      </section>
+
+      <section class="carte" id="meteo">
+        <h2 class="titre-emoji"><span class="emoji" aria-hidden="true">☀️</span> La météo change tout</h2>
+        <p>L'accueil affiche la météo des jours à venir. Quand elle tourne mal, le filtre « Dedans ou dehors » de la recherche ne garde que les lieux couverts.</p>
+      </section>
+
+      <section class="carte" id="jy-vais">
+        <h2 class="titre-emoji"><span class="emoji" aria-hidden="true">🙋</span> « J'y vais », et qui le voit</h2>
+        <p>Annonce ta venue sur une sortie pour que les familles que tu connais sachent qu'elles ne seront pas seules.</p>
+      <p>À chaque fois, tu choisis entre Amis — les parents que tu as ajoutés — et Privé, où personne d'autre ne le voit. En Amis, tu peux encore masquer la sortie à certains groupes.</p>
+      </section>
+
+      <section class="carte" id="amis">
+        <h2 class="titre-emoji"><span class="emoji" aria-hidden="true">🤝</span> Ajouter des amis</h2>
+        <p>Chaque parent a un code d'invitation, dans son profil. Partage le tien, ou saisis celui d'un autre parent.</p>
+      <p>Une fois amis, vous voyez vos sorties selon la visibilité que chacun a choisie, et vous pouvez vous inviter.</p>
+      </section>
+
+      <section class="carte" id="contribuer">
+        <h2 class="titre-emoji"><span class="emoji" aria-hidden="true">✏️</span> Corriger, compléter, proposer</h2>
+        <p>Une info fausse, une photo manquante ? Chaque fiche permet de proposer une correction ou d'ajouter une photo.</p>
+      <p>Tu peux aussi déposer le lien d'une sortie ou la photo d'une affiche : c'est relu à la main, puis publié — et tu es prévenu quand ça paraît. Chaque contribution rapporte des points, à retrouver dans « Mes contributions ».</p>
+      </section>
+
+      <section class="carte" id="rappels">
+        <h2 class="titre-emoji"><span class="emoji" aria-hidden="true">🔔</span> Les rappels</h2>
+        <p>Deux rappels facultatifs se règlent dans ton profil : une suggestion pour le week-end à venir, et un signalement des nouveautés du catalogue.</p>
+      <p>Ils sont programmés par ton téléphone — Urson ne t'envoie rien depuis un serveur.</p>
+      </section>
+
+      <section class="carte carte-douce">
+        <h2 class="titre-emoji"><span class="emoji" aria-hidden="true">✉️</span> Une question, un problème ?</h2>
+        <p>Écris à <a href="mailto:bonjour@ursonapp.fr">bonjour@ursonapp.fr</a> — un lieu qui manque, une info fausse, un bug, une idée. C'est un parent qui lit, pas un service client.</p>
+        <p>Depuis l'app, le même canal existe dans Profil → Un problème, une idée.</p>
+      </section>
+
+      <section class="carte">
+        <h2 class="titre-emoji"><span class="emoji" aria-hidden="true">🛟</span> Les liens utiles</h2>
+        <ul>
+          <li><a href="/confidentialite/">Ce que l'app enregistre, et ce qu'elle n'enregistre pas</a></li>
+          <li><a href="/conditions/">Les conditions d'utilisation</a></li>
+          <li><a href="/suppression-de-compte/">Supprimer mon compte</a>, sans avoir l'app installée</li>
+        </ul>
+      </section>
+    </div>
+  </main>
+
+  <footer class="pied">
+    <div class="enveloppe">
+      <nav class="pied-liens" aria-label="Pied de page">
+        <a href="/">Accueil</a>
+        <a href="/confidentialite/">Confidentialité</a>
+        <a href="/conditions/">Conditions</a>
+        <a href="/suppression-de-compte/">Supprimer mon compte</a>
+      </nav>
+      <p>Une question, une remarque, une erreur dans une fiche ? Écris à <a href="mailto:bonjour@ursonapp.fr">bonjour@ursonapp.fr</a>.</p>
+      <p class="mentions">Urson est une application faite par un parent de Bourges, éditée à titre personnel. Site hébergé par GitHub Pages (GitHub, Inc.). Les données de l'app sont hébergées par Supabase, à Paris.</p>
+    </div>
+  </footer>
+</body>
+</html>

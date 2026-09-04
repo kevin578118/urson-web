@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Confidentialité — Urson</title>
+  <meta name="description" content="Ce que l'application Urson enregistre, où, et ce qu'elle n'enregistre pas. Aucune publicité, aucun traceur, aucune revente de données ; hébergement à Paris." />
+  <meta name="theme-color" content="#FFF8F3" />
+  <link rel="canonical" href="https://ursonapp.fr/confidentialite/" />
+  <link rel="icon" href="/assets/favicon.png" />
+  <link rel="apple-touch-icon" href="/assets/urson-icone.png" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Urson" />
+  <meta property="og:locale" content="fr_FR" />
+  <meta property="og:title" content="Confidentialité — Urson" />
+  <meta property="og:description" content="Ce que l'application Urson enregistre, où, et ce qu'elle n'enregistre pas. Aucune publicité, aucun traceur, aucune revente de données ; hébergement à Paris." />
+  <meta property="og:url" content="https://ursonapp.fr/confidentialite/" />
+  <meta property="og:image" content="https://ursonapp.fr/assets/urson-icone.png" />
+  <meta name="twitter:card" content="summary" />
+  <!--
+    Page générée par scripts/build-web-pages.mjs dans le dépôt applicatif.
+    Ne pas modifier ici : la correction serait écrasée à la publication
+    suivante. Les textes de « Confidentialité » et « Aide » viennent de
+    app-activites-enfants/lib/{confidentialite,aide}Content.ts, qui servent
+    aussi les écrans de l'app.
+  -->
+  <style>
+    :root {
+      --coral: #FF6B6B;
+      --coral-deep: #E84D4D;
+      --peach-pale: #FFB088;
+      --bg-app: #FFF8F3;
+      --bg-surface: #FFFFFF;
+      --bg-soft: #FFF1E8;
+      --fg-1: #1F2937;
+      --fg-2: #6B7280;
+      --fg-3: #9CA3AF;
+      --line-soft: #F3F4F6;
+      --line-medium: #E5E7EB;
+      --success: #7FB069;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg-app);
+      color: var(--fg-1);
+      /* Pile système : charger une police distante enverrait l'adresse IP du
+         visiteur à un tiers, ce que la page Confidentialité dit ne pas faire. */
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: 17px;
+      line-height: 1.6;
+      -webkit-text-size-adjust: 100%;
+    }
+    /*
+      Les liens de contenu gardent le soulignement du navigateur : coral-deep
+      sur le crème mesure 3,85:1, sous le seuil AA du texte courant — la couleur
+      ne peut donc pas être le seul signal. Le survol épaissit le trait au lieu
+      d'éclaircir la teinte, qui tomberait à 2,64:1.
+    */
+    a { color: var(--coral-deep); }
+    a:hover { text-decoration-thickness: 2px; }
+    img { max-width: 100%; height: auto; }
+    .enveloppe { max-width: 720px; margin: 0 auto; padding: 0 20px; }
+
+    /* En-tête */
+    .entete {
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--line-soft);
+      position: sticky; top: 0; z-index: 10;
+    }
+    .entete .enveloppe {
+      display: flex; align-items: center; gap: 16px;
+      flex-wrap: wrap; padding-top: 12px; padding-bottom: 12px;
+    }
+    .marque {
+      display: flex; align-items: center; gap: 10px;
+      font-weight: 800; font-size: 19px; color: var(--fg-1);
+      text-decoration: none; margin-right: auto;
+    }
+    .marque img { width: 34px; height: 34px; border-radius: 10px; }
+    .nav { display: flex; gap: 18px; flex-wrap: wrap; }
+    .nav a { color: var(--fg-2); text-decoration: none; font-size: 15px; font-weight: 600; }
+    .nav a:hover, .nav a[aria-current="page"] {
+      color: var(--coral-deep);
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+
+    /* Contenu */
+    main { padding: 40px 0 8px; }
+    h1 { font-size: 30px; line-height: 1.25; margin: 0 0 12px; letter-spacing: -0.5px; }
+    h2 { font-size: 21px; line-height: 1.3; margin: 36px 0 12px; }
+    h3 { font-size: 17px; margin: 24px 0 8px; }
+    p, ul, ol { margin: 0 0 16px; }
+    ul, ol { padding-left: 22px; }
+    li { margin-bottom: 6px; }
+    .chapeau { font-size: 19px; color: var(--fg-2); margin-bottom: 28px; }
+    .date-maj { color: var(--fg-3); font-size: 15px; margin-bottom: 32px; }
+
+    .carte {
+      background: var(--bg-surface);
+      border: 1px solid var(--line-soft);
+      border-radius: 20px;
+      padding: 24px;
+      margin-bottom: 16px;
+    }
+    .carte h2, .carte h3 { margin-top: 0; }
+    .carte :last-child { margin-bottom: 0; }
+    .carte-douce { background: var(--bg-soft); border-color: transparent; }
+
+    .titre-emoji { display: flex; align-items: baseline; gap: 10px; }
+    .titre-emoji .emoji { font-size: 22px; line-height: 1; }
+
+    /* Pied de page */
+    .pied {
+      margin-top: 56px;
+      border-top: 1px solid var(--line-medium);
+      background: var(--bg-surface);
+      padding: 32px 0 40px;
+      font-size: 15px;
+      color: var(--fg-2);
+    }
+    .pied-liens { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-bottom: 20px; }
+    .pied-liens a { font-weight: 600; text-decoration: none; }
+    .pied p { margin: 0 0 8px; }
+    .pied .mentions { color: var(--fg-3); font-size: 14px; }
+
+    @media (max-width: 480px) {
+      body { font-size: 16px; }
+      h1 { font-size: 26px; }
+      main { padding-top: 28px; }
+      .carte { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="entete">
+    <div class="enveloppe">
+      <a class="marque" href="/">
+        <img src="/assets/urson-icone.png" alt="" width="34" height="34" />
+        Urson
+      </a>
+      <nav class="nav" aria-label="Pages du site">
+        <a href="/aide/">Aide</a>
+        <a href="/confidentialite/" aria-current="page">Confidentialité</a>
+        <a href="/conditions/">Conditions</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="enveloppe">
+      <h1>Confidentialité</h1>
+      <p class="chapeau">Urson est une application en cours de développement, faite par un parent de Bourges. Cette page dit exactement ce que l'app enregistre, où, et ce qu'elle n'enregistre pas.</p>
+      <p class="date-maj">Dernière mise à jour : 29 août 2026</p>
+
+      <section class="carte" id="connexion">
+        <h2 class="titre-emoji"><span class="emoji" aria-hidden="true">🔑</span> Comment tu te connectes</h2>
+        <p>Urson n'utilise aucun mot de passe. Tu saisis ton adresse email, tu reçois un code à usage unique, et c'est tout. Ton adresse sert uniquement à t'identifier et à t'envoyer ce code.</p>
+      </section>
+
+      <section class="carte" id="ce-que-tu-renseignes">
+        <h2 class="titre-emoji"><span class="emoji" aria-hidden="true">👨‍👩‍👧</span> Ce que tu renseignes</h2>
+        <ul><li>Ton prénom d'affichage et ton avatar.</li><li>Le prénom, l'âge, l'avatar et les centres d'intérêt de chaque enfant, ainsi que les week-ends où il est présent chez toi.</li><li>Ton foyer et les parents qui le partagent avec toi.</li><li>Tes préférences : rayon de recherche, adresse de la maison si tu la renseignes, créneaux horaires préférés, réglages de rappel.</li></ul>
+      </section>
+
+      <section class="carte" id="ce-que-tu-fais">
+        <h2 class="titre-emoji"><span class="emoji" aria-hidden="true">🗓️</span> Ce que tu fais dans l'app</h2>
+        <ul><li>Tes favoris et tes sorties planifiées.</li><li>Tes « J'y vais », avec la visibilité que tu as choisie.</li><li>Tes amis, tes groupes d'amis et tes invitations.</li><li>Tes contributions : corrections proposées, photos envoyées, liens et affiches déposés.</li></ul>
+      </section>
+
+      <section class="carte" id="position">
+        <h2 class="titre-emoji"><span class="emoji" aria-hidden="true">📍</span> Ta position</h2>
+        <p>Elle est demandée seulement au moment où elle sert : mesurer une distance, centrer la carte, chercher autour de toi. Elle n'est jamais enregistrée sur nos serveurs.</p>
+        <p>Elle est envoyée à OpenStreetMap pour retrouver le nom de la commune, et à Open-Meteo pour la météo. Seule l'adresse de la maison, si tu la renseignes toi-même, est conservée avec tes préférences.</p>
+      </section>
+
+      <section class="carte" id="mesure">
+        <h2 class="titre-emoji"><span class="emoji" aria-hidden="true">📊</span> Ce qui est mesuré</h2>
+        <p>Pour savoir ce qui manque au catalogue, Urson enregistre les recherches abouties et les fiches consultées. Ces relevés sont rattachés au foyer, jamais à un parent en particulier, et ne servent qu'à améliorer le contenu.</p>
+        <p>Aucun outil de mesure d'audience tiers n'est installé.</p>
+      </section>
+
+      <section class="carte" id="notifications">
+        <h2 class="titre-emoji"><span class="emoji" aria-hidden="true">🔔</span> Les notifications</h2>
+        <p>Tous les rappels sont programmés par ton téléphone, en local. Aucun identifiant d'appareil n'est enregistré et rien n'est envoyé depuis un serveur.</p>
+      </section>
+
+      <section class="carte" id="hebergement">
+        <h2 class="titre-emoji"><span class="emoji" aria-hidden="true">🇫🇷</span> Où sont les données</h2>
+        <p>La base et les fichiers sont hébergés par Supabase, dans un centre de données situé à Paris.</p>
+        <p>L'accès est verrouillé ligne par ligne : un compte ne peut lire que ce qui le concerne, et cette règle est appliquée par le serveur, pas par l'application.</p>
+      </section>
+
+      <section class="carte" id="services">
+        <h2 class="titre-emoji"><span class="emoji" aria-hidden="true">🤝</span> Les services utilisés</h2>
+        <ul><li>Supabase — base de données et fichiers, à Paris.</li><li>Resend — envoi des emails de connexion.</li><li>Expo — distribution des mises à jour de l'app.</li><li>OpenStreetMap et Open-Meteo — nom de commune et météo, à partir d'une position ponctuelle.</li><li>Google Maps et Google Places — fond de carte et photos des lieux.</li></ul>
+      </section>
+
+      <section class="carte" id="ce-quon-ne-fait-pas">
+        <h2 class="titre-emoji"><span class="emoji" aria-hidden="true">🚫</span> Ce qu'Urson ne fait pas</h2>
+        <p>Aucune publicité. Aucun traceur publicitaire. Aucune revente ni partage de tes données à des fins commerciales. Aucun profilage.</p>
+      </section>
+
+      <section class="carte" id="tes-droits">
+        <h2 class="titre-emoji"><span class="emoji" aria-hidden="true">✉️</span> Consulter ou supprimer tes données</h2>
+        <p>Écris-nous : tu peux demander à consulter ce qui est enregistré sur ton foyer, à le corriger, ou à tout supprimer.</p>
+        <p>La suppression efface le foyer, les enfants, les favoris, les sorties planifiées et les liens d'amitié.</p>
+      </section>
+
+      <section class="carte" id="suppression-compte">
+        <h2 class="titre-emoji"><span class="emoji" aria-hidden="true">🗑️</span> Supprimer ton compte</h2>
+        <p>Tu peux supprimer ton compte toi-même, sans nous écrire, de deux façons : depuis l'app (Profil → Supprimer mon compte), ou depuis un navigateur, sans avoir l'app installée, sur <a href="https://ursonapp.fr/suppression-de-compte/">https://ursonapp.fr/suppression-de-compte/</a></p>
+        <p>Ce qui part : ton profil, tes enfants, tes favoris, tes amis, tes groupes, tes sorties et ton agenda.</p>
+        <p>Ce qui reste : les fiches et les photos que tu as fait publier au catalogue restent en ligne mais perdent leur auteur ; si tu partages ton foyer avec un autre parent, le foyer lui reste, avec les enfants et l'agenda.</p>
+      </section>
+
+      <section class="carte carte-douce">
+        <h2>Nous écrire</h2>
+        <p>Pour consulter ce qui est enregistré sur ton foyer, le corriger, ou tout supprimer : <a href="mailto:bonjour@ursonapp.fr">bonjour@ursonapp.fr</a>. Chaque demande est traitée à la main, sous un mois.</p>
+        <p>Tu peux aussi supprimer ton compte toi-même, sans nous écrire : <a href="/suppression-de-compte/">depuis cette page</a>, ou depuis l'app (Profil → Supprimer mon compte).</p>
+      </section>
+    </div>
+  </main>
+
+  <footer class="pied">
+    <div class="enveloppe">
+      <nav class="pied-liens" aria-label="Pied de page">
+        <a href="/">Accueil</a>
+        <a href="/aide/">Aide</a>
+        <a href="/conditions/">Conditions</a>
+        <a href="/suppression-de-compte/">Supprimer mon compte</a>
+      </nav>
+      <p>Une question, une remarque, une erreur dans une fiche ? Écris à <a href="mailto:bonjour@ursonapp.fr">bonjour@ursonapp.fr</a>.</p>
+      <p class="mentions">Urson est une application faite par un parent de Bourges, éditée à titre personnel. Site hébergé par GitHub Pages (GitHub, Inc.). Les données de l'app sont hébergées par Supabase, à Paris.</p>
+    </div>
+  </footer>
+</body>
+</html>
