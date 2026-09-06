@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Votre fiche dans Urson</title>
+  <meta name="description" content="La page que le lien reçu par e-mail ouvre pour corriger votre fiche et déposer votre affiche sur Urson." />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="theme-color" content="#FFF8F3" />
+  <link rel="canonical" href="https://ursonapp.fr/organisateur/" />
+  <link rel="icon" href="/assets/favicon.png" />
+  <link rel="apple-touch-icon" href="/assets/urson-icone.png" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Urson" />
+  <meta property="og:locale" content="fr_FR" />
+  <meta property="og:title" content="Votre fiche dans Urson" />
+  <meta property="og:description" content="La page que le lien reçu par e-mail ouvre pour corriger votre fiche et déposer votre affiche sur Urson." />
+  <meta property="og:url" content="https://ursonapp.fr/organisateur/" />
+  <meta property="og:image" content="https://ursonapp.fr/assets/urson-icone.png" />
+  <meta name="twitter:card" content="summary" />
+  <!--
+    Page générée par scripts/build-web-pages.mjs dans le dépôt applicatif.
+    Ne pas modifier ici : la correction serait écrasée à la publication
+    suivante. Les textes de « Confidentialité » et « Aide » viennent de
+    app-activites-enfants/lib/{confidentialite,aide}Content.ts, qui servent
+    aussi les écrans de l'app.
+  -->
+  <style>
+    :root {
+      --coral: #FF6B6B;
+      --coral-deep: #E84D4D;
+      --peach-pale: #FFB088;
+      --bg-app: #FFF8F3;
+      --bg-surface: #FFFFFF;
+      --bg-soft: #FFF1E8;
+      --fg-1: #1F2937;
+      --fg-2: #6B7280;
+      --fg-3: #9CA3AF;
+      --line-soft: #F3F4F6;
+      --line-medium: #E5E7EB;
+      --success: #7FB069;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg-app);
+      color: var(--fg-1);
+      /* Pile système : charger une police distante enverrait l'adresse IP du
+         visiteur à un tiers, ce que la page Confidentialité dit ne pas faire. */
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: 17px;
+      line-height: 1.6;
+      -webkit-text-size-adjust: 100%;
+    }
+    /*
+      Les liens de contenu gardent le soulignement du navigateur : coral-deep
+      sur le crème mesure 3,85:1, sous le seuil AA du texte courant — la couleur
+      ne peut donc pas être le seul signal. Le survol épaissit le trait au lieu
+      d'éclaircir la teinte, qui tomberait à 2,64:1.
+    */
+    a { color: var(--coral-deep); }
+    a:hover { text-decoration-thickness: 2px; }
+    img { max-width: 100%; height: auto; }
+    .enveloppe { max-width: 720px; margin: 0 auto; padding: 0 20px; }
+
+    /* En-tête */
+    .entete {
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--line-soft);
+      position: sticky; top: 0; z-index: 10;
+    }
+    .entete .enveloppe {
+      display: flex; align-items: center; gap: 16px;
+      flex-wrap: wrap; padding-top: 12px; padding-bottom: 12px;
+    }
+    .marque {
+      display: flex; align-items: center; gap: 10px;
+      font-weight: 800; font-size: 19px; color: var(--fg-1);
+      text-decoration: none; margin-right: auto;
+    }
+    .marque img { width: 34px; height: 34px; border-radius: 10px; }
+    .nav { display: flex; gap: 18px; flex-wrap: wrap; }
+    .nav a { color: var(--fg-2); text-decoration: none; font-size: 15px; font-weight: 600; }
+    .nav a:hover, .nav a[aria-current="page"] {
+      color: var(--coral-deep);
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+
+    /* Contenu */
+    main { padding: 40px 0 8px; }
+    h1 { font-size: 30px; line-height: 1.25; margin: 0 0 12px; letter-spacing: -0.5px; }
+    h2 { font-size: 21px; line-height: 1.3; margin: 36px 0 12px; }
+    h3 { font-size: 17px; margin: 24px 0 8px; }
+    p, ul, ol { margin: 0 0 16px; }
+    ul, ol { padding-left: 22px; }
+    li { margin-bottom: 6px; }
+    .chapeau { font-size: 19px; color: var(--fg-2); margin-bottom: 28px; }
+    .date-maj { color: var(--fg-3); font-size: 15px; margin-bottom: 32px; }
+
+    .carte {
+      background: var(--bg-surface);
+      border: 1px solid var(--line-soft);
+      border-radius: 20px;
+      padding: 24px;
+      margin-bottom: 16px;
+    }
+    .carte h2, .carte h3 { margin-top: 0; }
+    .carte :last-child { margin-bottom: 0; }
+    .carte-douce { background: var(--bg-soft); border-color: transparent; }
+
+    .titre-emoji { display: flex; align-items: baseline; gap: 10px; }
+    .titre-emoji .emoji { font-size: 22px; line-height: 1; }
+
+    /* Pied de page */
+    .pied {
+      margin-top: 56px;
+      border-top: 1px solid var(--line-medium);
+      background: var(--bg-surface);
+      padding: 32px 0 40px;
+      font-size: 15px;
+      color: var(--fg-2);
+    }
+    .pied-liens { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-bottom: 20px; }
+    .pied-liens a { font-weight: 600; text-decoration: none; }
+    .pied p { margin: 0 0 8px; }
+    .pied .mentions { color: var(--fg-3); font-size: 14px; }
+
+    @media (max-width: 480px) {
+      body { font-size: 16px; }
+      h1 { font-size: 26px; }
+      main { padding-top: 28px; }
+      .carte { padding: 20px; }
+    }
+    .org-eyebrow {
+      font-size: 11px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: .05em; color: var(--fg-2); margin: 0 0 8px;
+    }
+    .org-titre-ligne { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin: 0 0 28px; }
+    .org-titre-ligne h2 { font-size: 19px; margin: 0; font-weight: 700; color: var(--fg-1); }
+    .org-pastille { display: inline-block; padding: 4px 12px; border-radius: 999px; font-size: 11px; font-weight: 600; }
+    /* coral-deep sur bg-soft : 3,39:1, sous AA pour un texte 11px — fg-1 le
+       remplace (rapport @design-keeper). */
+    .org-pastille--pending { background: var(--bg-soft); color: var(--fg-1); }
+    /* rgba(127, 176, 105, .16) = --success (#7FB069) à 16 % — pas de forme
+       CSS pour appliquer une opacité à une variable dans ce gabarit. */
+    .org-pastille--approved { background: rgba(127, 176, 105, 0.16); color: var(--fg-1); }
+    /* fg-2 sur line-soft : 4,39:1 — même défaut que le piège #530, fg-1 le remplace. */
+    .org-pastille--none { background: var(--line-soft); color: var(--fg-1); }
+    .org-grille { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    @media (max-width: 720px) { .org-grille { grid-template-columns: 1fr; } }
+    .org-carte {
+      background: var(--bg-surface); border-radius: 20px; padding: 24px;
+      box-shadow: 0 4px 20px rgba(255, 107, 107, 0.08); margin-bottom: 16px;
+    }
+    .org-carte h2 { font-size: 17px; margin: 0 0 6px; }
+    .org-sous-titre { color: var(--fg-2); font-size: 15px; margin: 0 0 20px; }
+    .org-champ { margin-bottom: 16px; }
+    .org-champ:last-of-type { margin-bottom: 0; }
+    .org-label {
+      display: block; font-size: 11px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: .05em; color: var(--fg-2); margin-bottom: 6px;
+    }
+    .org-ligne-deux { display: flex; gap: 12px; }
+    .org-ligne-deux > div { flex: 1; min-width: 0; }
+    .org-input {
+      width: 100%; height: 48px; border-radius: 14px; border: 1px solid var(--line-medium);
+      font-size: 15px; padding: 0 14px; background: var(--bg-surface); font-family: inherit; color: var(--fg-1);
+    }
+    textarea.org-input { height: auto; padding: 12px 14px; resize: vertical; line-height: 1.5; }
+    .org-input:disabled { color: var(--fg-3); background: var(--bg-app); }
+    .org-aide { font-size: 13px; color: var(--fg-3); margin: -8px 0 16px; }
+    .org-bouton-secondaire {
+      width: 100%; height: 48px; border-radius: 999px; background: var(--bg-surface);
+      border: 1px solid var(--line-medium); color: var(--fg-1); font-size: 15px; font-weight: 600; cursor: pointer;
+    }
+    .org-bouton-primaire {
+      width: 100%; height: 48px; border-radius: 999px; background: var(--coral); border: none;
+      color: var(--bg-surface); font-size: 15px; font-weight: 700; cursor: pointer;
+      box-shadow: 0 2px 8px rgba(255, 107, 107, 0.12);
+    }
+    .org-bouton-primaire:disabled { opacity: .5; cursor: default; box-shadow: none; }
+    .org-message { margin: 12px 0 0; font-size: 14px; color: var(--fg-2); min-height: 1.4em; }
+    .org-message--error { color: var(--coral-deep); }
+    .org-zone-depot {
+      position: relative; border: 2px dashed rgba(255, 107, 107, 0.3); border-radius: 20px;
+      background: var(--bg-app); height: 220px; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; text-align: center; gap: 8px;
+      padding: 16px; margin-bottom: 16px; overflow: hidden;
+    }
+    .org-zone-depot p { margin: 0; }
+    .org-zone-depot input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+    .org-zone-pastille {
+      width: 48px; height: 48px; border-radius: 999px; background: var(--bg-surface);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 2px 10px rgba(255, 107, 107, 0.16);
+    }
+    .org-zone-contenu img { max-height: 188px; max-width: 100%; border-radius: 12px; object-fit: contain; }
+    .org-case {
+      display: flex; align-items: flex-start; gap: 10px; margin-bottom: 16px;
+      font-size: 14px; color: var(--fg-1); cursor: pointer;
+    }
+    .org-case input[type="checkbox"] {
+      width: 22px; height: 22px; border: 2px solid var(--coral); border-radius: 6px;
+      margin: 1px 0 0; flex-shrink: 0;
+    }
+    .org-encart {
+      background: var(--bg-soft); border-radius: 14px; padding: 20px;
+      display: flex; gap: 14px; align-items: flex-start; margin-bottom: 0;
+    }
+    .org-encart p { margin: 0; }
+    .org-lien-fort {
+      background: none; border: none; padding: 0; color: var(--coral-deep);
+      font-weight: 700; font-size: 15px; cursor: pointer; text-decoration: underline;
+      font-family: inherit;
+    }
+    .org-etat { color: var(--fg-2); }
+    @media (max-width: 480px) {
+      .org-ligne-deux { flex-direction: column; gap: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="entete">
+    <div class="enveloppe">
+      <a class="marque" href="/">
+        <img src="/assets/urson-icone.png" alt="" width="34" height="34" />
+        Urson
+      </a>
+      <nav class="nav" aria-label="Pages du site">
+        <a href="/aide/">Aide</a>
+        <a href="/confidentialite/">Confidentialité</a>
+        <a href="/conditions/">Conditions</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="enveloppe">
+      <div id="org-app">
+        <p class="org-eyebrow">Espace organisateur</p>
+        <p class="org-etat">Un instant…</p>
+      </div>
+
+      <script>
+      (function () {
+        'use strict';
+      
+        // Domaine pas encore branché à l'écriture de cette page (comme
+        // suppression-de-compte/index.html) — l'API reste en dur, jamais
+        // déduite de window.location. Clé anon PUBLIQUE, déjà publique dans
+        // le bundle de l'app (EXPO_PUBLIC_SUPABASE_ANON_KEY).
+        var API_URL = 'https://cvycoezoimrbgpbxzrez.supabase.co/functions/v1/organizer-review';
+        var ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN2eWNvZXpvaW1yYmdwYnh6cmV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1NTg2ODIsImV4cCI6MjA5MzEzNDY4Mn0.hq5fGRpHi6xe07BxXdAYBN6o3m6LZbqPzCCxfLwWWyo';
+        var CONTACT = "bonjour@ursonapp.fr";
+      
+        var ICONE_DEPOT = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" style="color: var(--coral-deep)"><path d="M12 16V4m0 0L7 9m5-5l5 5M5 20h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+        var ICONE_ENCART = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" style="color: var(--coral-deep); flex-shrink: 0;"><path d="M12 3l7 3v6c0 4.5-3 8-7 9-4-1-7-4.5-7-9V6l7-3z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      
+        var app = document.getElementById('org-app');
+      
+        // Le jeton n'est lu qu'une fois depuis '?t=', gardé en fermeture —
+        // jamais réinjecté dans le DOM. Le GET au chargement est une lecture
+        // sans effet ; toute écriture ne part que sur un clic explicite.
+        var jeton = new URLSearchParams(window.location.search).get('t');
+        var fiche = null;
+        var valeursInitiales = null;
+        var fichierChoisi = null;
+      
+        function ech(valeur) {
+          return String(valeur == null ? '' : valeur)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+        }
+      
+        function dateParis(iso) {
+          if (!iso) return '';
+          var d = new Date(iso);
+          if (isNaN(d.getTime())) return '';
+          return new Intl.DateTimeFormat('en-CA', {
+            timeZone: 'Europe/Paris', year: 'numeric', month: '2-digit', day: '2-digit'
+          }).format(d);
+        }
+      
+        function heureParis(iso) {
+          if (!iso) return '';
+          var d = new Date(iso);
+          if (isNaN(d.getTime())) return '';
+          var parts = new Intl.DateTimeFormat('fr-FR', {
+            timeZone: 'Europe/Paris', hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
+          }).formatToParts(d);
+          var heure = '00', minute = '00', i;
+          for (i = 0; i < parts.length; i++) {
+            if (parts[i].type === 'hour') heure = parts[i].value;
+            if (parts[i].type === 'minute') minute = parts[i].value;
+          }
+          return heure + ':' + minute;
+        }
+      
+        function texteLieu(location) {
+          if (!location) return '';
+          var base = location.address || location.name || '';
+          if (!location.city) return base;
+          return base ? base + ', ' + location.city : location.city;
+        }
+      
+        function formateEuro(n) {
+          if (Number.isInteger(n)) return String(n);
+          return String(n).replace('.', ',');
+        }
+      
+        function texteTarif(price) {
+          if (!price) return '';
+          if (price.min === 0 && price.max === 0) return 'Gratuit';
+          if (price.min != null && price.min === price.max) return formateEuro(price.min) + ' €';
+          if (price.min != null && price.max != null && price.min < price.max) {
+            return formateEuro(price.min) + ' à ' + formateEuro(price.max) + ' €';
+          }
+          return price.notes || '';
+        }
+      
+        // Les accusés de succès restent en fg-2 (classe par défaut) ; les
+        // refus d'affiche, échecs de corrections et erreurs réseau prennent
+        // org-message--error (coral-deep).
+        function definirMessage(el, texte, erreur) {
+          el.textContent = texte;
+          el.className = erreur ? 'org-message org-message--error' : 'org-message';
+        }
+      
+        function pastilleHtml(visuel) {
+          if (visuel === 'approved') return '<span class="org-pastille org-pastille--approved">Visuel validé</span>';
+          if (visuel === 'pending') return '<span class="org-pastille org-pastille--pending">Publiée sans visuel</span>';
+          return '<span class="org-pastille org-pastille--none">Sans visuel</span>';
+        }
+      
+        // ── États de page ──────────────────────────────────────────────────
+      
+        function afficheChargement() {
+          app.innerHTML = '<p class="org-eyebrow">Espace organisateur</p><p class="org-etat">Un instant…</p>';
+        }
+      
+        function afficheIntrouvable() {
+          app.innerHTML =
+            '<p class="org-eyebrow">Espace organisateur</p>' +
+            "<h1>Ce lien n'est plus valable</h1>" +
+            '<p>Il a peut-être expiré — il valait jusqu\'à la fin de l\'événement — ou la fiche a été retirée. ' +
+            'Pour toute question : <a href="mailto:' + ech(CONTACT) + '">' + ech(CONTACT) + '</a>.</p>';
+        }
+      
+        function afficheErreurReseau() {
+          app.innerHTML =
+            '<p class="org-eyebrow">Espace organisateur</p>' +
+            '<h1>Votre fiche dans Urson</h1>' +
+            '<p>Impossible de charger la fiche, réessayez dans un instant.</p>';
+        }
+      
+        function afficheRetiree() {
+          app.innerHTML =
+            '<p class="org-eyebrow">Espace organisateur</p>' +
+            '<h1>Fiche retirée</h1>' +
+            "<p>Cette fiche n'est plus proposée aux parents. Merci de nous l'avoir dit.</p>" +
+            '<p>Pour toute question : <a href="mailto:' + ech(CONTACT) + '">' + ech(CONTACT) + '</a>.</p>';
+        }
+      
+        function afficheFiche() {
+          var dateDesactive = fiche.date_editable ? '' : ' disabled';
+          var aideDate = fiche.date_editable
+            ? ''
+            : '<p class="org-aide">Plusieurs dates : écrivez-nous pour les corriger.</p>';
+          var noteVisuel = fiche.visual === 'approved'
+            ? '<p class="org-aide">Votre visuel est en ligne. Vous pouvez le remplacer ci-dessous.</p>'
+            : '';
+          var dateInit = dateParis(fiche.starts_at);
+          var heureInit = heureParis(fiche.starts_at);
+          var lieuInit = texteLieu(fiche.location);
+          var tarifInit = texteTarif(fiche.price);
+          var ageInit = fiche.age_min == null ? '' : String(fiche.age_min);
+      
+          valeursInitiales = {
+            title: fiche.title, place: lieuInit, description: fiche.description,
+            age_min: ageInit, price: tarifInit, date: dateInit, time: heureInit
+          };
+      
+          app.innerHTML =
+            '<p class="org-eyebrow">Espace organisateur</p>' +
+            '<h1>Votre fiche dans Urson</h1>' +
+            '<div class="org-titre-ligne" id="org-titre-ligne"><h2>' + ech(fiche.title) + '</h2>' + pastilleHtml(fiche.visual) + '</div>' +
+            '<div class="org-grille">' +
+              '<div class="org-carte">' +
+                '<h2>Corriger la fiche</h2>' +
+                "<p class='org-sous-titre'>Ce qu'un parent lit dans l'application. Modifiez ce qui doit l'être, tout est relu avant publication.</p>" +
+                '<form id="org-form-corrections">' +
+                  '<div class="org-champ">' +
+                    '<label class="org-label" for="org-titre-input">Titre</label>' +
+                    '<input class="org-input" type="text" id="org-titre-input" value="' + ech(fiche.title) + '" />' +
+                  '</div>' +
+                  '<div class="org-champ org-ligne-deux">' +
+                    '<div>' +
+                      '<label class="org-label" for="org-date-input">Date</label>' +
+                      '<input class="org-input" type="date" id="org-date-input" value="' + ech(dateInit) + '"' + dateDesactive + ' />' +
+                    '</div>' +
+                    '<div>' +
+                      '<label class="org-label" for="org-heure-input">Heure</label>' +
+                      '<input class="org-input" type="time" id="org-heure-input" value="' + ech(heureInit) + '"' + dateDesactive + ' />' +
+                    '</div>' +
+                  '</div>' +
+                  aideDate +
+                  '<div class="org-champ">' +
+                    '<label class="org-label" for="org-lieu-input">Lieu</label>' +
+                    '<input class="org-input" type="text" id="org-lieu-input" value="' + ech(lieuInit) + '" />' +
+                  '</div>' +
+                  '<div class="org-champ">' +
+                    '<label class="org-label" for="org-description-input">Description</label>' +
+                    '<textarea class="org-input" id="org-description-input" rows="4">' + ech(fiche.description) + '</textarea>' +
+                  '</div>' +
+                  '<div class="org-champ org-ligne-deux">' +
+                    '<div>' +
+                      '<label class="org-label" for="org-age-input">À partir de</label>' +
+                      '<input class="org-input" type="number" min="0" max="18" id="org-age-input" value="' + ech(ageInit) + '" />' +
+                    '</div>' +
+                    '<div>' +
+                      '<label class="org-label" for="org-tarif-input">Tarif</label>' +
+                      '<input class="org-input" type="text" id="org-tarif-input" value="' + ech(tarifInit) + '" />' +
+                    '</div>' +
+                  '</div>' +
+                  '<button type="submit" class="org-bouton-secondaire">Enregistrer les corrections</button>' +
+                  '<p class="org-message" id="org-message-corrections"></p>' +
+                '</form>' +
+              '</div>' +
+              '<div class="org-carte">' +
+                '<h2>Déposer votre affiche</h2>' +
+                noteVisuel +
+                '<div class="org-zone-depot" id="org-zone-depot">' +
+                  '<div class="org-zone-contenu" id="org-zone-contenu">' +
+                    '<div class="org-zone-pastille">' + ICONE_DEPOT + '</div>' +
+                    '<p>Glissez votre affiche ici</p>' +
+                    '<p class="org-aide" style="margin: 0">ou choisissez un fichier · JPG, PNG, WebP ou PDF, 10 Mo max</p>' +
+                  '</div>' +
+                  '<input type="file" id="org-fichier-input" accept="image/jpeg,image/png,image/webp,application/pdf" />' +
+                '</div>' +
+                '<label class="org-case">' +
+                  '<input type="checkbox" id="org-droits-case" />' +
+                  "<span>Je détiens les droits sur ce visuel et j'autorise Urson à l'afficher sur la fiche de cet événement.</span>" +
+                '</label>' +
+                '<button type="button" class="org-bouton-primaire" id="org-bouton-affiche" disabled>Valider et publier le visuel</button>' +
+                '<p class="org-message" id="org-message-affiche"></p>' +
+              '</div>' +
+            '</div>' +
+            '<div class="org-encart">' +
+              ICONE_ENCART +
+              '<p>Vous ne souhaitez pas figurer dans Urson ? <button type="button" class="org-lien-fort" id="org-bouton-retrait">Retirer la fiche</button> la dépublie sans délai.</p>' +
+            '</div>';
+      
+          document.getElementById('org-form-corrections').addEventListener('submit', onEnvoiCorrections);
+          document.getElementById('org-bouton-retrait').addEventListener('click', onClicRetrait);
+          initZoneDepot();
+        }
+      
+        // ── Dépôt de fichier ───────────────────────────────────────────────
+      
+        function initZoneDepot() {
+          var zone = document.getElementById('org-zone-depot');
+          var entree = document.getElementById('org-fichier-input');
+          var case_ = document.getElementById('org-droits-case');
+          var bouton = document.getElementById('org-bouton-affiche');
+          var messageEl = document.getElementById('org-message-affiche');
+      
+          function metAJourBouton() {
+            bouton.disabled = !(fichierChoisi && case_.checked);
+          }
+      
+          function posePreviewFichier(file) {
+            fichierChoisi = file;
+            var contenu = document.getElementById('org-zone-contenu');
+            var url = URL.createObjectURL(file);
+            contenu.innerHTML = '<img src="' + url + '" alt="Aperçu de l' + String.fromCharCode(39) + 'affiche" />';
+            metAJourBouton();
+          }
+      
+          // Import chargé seulement au premier PDF déposé — jamais au chargement
+          // de la page. Bibliothèque vendorée (aucun CDN, `web/assets/pdfjs/`),
+          // servie par le site lui-même.
+          function convertitPdfEnImage(file) {
+            return file.arrayBuffer().then(function (buffer) {
+              return import('/assets/pdfjs/pdf.min.mjs').then(function (pdfjs) {
+                pdfjs.GlobalWorkerOptions.workerSrc = '/assets/pdfjs/pdf.worker.min.mjs';
+                return pdfjs.getDocument({ data: buffer }).promise;
+              });
+            }).then(function (doc) {
+              return doc.getPage(1);
+            }).then(function (page) {
+              var brute = page.getViewport({ scale: 1 });
+              var echelle = 1600 / brute.width;
+              if (brute.height * echelle > 2400) echelle = 2400 / brute.height;
+              var viewport = page.getViewport({ scale: echelle });
+              var canevas = document.createElement('canvas');
+              canevas.width = Math.round(viewport.width);
+              canevas.height = Math.round(viewport.height);
+              var contexte = canevas.getContext('2d');
+              return page.render({ canvasContext: contexte, viewport: viewport }).promise.then(function () {
+                return new Promise(function (resolve, reject) {
+                  canevas.toBlob(function (blob) {
+                    if (!blob) { reject(new Error('conversion_vide')); return; }
+                    if (blob.size > 10 * 1024 * 1024) { reject(new Error('conversion_trop_lourde')); return; }
+                    var nom = String(file.name || 'affiche').replace(/\.pdf$/i, '') + '.jpg';
+                    resolve(new File([blob], nom, { type: 'image/jpeg' }));
+                  }, 'image/jpeg', 0.9);
+                });
+              });
+            });
+          }
+      
+          function traiteFichier(file) {
+            definirMessage(messageEl, '', false);
+            if (!file) return;
+            var estPdf = file.type === 'application/pdf' || /\.pdf$/i.test(file.name || '');
+            if (estPdf) {
+              if (file.size > 10 * 1024 * 1024) {
+                definirMessage(messageEl, 'Le fichier dépasse 10 Mo.', true);
+                return;
+              }
+              definirMessage(messageEl, 'Conversion du PDF…', false);
+              convertitPdfEnImage(file).then(function (converti) {
+                definirMessage(messageEl, 'PDF converti : seule la première page est gardée.', false);
+                posePreviewFichier(converti);
+              }).catch(function () {
+                definirMessage(messageEl, "Le PDF n'a pas pu être converti. Exportez l'affiche en JPG ou PNG.", true);
+              });
+              return;
+            }
+            if (['image/jpeg', 'image/png', 'image/webp'].indexOf(file.type) === -1) {
+              definirMessage(messageEl, 'Format non reconnu : JPG, PNG ou WebP.', true);
+              return;
+            }
+            if (file.size > 10 * 1024 * 1024) {
+              definirMessage(messageEl, 'Le fichier dépasse 10 Mo.', true);
+              return;
+            }
+            posePreviewFichier(file);
+          }
+      
+          entree.addEventListener('change', function () {
+            traiteFichier(entree.files && entree.files[0]);
+          });
+          zone.addEventListener('dragover', function (event) { event.preventDefault(); });
+          zone.addEventListener('drop', function (event) {
+            event.preventDefault();
+            var file = event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files[0];
+            traiteFichier(file);
+          });
+          case_.addEventListener('change', metAJourBouton);
+          bouton.addEventListener('click', onEnvoiAffiche);
+        }
+      
+        function messageErreurAffiche(motif) {
+          var messages = {
+            rights_required: 'Cochez la case des droits pour continuer.',
+            too_large: 'Le fichier dépasse 10 Mo.',
+            pdf_not_supported: "Le fichier est arrivé en PDF : réessayez, la conversion n'a pas eu lieu.",
+            unsupported_type: 'Format non reconnu : JPG, PNG ou WebP.',
+            archived: 'Cette fiche a été retirée.'
+          };
+          return messages[motif] || "L'envoi n'a pas abouti, réessayez dans un instant.";
+        }
+      
+        function onEnvoiAffiche() {
+          var messageEl = document.getElementById('org-message-affiche');
+          var bouton = document.getElementById('org-bouton-affiche');
+          if (!fichierChoisi) return;
+      
+          bouton.disabled = true;
+          definirMessage(messageEl, 'Envoi en cours…', false);
+      
+          var form = new FormData();
+          form.append('t', jeton);
+          form.append('rights', 'yes');
+          form.append('file', fichierChoisi);
+      
+          fetch(API_URL, { method: 'POST', headers: { apikey: ANON_KEY }, body: form })
+            .then(function (reponse) {
+              return reponse.json().catch(function () { return null; }).then(function (data) {
+                return { ok: reponse.ok, data: data };
+              });
+            })
+            .then(function (resultat) {
+              bouton.disabled = false;
+              if (resultat.ok && resultat.data && resultat.data.ok) {
+                fiche.visual = 'approved';
+                definirMessage(messageEl, 'Votre affiche est en ligne. Merci !', false);
+                var ligne = document.getElementById('org-titre-ligne');
+                if (ligne) ligne.innerHTML = '<h2>' + ech(fiche.title) + '</h2>' + pastilleHtml('approved');
+              } else {
+                definirMessage(messageEl, messageErreurAffiche(resultat.data && resultat.data.error), true);
+              }
+            })
+            .catch(function () {
+              bouton.disabled = false;
+              definirMessage(messageEl, "L'envoi n'a pas abouti, réessayez dans un instant.", true);
+            });
+        }
+      
+        // ── Corrections ────────────────────────────────────────────────────
+      
+        function ajouteSiModifie(champs, cle, valeur) {
+          if (valeur !== valeursInitiales[cle]) champs[cle] = valeur;
+        }
+      
+        function onEnvoiCorrections(event) {
+          event.preventDefault();
+          var messageEl = document.getElementById('org-message-corrections');
+          var champs = {};
+          ajouteSiModifie(champs, 'title', document.getElementById('org-titre-input').value);
+          ajouteSiModifie(champs, 'place', document.getElementById('org-lieu-input').value);
+          ajouteSiModifie(champs, 'description', document.getElementById('org-description-input').value);
+          ajouteSiModifie(champs, 'age_min', document.getElementById('org-age-input').value);
+          ajouteSiModifie(champs, 'price', document.getElementById('org-tarif-input').value);
+          if (fiche.date_editable) {
+            ajouteSiModifie(champs, 'date', document.getElementById('org-date-input').value);
+            ajouteSiModifie(champs, 'time', document.getElementById('org-heure-input').value);
+          }
+      
+          // Rien à envoyer par rapport à la dernière valeur de référence (le
+          // chargement de la fiche, ou le dernier envoi réussi ci-dessous) :
+          // pas d'appel réseau, message direct.
+          if (Object.keys(champs).length === 0) {
+            definirMessage(messageEl, "Rien n'a changé par rapport à la fiche.", false);
+            return;
+          }
+      
+          definirMessage(messageEl, 'Envoi en cours…', false);
+      
+          fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', apikey: ANON_KEY },
+            body: JSON.stringify({ action: 'corrections', t: jeton, fields: champs })
+          })
+            .then(function (reponse) {
+              return reponse.json().catch(function () { return null; }).then(function (data) {
+                return { ok: reponse.ok, data: data };
+              });
+            })
+            .then(function (resultat) {
+              if (resultat.ok && resultat.data && resultat.data.ok) {
+                // La valeur de référence de chaque champ envoyé devient la
+                // valeur transmise : un second envoi sans autre modification ne
+                // renverra plus rien (branche 'Rien à envoyer' ci-dessus).
+                var cle;
+                for (cle in champs) {
+                  if (Object.prototype.hasOwnProperty.call(champs, cle)) valeursInitiales[cle] = champs[cle];
+                }
+                definirMessage(
+                  messageEl,
+                  resultat.data.changed
+                    ? 'Merci, vos corrections sont transmises. Elles sont relues avant publication.'
+                    : "Rien n'a changé par rapport à la fiche.",
+                  false
+                );
+              } else if (resultat.data && resultat.data.error === 'archived') {
+                definirMessage(messageEl, 'Cette fiche a été retirée.', true);
+              } else {
+                definirMessage(messageEl, "L'envoi n'a pas abouti, réessayez dans un instant.", true);
+              }
+            })
+            .catch(function () {
+              definirMessage(messageEl, "L'envoi n'a pas abouti, réessayez dans un instant.", true);
+            });
+        }
+      
+        // ── Retrait ────────────────────────────────────────────────────────
+      
+        function onClicRetrait() {
+          var confirme = window.confirm(
+            'Retirer la fiche « ' + fiche.title + ' » d' + String.fromCharCode(39) + 'Urson ? Elle ne sera plus proposée aux parents.'
+          );
+          if (!confirme) return;
+      
+          fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', apikey: ANON_KEY },
+            body: JSON.stringify({ action: 'withdraw', t: jeton })
+          })
+            .then(function () { afficheRetiree(); })
+            .catch(function () { afficheRetiree(); });
+        }
+      
+        // ── Point d'entrée ─────────────────────────────────────────────────
+      
+        if (!jeton) {
+          afficheIntrouvable();
+        } else {
+          afficheChargement();
+          fetch(API_URL + '?t=' + encodeURIComponent(jeton), { headers: { apikey: ANON_KEY } })
+            .then(function (reponse) {
+              return reponse.json().catch(function () { return null; }).then(function (data) {
+                return { ok: reponse.ok, status: reponse.status, data: data };
+              });
+            })
+            .then(function (resultat) {
+              if (resultat.status === 404) { afficheIntrouvable(); return; }
+              if (!resultat.ok || !resultat.data) { afficheErreurReseau(); return; }
+              fiche = resultat.data;
+              if (fiche.archived) { afficheRetiree(); return; }
+              afficheFiche();
+            })
+            .catch(function () { afficheErreurReseau(); });
+        }
+      })();
+      </script>
+    </div>
+  </main>
+
+  <footer class="pied">
+    <div class="enveloppe">
+      <nav class="pied-liens" aria-label="Pied de page">
+        <a href="/">Accueil</a>
+        <a href="/aide/">Aide</a>
+        <a href="/confidentialite/">Confidentialité</a>
+        <a href="/conditions/">Conditions</a>
+        <a href="/suppression-de-compte/">Supprimer mon compte</a>
+      </nav>
+      <p>Une question, une remarque, une erreur dans une fiche ? Écris à <a href="mailto:bonjour@ursonapp.fr">bonjour@ursonapp.fr</a>.</p>
+      <p class="mentions">Urson est une application faite par un parent de Bourges, éditée à titre personnel. Site hébergé par GitHub Pages (GitHub, Inc.). Les données de l'app sont hébergées par Supabase, à Paris.</p>
+    </div>
+  </footer>
+</body>
+</html>
