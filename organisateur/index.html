@@ -196,6 +196,10 @@
       box-shadow: 0 2px 10px rgba(255, 107, 107, 0.16);
     }
     .org-zone-contenu img { max-height: 188px; max-width: 100%; border-radius: 12px; object-fit: contain; }
+    .org-affiche-en-ligne {
+      max-width: 260px; width: 100%; border-radius: 12px;
+      border: 1px solid var(--line-medium); display: block; margin: 12px 0;
+    }
     .org-case {
       display: flex; align-items: flex-start; gap: 10px; margin-bottom: 16px;
       font-size: 14px; color: var(--fg-1); cursor: pointer;
@@ -266,6 +270,7 @@
         var fiche = null;
         var valeursInitiales = null;
         var fichierChoisi = null;
+        var versionClause = null;
       
         function ech(valeur) {
           return String(valeur == null ? '' : valeur)
@@ -329,10 +334,34 @@
           el.className = erreur ? 'org-message org-message--error' : 'org-message';
         }
       
-        function pastilleHtml(visuel) {
+        // `visuel` = état du visuel PUBLIÉ (fiche.visual) ; `soumission` = état du
+        // DÉPÔT en attente de relecture admin (fiche.visual_submission, lot 5) —
+        // les deux notions ne se confondent jamais. 'Visuel validé' l'emporte sur
+        // tout dépôt en cours : un visuel déjà publié reste annoncé comme tel même
+        // si une nouvelle affiche vient d'être déposée par-dessus.
+        function pastilleHtml(visuel, soumission) {
           if (visuel === 'approved') return '<span class="org-pastille org-pastille--approved">Visuel validé</span>';
+          if (soumission === 'pending') return '<span class="org-pastille org-pastille--pending">Reçue, en cours de relecture</span>';
+          if (soumission === 'refused') return '<span class="org-pastille org-pastille--none">Affiche refusée</span>';
           if (visuel === 'pending') return '<span class="org-pastille org-pastille--pending">Publiée sans visuel</span>';
           return '<span class="org-pastille org-pastille--none">Sans visuel</span>';
+        }
+      
+        // L'URL de l'affiche (fiche.poster_url) n'est JAMAIS concaténée dans du
+        // innerHTML : l'image est posée sans src, puis setAttribute() l'ajoute
+        // après coup — seul point d'entrée d'une valeur serveur dans un attribut
+        // DOM sur cette page.
+        function metAJourAfficheEnLigne() {
+          var conteneur = document.getElementById('org-affiche-en-ligne-conteneur');
+          if (!conteneur) return;
+          if (!fiche.poster_url) {
+            conteneur.innerHTML = '';
+            return;
+          }
+          conteneur.innerHTML =
+            '<img class="org-affiche-en-ligne" id="org-affiche-en-ligne" alt="Affiche en ligne" />' +
+            '<p class="org-aide" style="margin: 8px 0 16px">Votre affiche telle qu' + String.fromCharCode(39) + 'elle est en ligne.</p>';
+          document.getElementById('org-affiche-en-ligne').setAttribute('src', fiche.poster_url);
         }
       
         // ── États de page ──────────────────────────────────────────────────
@@ -369,14 +398,46 @@
           var aideDate = fiche.date_editable
             ? ''
             : '<p class="org-aide">Plusieurs dates : écrivez-nous pour les corriger.</p>';
-          var noteVisuel = fiche.visual === 'approved'
-            ? '<p class="org-aide">Votre visuel est en ligne. Vous pouvez le remplacer ci-dessous.</p>'
-            : '';
+          var noteVisuel = '';
+          if (fiche.visual === 'approved') {
+            noteVisuel = '<p class="org-aide">Votre visuel est en ligne. Vous pouvez le remplacer ci-dessous.</p>';
+          } else if (fiche.visual_submission === 'refused') {
+            var motifRefus = fiche.visual_refusal_reason;
+            noteVisuel = '<p class="org-aide">Affiche refusée' + (motifRefus ? ' : ' + ech(motifRefus) : '.') + ' Vous pouvez en déposer une autre.</p>';
+          }
           var dateInit = dateParis(fiche.starts_at);
           var heureInit = heureParis(fiche.starts_at);
           var lieuInit = texteLieu(fiche.location);
           var tarifInit = texteTarif(fiche.price);
           var ageInit = fiche.age_min == null ? '' : String(fiche.age_min);
+      
+          // Le libellé de la case du dépôt d'affiche est mot pour mot la clause
+          // reçue du serveur (décision de Kevin, 2026-09-06) — jamais un texte en
+          // dur ici. Sans elle, le dépôt reste bloqué : c'est la seule source du
+          // texte ET de la version envoyée au POST multipart.
+          var clauseDroits = fiche.rights_clause || null;
+          versionClause = clauseDroits ? clauseDroits.version : null;
+          var blocAffiche = clauseDroits
+            ? (
+                '<div class="org-zone-depot" id="org-zone-depot">' +
+                  '<div class="org-zone-contenu" id="org-zone-contenu">' +
+                    '<div class="org-zone-pastille">' + ICONE_DEPOT + '</div>' +
+                    '<p>Glissez votre affiche ici</p>' +
+                    '<p class="org-aide" style="margin: 0">ou choisissez un fichier · JPG, PNG, WebP ou PDF, 10 Mo max</p>' +
+                  '</div>' +
+                  '<input type="file" id="org-fichier-input" accept="image/jpeg,image/png,image/webp,application/pdf" />' +
+                '</div>' +
+                '<label class="org-case">' +
+                  '<input type="checkbox" id="org-droits-case" />' +
+                  '<span id="org-droits-texte"></span>' +
+                '</label>' +
+                '<button type="button" class="org-bouton-primaire" id="org-bouton-affiche" disabled>Envoyer l' + String.fromCharCode(39) + 'affiche</button>' +
+                '<p class="org-aide" style="margin: 8px 0 0">Nous la relisons avant de l' + String.fromCharCode(39) + 'afficher sur votre fiche.</p>'
+              )
+            : (
+                '<p class="org-aide" style="margin: 0 0 16px">La déclaration de droits n' + String.fromCharCode(39) + 'a pas pu être chargée, rechargez la page.</p>' +
+                '<button type="button" class="org-bouton-primaire" id="org-bouton-affiche" disabled>Envoyer l' + String.fromCharCode(39) + 'affiche</button>'
+              );
       
           valeursInitiales = {
             title: fiche.title, place: lieuInit, description: fiche.description,
@@ -386,7 +447,7 @@
           app.innerHTML =
             '<p class="org-eyebrow">Espace organisateur</p>' +
             '<h1>Votre fiche dans Urson</h1>' +
-            '<div class="org-titre-ligne" id="org-titre-ligne"><h2>' + ech(fiche.title) + '</h2>' + pastilleHtml(fiche.visual) + '</div>' +
+            '<div class="org-titre-ligne" id="org-titre-ligne"><h2>' + ech(fiche.title) + '</h2>' + pastilleHtml(fiche.visual, fiche.visual_submission) + '</div>' +
             '<div class="org-grille">' +
               '<div class="org-carte">' +
                 '<h2>Corriger la fiche</h2>' +
@@ -431,31 +492,26 @@
               '</div>' +
               '<div class="org-carte">' +
                 '<h2>Déposer votre affiche</h2>' +
+                '<div id="org-affiche-en-ligne-conteneur"></div>' +
                 noteVisuel +
-                '<div class="org-zone-depot" id="org-zone-depot">' +
-                  '<div class="org-zone-contenu" id="org-zone-contenu">' +
-                    '<div class="org-zone-pastille">' + ICONE_DEPOT + '</div>' +
-                    '<p>Glissez votre affiche ici</p>' +
-                    '<p class="org-aide" style="margin: 0">ou choisissez un fichier · JPG, PNG, WebP ou PDF, 10 Mo max</p>' +
-                  '</div>' +
-                  '<input type="file" id="org-fichier-input" accept="image/jpeg,image/png,image/webp,application/pdf" />' +
-                '</div>' +
-                '<label class="org-case">' +
-                  '<input type="checkbox" id="org-droits-case" />' +
-                  "<span>Je détiens les droits sur ce visuel et j'autorise Urson à l'afficher sur la fiche de cet événement.</span>" +
-                '</label>' +
-                '<button type="button" class="org-bouton-primaire" id="org-bouton-affiche" disabled>Valider et publier le visuel</button>' +
+                blocAffiche +
                 '<p class="org-message" id="org-message-affiche"></p>' +
               '</div>' +
             '</div>' +
             '<div class="org-encart">' +
               ICONE_ENCART +
-              '<p>Vous ne souhaitez pas figurer dans Urson ? <button type="button" class="org-lien-fort" id="org-bouton-retrait">Retirer la fiche</button> la dépublie sans délai.</p>' +
+              '<div id="org-retrait-contenu">' +
+                '<p>Vous ne souhaitez pas figurer dans Urson ? <button type="button" class="org-lien-fort" id="org-bouton-retrait">Retirer la fiche</button> la dépublie sans délai.</p>' +
+              '</div>' +
             '</div>';
       
           document.getElementById('org-form-corrections').addEventListener('submit', onEnvoiCorrections);
-          document.getElementById('org-bouton-retrait').addEventListener('click', onClicRetrait);
-          initZoneDepot();
+          initEncartRetrait();
+          metAJourAfficheEnLigne();
+          if (clauseDroits) {
+            document.getElementById('org-droits-texte').textContent = clauseDroits.text;
+            initZoneDepot();
+          }
         }
       
         // ── Dépôt de fichier ───────────────────────────────────────────────
@@ -557,6 +613,7 @@
         function messageErreurAffiche(motif) {
           var messages = {
             rights_required: 'Cochez la case des droits pour continuer.',
+            rights_version_mismatch: 'La déclaration a été mise à jour, rechargez la page avant de déposer.',
             too_large: 'Le fichier dépasse 10 Mo.',
             pdf_not_supported: "Le fichier est arrivé en PDF : réessayez, la conversion n'a pas eu lieu.",
             unsupported_type: 'Format non reconnu : JPG, PNG ou WebP.',
@@ -576,6 +633,7 @@
           var form = new FormData();
           form.append('t', jeton);
           form.append('rights', 'yes');
+          form.append('rights_version', versionClause);
           form.append('file', fichierChoisi);
       
           fetch(API_URL, { method: 'POST', headers: { apikey: ANON_KEY }, body: form })
@@ -585,12 +643,16 @@
               });
             })
             .then(function (resultat) {
+              // Le dépôt ne publie plus rien (lot 5, retour de Kevin du 2026-09-06) :
+              // pas de fiche.visual = 'approved' ici, seul l'état du DÉPÔT change.
+              // Message ET pastille reprennent le même libellé.
               bouton.disabled = false;
               if (resultat.ok && resultat.data && resultat.data.ok) {
-                fiche.visual = 'approved';
-                definirMessage(messageEl, 'Votre affiche est en ligne. Merci !', false);
+                fiche.visual_submission = 'pending';
+                fiche.visual_refusal_reason = null;
+                definirMessage(messageEl, 'Reçue, en cours de relecture.', false);
                 var ligne = document.getElementById('org-titre-ligne');
-                if (ligne) ligne.innerHTML = '<h2>' + ech(fiche.title) + '</h2>' + pastilleHtml('approved');
+                if (ligne) ligne.innerHTML = '<h2>' + ech(fiche.title) + '</h2>' + pastilleHtml(fiche.visual, fiche.visual_submission);
               } else {
                 definirMessage(messageEl, messageErreurAffiche(resultat.data && resultat.data.error), true);
               }
@@ -669,20 +731,73 @@
         }
       
         // ── Retrait ────────────────────────────────────────────────────────
+        // Pas de window.confirm/prompt natifs : le motif est facultatif et doit
+        // rester lisible comme tel (label explicite), ce qu'un prompt natif sans
+        // maxlength ni libellé ne permet pas. Panneau inline dans l'encart, avec
+        // les mêmes classes que le reste de la page (aucune couleur en dur neuve).
       
-        function onClicRetrait() {
-          var confirme = window.confirm(
-            'Retirer la fiche « ' + fiche.title + ' » d' + String.fromCharCode(39) + 'Urson ? Elle ne sera plus proposée aux parents.'
-          );
-          if (!confirme) return;
+        function texteEncartRetraitDefaut() {
+          return '<p>Vous ne souhaitez pas figurer dans Urson ? <button type="button" class="org-lien-fort" id="org-bouton-retrait">Retirer la fiche</button> la dépublie sans délai.</p>';
+        }
+      
+        function initEncartRetrait() {
+          document.getElementById('org-bouton-retrait').addEventListener('click', afficheFormulaireRetrait);
+        }
+      
+        function afficheFormulaireRetrait() {
+          var contenu = document.getElementById('org-retrait-contenu');
+          contenu.innerHTML =
+            '<p>Retirer « ' + ech(fiche.title) + ' » d' + String.fromCharCode(39) + 'Urson ? Elle ne sera plus proposée aux parents.</p>' +
+            '<div class="org-champ">' +
+              '<label class="org-label" for="org-retrait-motif">Pourquoi ? (facultatif)</label>' +
+              '<input class="org-input" type="text" id="org-retrait-motif" maxlength="500" />' +
+            '</div>' +
+            '<div class="org-ligne-deux">' +
+              '<button type="button" class="org-bouton-secondaire" id="org-bouton-retrait-annuler">Annuler</button>' +
+              '<button type="button" class="org-bouton-primaire" id="org-bouton-retrait-confirmer">Confirmer le retrait</button>' +
+            '</div>' +
+            '<p class="org-message" id="org-message-retrait"></p>';
+          document.getElementById('org-bouton-retrait-annuler').addEventListener('click', restaureEncartRetrait);
+          document.getElementById('org-bouton-retrait-confirmer').addEventListener('click', onConfirmeRetrait);
+        }
+      
+        function restaureEncartRetrait() {
+          var contenu = document.getElementById('org-retrait-contenu');
+          contenu.innerHTML = texteEncartRetraitDefaut();
+          initEncartRetrait();
+        }
+      
+        function onConfirmeRetrait() {
+          var bouton = document.getElementById('org-bouton-retrait-confirmer');
+          var messageEl = document.getElementById('org-message-retrait');
+          var motifBrut = document.getElementById('org-retrait-motif').value;
+          var motif = motifBrut.trim().slice(0, 500);
+      
+          bouton.disabled = true;
+          definirMessage(messageEl, 'Retrait en cours…', false);
       
           fetch(API_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', apikey: ANON_KEY },
-            body: JSON.stringify({ action: 'withdraw', t: jeton })
+            body: JSON.stringify({ action: 'withdraw', t: jeton, reason: motif === '' ? null : motif })
           })
-            .then(function () { afficheRetiree(); })
-            .catch(function () { afficheRetiree(); });
+            .then(function (reponse) {
+              return reponse.json().catch(function () { return null; }).then(function (data) {
+                return { ok: reponse.ok, data: data };
+              });
+            })
+            .then(function (resultat) {
+              if (resultat.ok && resultat.data && resultat.data.ok) {
+                afficheRetiree();
+              } else {
+                bouton.disabled = false;
+                definirMessage(messageEl, "Le retrait n'a pas abouti, réessayez dans un instant.", true);
+              }
+            })
+            .catch(function () {
+              bouton.disabled = false;
+              definirMessage(messageEl, "Le retrait n'a pas abouti, réessayez dans un instant.", true);
+            });
         }
       
         // ── Point d'entrée ─────────────────────────────────────────────────
