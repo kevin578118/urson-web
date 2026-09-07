@@ -358,10 +358,22 @@
             conteneur.innerHTML = '';
             return;
           }
+          // `poster_is_pending` (2026-09-07) : `poster_url` porte désormais AUSSI
+          // l'aperçu d'un visuel qui n'est PAS publié — un lien signé de quelques
+          // minutes, que seul le porteur du jeton reçoit. Écrire « telle qu'elle est
+          // en ligne » dans ce cas serait faux : elle n'est en ligne nulle part, et
+          // c'est précisément l'accord qu'on demande. La légende et le texte
+          // alternatif suivent donc l'état, ils ne l'affirment plus.
+          var legende = fiche.poster_is_pending
+            ? 'Voici l' + String.fromCharCode(39) + 'affiche que nous voudrions publier sur votre fiche. Personne d' + String.fromCharCode(39) + 'autre ne la voit tant que vous ne nous avez pas donné votre accord.'
+            : 'Votre affiche telle qu' + String.fromCharCode(39) + 'elle est en ligne.';
           conteneur.innerHTML =
-            '<img class="org-affiche-en-ligne" id="org-affiche-en-ligne" alt="Affiche en ligne" />' +
-            '<p class="org-aide" style="margin: 8px 0 16px">Votre affiche telle qu' + String.fromCharCode(39) + 'elle est en ligne.</p>';
-          document.getElementById('org-affiche-en-ligne').setAttribute('src', fiche.poster_url);
+            '<img class="org-affiche-en-ligne" id="org-affiche-en-ligne" alt="" />' +
+            '<p class="org-aide" id="org-affiche-en-ligne-legende" style="margin: 8px 0 16px"></p>';
+          var img = document.getElementById('org-affiche-en-ligne');
+          img.setAttribute('src', fiche.poster_url);
+          img.setAttribute('alt', fiche.poster_is_pending ? 'Affiche en attente de votre accord' : 'Affiche en ligne');
+          document.getElementById('org-affiche-en-ligne-legende').textContent = legende;
         }
       
         // ── États de page ──────────────────────────────────────────────────
