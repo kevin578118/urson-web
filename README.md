@@ -8,8 +8,8 @@ trouver des activités adaptées à leurs enfants le week-end.
 ## Ce que ce dépôt contient
 
 Des pages statiques, sans dépendance ni script tiers — pas de police distante,
-pas d'outil de mesure d'audience, aucun appel réseau en dehors de l'API de
-suppression de compte :
+pas d'outil de mesure d'audience, aucun appel réseau en dehors des API de
+suppression de compte, de relecture organisateur et de signalement :
 
 - `index.html` — la page d'accueil : ce que fait l'application, ce qu'on y trouve,
   ce qu'elle ne fait pas.
@@ -21,6 +21,10 @@ suppression de compte :
   règles de contenu, signalement et blocage.
 - `suppression-de-compte/` — permet à un parent de demander la suppression de son
   compte Urson sans avoir l'application installée (exigence Google Play).
+- `signaler-un-contenu/` — permet à n'importe qui, sans compte et sans l'application,
+  de signaler une fiche : information fausse, contenu déplacé, doublon, ou une image
+  ou un texte dont il détient les droits. Les conditions d'utilisation la citent
+  nommément.
 - `404.html` — servie par GitHub Pages sur toute adresse inconnue.
 
 `CNAME` porte le domaine et **ne doit jamais être supprimé** : sans lui, GitHub

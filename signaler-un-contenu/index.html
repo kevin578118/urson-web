@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Signaler un contenu</title>
+  <meta name="description" content="Signaler une photo, un texte ou une information sur Urson — sans compte, sans installer l'application." />
+  <meta name="theme-color" content="#FFF8F3" />
+  <link rel="canonical" href="https://ursonapp.fr/signaler-un-contenu/" />
+  <link rel="icon" href="/assets/favicon.png" />
+  <link rel="apple-touch-icon" href="/assets/urson-icone.png" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Urson" />
+  <meta property="og:locale" content="fr_FR" />
+  <meta property="og:title" content="Signaler un contenu" />
+  <meta property="og:description" content="Signaler une photo, un texte ou une information sur Urson — sans compte, sans installer l'application." />
+  <meta property="og:url" content="https://ursonapp.fr/signaler-un-contenu/" />
+  <meta property="og:image" content="https://ursonapp.fr/assets/urson-icone.png" />
+  <meta name="twitter:card" content="summary" />
+  <!--
+    Page générée par scripts/build-web-pages.mjs dans le dépôt applicatif.
+    Ne pas modifier ici : la correction serait écrasée à la publication
+    suivante. Les textes de « Confidentialité » et « Aide » viennent de
+    app-activites-enfants/lib/{confidentialite,aide}Content.ts, qui servent
+    aussi les écrans de l'app.
+  -->
+  <style>
+    :root {
+      --coral: #FF6B6B;
+      --coral-deep: #E84D4D;
+      --peach-pale: #FFB088;
+      --bg-app: #FFF8F3;
+      --bg-surface: #FFFFFF;
+      --bg-soft: #FFF1E8;
+      --fg-1: #1F2937;
+      --fg-2: #6B7280;
+      --fg-3: #9CA3AF;
+      --line-soft: #F3F4F6;
+      --line-medium: #E5E7EB;
+      --success: #7FB069;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg-app);
+      color: var(--fg-1);
+      /* Pile système : charger une police distante enverrait l'adresse IP du
+         visiteur à un tiers, ce que la page Confidentialité dit ne pas faire. */
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: 17px;
+      line-height: 1.6;
+      -webkit-text-size-adjust: 100%;
+    }
+    /*
+      Les liens de contenu gardent le soulignement du navigateur : coral-deep
+      sur le crème mesure 3,85:1, sous le seuil AA du texte courant — la couleur
+      ne peut donc pas être le seul signal. Le survol épaissit le trait au lieu
+      d'éclaircir la teinte, qui tomberait à 2,64:1.
+    */
+    a { color: var(--coral-deep); }
+    a:hover { text-decoration-thickness: 2px; }
+    img { max-width: 100%; height: auto; }
+    .enveloppe { max-width: 720px; margin: 0 auto; padding: 0 20px; }
+
+    /* En-tête */
+    .entete {
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--line-soft);
+      position: sticky; top: 0; z-index: 10;
+    }
+    .entete .enveloppe {
+      display: flex; align-items: center; gap: 16px;
+      flex-wrap: wrap; padding-top: 12px; padding-bottom: 12px;
+    }
+    .marque {
+      display: flex; align-items: center; gap: 10px;
+      font-weight: 800; font-size: 19px; color: var(--fg-1);
+      text-decoration: none; margin-right: auto;
+    }
+    .marque img { width: 34px; height: 34px; border-radius: 10px; }
+    .nav { display: flex; gap: 18px; flex-wrap: wrap; }
+    .nav a { color: var(--fg-2); text-decoration: none; font-size: 15px; font-weight: 600; }
+    .nav a:hover, .nav a[aria-current="page"] {
+      color: var(--coral-deep);
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+
+    /* Contenu */
+    main { padding: 40px 0 8px; }
+    h1 { font-size: 30px; line-height: 1.25; margin: 0 0 12px; letter-spacing: -0.5px; }
+    h2 { font-size: 21px; line-height: 1.3; margin: 36px 0 12px; }
+    h3 { font-size: 17px; margin: 24px 0 8px; }
+    p, ul, ol { margin: 0 0 16px; }
+    ul, ol { padding-left: 22px; }
+    li { margin-bottom: 6px; }
+    .chapeau { font-size: 19px; color: var(--fg-2); margin-bottom: 28px; }
+    .date-maj { color: var(--fg-3); font-size: 15px; margin-bottom: 32px; }
+
+    .carte {
+      background: var(--bg-surface);
+      border: 1px solid var(--line-soft);
+      border-radius: 20px;
+      padding: 24px;
+      margin-bottom: 16px;
+    }
+    .carte h2, .carte h3 { margin-top: 0; }
+    .carte :last-child { margin-bottom: 0; }
+    .carte-douce { background: var(--bg-soft); border-color: transparent; }
+
+    .titre-emoji { display: flex; align-items: baseline; gap: 10px; }
+    .titre-emoji .emoji { font-size: 22px; line-height: 1; }
+
+    /* Pied de page */
+    .pied {
+      margin-top: 56px;
+      border-top: 1px solid var(--line-medium);
+      background: var(--bg-surface);
+      padding: 32px 0 40px;
+      font-size: 15px;
+      color: var(--fg-2);
+    }
+    .pied-liens { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-bottom: 20px; }
+    .pied-liens a { font-weight: 600; text-decoration: none; }
+    .pied p { margin: 0 0 8px; }
+    .pied .mentions { color: var(--fg-3); font-size: 14px; }
+
+    @media (max-width: 480px) {
+      body { font-size: 16px; }
+      h1 { font-size: 26px; }
+      main { padding-top: 28px; }
+      .carte { padding: 20px; }
+    }
+    .sig-etape { margin-bottom: 16px; }
+    .sig-numero {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 26px; height: 26px; border-radius: 999px;
+      background: var(--bg-soft); color: var(--fg-1);
+      font-size: 13px; font-weight: 700; margin-right: 10px; flex: none;
+    }
+    .sig-etape h2 { display: flex; align-items: center; font-size: 19px; margin: 0 0 6px; }
+    .sig-aide { color: var(--fg-2); font-size: 15px; margin: 0 0 16px; }
+
+    .sig-champ { margin-bottom: 16px; }
+    .sig-label { display: block; font-size: 11px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: .05em; color: var(--fg-2); margin: 0 0 6px; }
+    .sig-input {
+      width: 100%; height: 48px; padding: 0 14px;
+      border: 1px solid var(--line-medium); border-radius: 14px;
+      background: var(--bg-surface); color: var(--fg-1);
+      font: inherit; font-size: 16px;
+    }
+    textarea.sig-input { height: auto; padding: 12px 14px; resize: vertical; line-height: 1.5; }
+    .sig-input:focus-visible { outline: 2px solid var(--coral-deep); outline-offset: 1px; }
+    .sig-compteur { font-size: 13px; color: var(--fg-3); margin: 6px 0 0; }
+
+    .sig-ligne-recherche { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; }
+    .sig-ligne-recherche .sig-champ { flex: 1 1 220px; margin-bottom: 0; }
+
+    .sig-bouton {
+      height: 48px; padding: 0 22px; border: 0; border-radius: 999px;
+      background: var(--coral-deep); color: var(--bg-surface);
+      font: inherit; font-size: 16px; font-weight: 600; cursor: pointer;
+    }
+    .sig-bouton:hover { background: var(--coral); }
+    .sig-bouton:disabled { background: var(--fg-3); cursor: default; }
+    .sig-bouton--large { width: 100%; }
+
+    .sig-resultats { list-style: none; padding: 0; margin: 16px 0 0; }
+    .sig-resultats li { margin: 0 0 8px; }
+    .sig-resultat {
+      display: block; width: 100%; text-align: left;
+      padding: 12px 14px; border: 1px solid var(--line-medium);
+      border-radius: 14px; background: var(--bg-surface);
+      font: inherit; cursor: pointer; color: var(--fg-1);
+    }
+    .sig-resultat:hover { border-color: var(--coral-deep); }
+    .sig-resultat .sig-ville { display: block; color: var(--fg-2); font-size: 15px; }
+
+    .sig-choisie { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+    .sig-choisie strong { font-size: 17px; }
+    .sig-changer {
+      border: 0; background: none; padding: 0; color: var(--coral-deep);
+      font: inherit; font-size: 15px; text-decoration: underline; cursor: pointer;
+    }
+
+    .sig-motifs { border: 0; padding: 0; margin: 0; }
+    .sig-motifs legend { padding: 0; }
+    .sig-motif {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 12px 14px; border: 1px solid var(--line-medium);
+      border-radius: 14px; margin-bottom: 8px; cursor: pointer;
+    }
+    .sig-motif:hover { border-color: var(--coral-deep); }
+    .sig-motif input { margin: 4px 0 0; width: 18px; height: 18px; flex: none; accent-color: var(--coral-deep); }
+
+    .sig-message { margin: 16px 0 0; padding: 14px 16px; border-radius: 14px; font-size: 16px; }
+    .sig-message--ok { background: var(--bg-soft); color: var(--fg-1); }
+    /* --coral-deep sur --bg-soft mesure 3,39:1 : sous AA pour du texte
+       courant. --fg-1 porte le texte, la teinte ne sert qu'au fond. */
+    .sig-message--ko { background: var(--bg-soft); color: var(--fg-1); }
+    .sig-message p { margin: 0; }
+    .sig-message p + p { margin-top: 8px; }
+
+    [hidden] { display: none !important; }
+  </style>
+</head>
+<body>
+  <header class="entete">
+    <div class="enveloppe">
+      <a class="marque" href="/">
+        <img src="/assets/urson-icone.png" alt="" width="34" height="34" />
+        Urson
+      </a>
+      <nav class="nav" aria-label="Pages du site">
+        <a href="/aide/">Aide</a>
+        <a href="/confidentialite/">Confidentialité</a>
+        <a href="/conditions/">Conditions</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="enveloppe">
+      <h1>Signaler un contenu</h1>
+      <p class="chapeau">Une photo, une affiche ou un texte qui vous appartient paraît
+        dans Urson&nbsp;? Une information est fausse&nbsp;? Dites-le-nous ici. Vous
+        n&rsquo;avez besoin ni de compte, ni de l&rsquo;application.</p>
+
+      <div class="carte carte-douce">
+        <p>Nous relisons chaque signalement à la main, un par un, et nous répondons
+          <strong>sous 24&nbsp;heures ouvrées</strong>. Si le contenu ne devrait pas être
+          là, il est retiré.</p>
+        <p>Votre adresse e-mail ne sert qu&rsquo;à vous répondre. Elle n&rsquo;est jamais
+          affichée, jamais utilisée pour autre chose.</p>
+      </div>
+
+      <div class="carte sig-etape">
+        <h2><span class="sig-numero" aria-hidden="true">1</span>Trouvez la sortie</h2>
+        <p class="sig-aide">Tapez le nom de la sortie ou du lieu, tel qu&rsquo;il apparaît
+          dans l&rsquo;application.</p>
+
+        <div id="sig-bloc-recherche">
+          <div class="sig-ligne-recherche">
+            <div class="sig-champ">
+              <label class="sig-label" for="sig-recherche">Nom de la sortie ou du lieu</label>
+              <input class="sig-input" type="search" id="sig-recherche" autocomplete="off" />
+            </div>
+            <button class="sig-bouton" type="button" id="sig-chercher">Chercher</button>
+          </div>
+          <ul class="sig-resultats" id="sig-resultats"></ul>
+        </div>
+
+        <div class="sig-choisie" id="sig-bloc-choisie" hidden>
+          <strong id="sig-titre-choisi"></strong>
+          <button class="sig-changer" type="button" id="sig-changer">Changer</button>
+        </div>
+      </div>
+
+      <div id="sig-suite" hidden>
+        <form id="sig-formulaire">
+          <div class="carte sig-etape">
+            <h2><span class="sig-numero" aria-hidden="true">2</span>Dites ce qui ne va pas</h2>
+            <fieldset class="sig-motifs" id="sig-motifs">
+              <legend class="sig-aide">Un seul motif&nbsp;: celui qui décrit le mieux votre demande.</legend>
+              <label class="sig-motif"><input type="radio" name="motif" value="incorrect_info" /><span>Les informations sont fausses</span></label>
+            <label class="sig-motif"><input type="radio" name="motif" value="closed_permanently" /><span>C'est fermé définitivement</span></label>
+            <label class="sig-motif"><input type="radio" name="motif" value="inappropriate" /><span>Le contenu est déplacé</span></label>
+            <label class="sig-motif"><input type="radio" name="motif" value="duplicate" /><span>Cette sortie est déjà dans l&rsquo;app</span></label>
+            <label class="sig-motif"><input type="radio" name="motif" value="copyright" /><span>Cette image ou ce texte m'appartient</span></label>
+            <label class="sig-motif"><input type="radio" name="motif" value="other" /><span>Autre chose</span></label>
+            </fieldset>
+          </div>
+
+          <div class="carte sig-etape">
+            <h2><span class="sig-numero" aria-hidden="true">3</span>Précisez, et laissez-nous une adresse</h2>
+            <div class="sig-champ">
+              <label class="sig-label" for="sig-details">Ce que vous nous demandez</label>
+              <textarea class="sig-input" id="sig-details" rows="5"
+                maxlength="1000"
+                placeholder="Par exemple&nbsp;: cette photo est de moi, je n’ai pas autorisé sa publication."></textarea>
+              <p class="sig-compteur" id="sig-compteur" hidden></p>
+            </div>
+            <div class="sig-champ">
+              <label class="sig-label" for="sig-email">Votre adresse e-mail</label>
+              <input class="sig-input" type="email" id="sig-email" autocomplete="email"
+                maxlength="200" placeholder="pour vous répondre" />
+            </div>
+            <button class="sig-bouton sig-bouton--large" type="submit" id="sig-envoyer">Envoyer le signalement</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="sig-message" id="sig-message" role="status" hidden></div>
+
+      <div class="carte">
+        <h2>Vous ne trouvez pas la sortie&nbsp;?</h2>
+        <p>Écrivez-nous à <a href="mailto:bonjour@ursonapp.fr">bonjour@ursonapp.fr</a> en décrivant le
+          contenu concerné. Une demande envoyée par e-mail est traitée exactement comme
+          celles déposées ici.</p>
+      </div>
+
+      <script>
+(function () {
+  'use strict';
+
+  // Domaine pas encore branché à l'écriture de cette page (comme
+  // organisateur/ et suppression-de-compte/) : les adresses restent en
+  // dur, jamais déduites de window.location. Clé anon PUBLIQUE, déjà
+  // publique dans le bundle de l'app (EXPO_PUBLIC_SUPABASE_ANON_KEY) —
+  // elle ne donne que ce que les policies donnent.
+  var BASE = 'https://cvycoezoimrbgpbxzrez.supabase.co';
+  var ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN2eWNvZXpvaW1yYmdwYnh6cmV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1NTg2ODIsImV4cCI6MjA5MzEzNDY4Mn0.hq5fGRpHi6xe07BxXdAYBN6o3m6LZbqPzCCxfLwWWyo';
+  var CONTACT = 'bonjour@ursonapp.fr';
+
+  var RECHERCHE_MIN = 2;
+  // Aucun appel ne pend indéfiniment : sans borne, un réseau qui ne répond
+  // pas laisserait le bouton désactivé et la page muette (Check-list UX
+  // asynchrone, docs/pieges-connus.md). AbortController plutôt que
+  // AbortSignal.timeout, absent des navigateurs anciens.
+  var DELAI_MAX_MS = 15000;
+  var RECHERCHE_MAX = 80;
+  var DETAILS_MAX = 1000;
+
+  // Identifiant de la fiche choisie — gardé en fermeture, jamais réinjecté
+  // dans le DOM autrement que par textContent.
+  var ficheId = null;
+
+  var elt = function (id) { return document.getElementById(id); };
+
+  // Rend { signal, fini } — appeler fini() dans tous les cas, sinon le
+  // minuteur survit à la réponse.
+  function borneDeTemps() {
+    var controleur = new AbortController();
+    var minuteur = setTimeout(function () { controleur.abort(); }, DELAI_MAX_MS);
+    return { signal: controleur.signal, fini: function () { clearTimeout(minuteur); } };
+  }
+
+  function message(texte, ok) {
+    var zone = elt('sig-message');
+    zone.className = 'sig-message ' + (ok ? 'sig-message--ok' : 'sig-message--ko');
+    zone.hidden = false;
+    zone.textContent = '';
+    texte.forEach(function (ligne) {
+      var p = document.createElement('p');
+      p.textContent = ligne;
+      zone.appendChild(p);
+    });
+  }
+
+  function cacherMessage() {
+    elt('sig-message').hidden = true;
+  }
+
+  // ── 1. Trouver la fiche ─────────────────────────────────────────────
+
+  function rechercher() {
+    var saisie = elt('sig-recherche').value.trim();
+    if (saisie.length < RECHERCHE_MIN) {
+      message(['Écrivez au moins deux lettres du nom de la sortie ou du lieu.'], false);
+      return;
+    }
+    if (saisie.length > RECHERCHE_MAX) saisie = saisie.slice(0, RECHERCHE_MAX);
+    cacherMessage();
+
+    var bouton = elt('sig-chercher');
+    bouton.disabled = true;
+    bouton.textContent = 'Un instant…';
+
+    var borne = borneDeTemps();
+    var url = BASE + '/rest/v1/activities'
+      + '?select=' + encodeURIComponent('id,title,ville:location->>city')
+      + '&moderation_status=eq.approved'
+      + '&title=ilike.' + encodeURIComponent('*' + saisie + '*')
+      + '&order=title.asc&limit=8';
+
+    fetch(url, { headers: { apikey: ANON_KEY } })
+      .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
+      .then(afficherResultats)
+      .catch(function () {
+        message(['La recherche n’a pas abouti. Réessayez dans un instant, ou écrivez-nous à ' + CONTACT + '.'], false);
+      })
+      .then(function () {
+        borne.fini();
+        bouton.disabled = false;
+        bouton.textContent = 'Chercher';
+      });
+  }
+
+  function afficherResultats(fiches) {
+    var liste = elt('sig-resultats');
+    liste.textContent = '';
+    if (!fiches || fiches.length === 0) {
+      message([
+        'Aucune sortie ne porte ce nom au catalogue.',
+        'Essayez le nom du lieu, ou écrivez-nous directement à ' + CONTACT + '.'
+      ], false);
+      return;
+    }
+    fiches.forEach(function (fiche) {
+      var li = document.createElement('li');
+      var bouton = document.createElement('button');
+      bouton.type = 'button';
+      bouton.className = 'sig-resultat';
+      bouton.appendChild(document.createTextNode(fiche.title));
+      if (fiche.ville) {
+        var ville = document.createElement('span');
+        ville.className = 'sig-ville';
+        ville.textContent = fiche.ville;
+        bouton.appendChild(ville);
+      }
+      bouton.addEventListener("click", function () { choisir(fiche); });
+      li.appendChild(bouton);
+      liste.appendChild(li);
+    });
+  }
+
+  function choisir(fiche) {
+    ficheId = fiche.id;
+    cacherMessage();
+    elt('sig-titre-choisi').textContent = fiche.title + (fiche.ville ? ' — ' + fiche.ville : '');
+    elt('sig-bloc-recherche').hidden = true;
+    elt('sig-bloc-choisie').hidden = false;
+    elt('sig-suite').hidden = false;
+    elt('sig-bloc-choisie').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function changerDeFiche() {
+    ficheId = null;
+    cacherMessage();
+    elt('sig-bloc-choisie').hidden = true;
+    elt('sig-suite').hidden = true;
+    elt('sig-bloc-recherche').hidden = false;
+    elt('sig-recherche').focus();
+  }
+
+  // ── 2 et 3. Motif, précisions, adresse ──────────────────────────────
+
+  function motifChoisi() {
+    var coches = document.querySelectorAll("#sig-motifs input[name=motif]:checked");
+    return coches.length === 1 ? coches[0].value : null;
+  }
+
+  function compter() {
+    var reste = DETAILS_MAX - elt('sig-details').value.length;
+    var compteur = elt('sig-compteur');
+    compteur.hidden = reste > 100;
+    compteur.textContent = reste + ' caractères restants';
+  }
+
+  function envoyer(evenement) {
+    evenement.preventDefault();
+    cacherMessage();
+
+    var motif = motifChoisi();
+    if (!ficheId) {
+      message(['Choisissez d’abord la sortie concernée.'], false);
+      return;
+    }
+    if (!motif) {
+      message(['Dites-nous ce qui ne va pas : choisissez un motif.'], false);
+      return;
+    }
+    var details = elt('sig-details').value.trim();
+    if (details.length === 0) {
+      message(['Expliquez en quelques mots ce que vous nous demandez.'], false);
+      return;
+    }
+    var email = elt('sig-email').value.trim();
+    if (email.length < 5 || email.indexOf('@') < 1 || /\s/.test(email)) {
+      message(['Laissez une adresse e-mail valable : c’est par là que nous vous répondrons.'], false);
+      return;
+    }
+
+    var bouton = elt('sig-envoyer');
+    bouton.disabled = true;
+    bouton.textContent = 'Envoi…';
+
+    var borne = borneDeTemps();
+    fetch(BASE + '/functions/v1/public-report', {
+      method: 'POST',
+      signal: borne.signal,
+      headers: { 'Content-Type': 'application/json', apikey: ANON_KEY },
+      body: JSON.stringify({
+        target_id: ficheId,
+        reason: motif,
+        details: details.slice(0, DETAILS_MAX),
+        email: email
+      })
+    })
+      .then(function (r) {
+        return r.json().then(function (corps) { return { statut: r.status, corps: corps }; });
+      })
+      .then(function (reponse) {
+        borne.fini();
+        bouton.disabled = false;
+        bouton.textContent = 'Envoyer le signalement';
+        rendreReponse(reponse);
+      })
+      .catch(function () {
+        borne.fini();
+        bouton.disabled = false;
+        bouton.textContent = 'Envoyer le signalement';
+        message(['L’envoi n’a pas abouti. Réessayez, ou écrivez-nous à ' + CONTACT + '.'], false);
+      });
+  }
+
+  function rendreReponse(reponse) {
+    var corps = reponse.corps || {};
+
+    if (reponse.statut === 200 && corps.ok) {
+      if (corps.already) {
+        message([
+          'Nous avions déjà reçu ce signalement de votre part.',
+          'S’il est resté sans réponse, écrivez-nous directement à ' + CONTACT + '.'
+        ], true);
+        return;
+      }
+      elt('sig-formulaire').hidden = true;
+      elt('sig-bloc-choisie').hidden = true;
+      message([
+        'C’est reçu, merci.',
+        'Nous relisons chaque signalement à la main et nous vous répondons sous 24 heures ouvrées, à l’adresse que vous venez de laisser.'
+      ], true);
+      return;
+    }
+
+    if (corps.error === 'unknown_target') {
+      message(['Cette sortie n’est plus au catalogue. Écrivez-nous à ' + CONTACT + '.'], false);
+      return;
+    }
+    if (corps.error === 'rate_limited') {
+      message([
+        'Beaucoup de signalements sont arrivés aujourd’hui, celui-ci n’a pas pu être enregistré.',
+        'Réessayez demain, ou écrivez-nous à ' + CONTACT + ' — nous traiterons votre demande de la même façon.'
+      ], false);
+      return;
+    }
+    message(['Le signalement n’a pas pu être enregistré. Écrivez-nous à ' + CONTACT + '.'], false);
+  }
+
+  // ── Branchements ────────────────────────────────────────────────────
+
+  elt('sig-chercher').addEventListener('click', rechercher);
+  elt('sig-recherche').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') { e.preventDefault(); rechercher(); }
+  });
+  elt('sig-changer').addEventListener('click', changerDeFiche);
+  elt('sig-details').addEventListener('input', compter);
+  elt('sig-formulaire').addEventListener('submit', envoyer);
+  compter();
+})();
+      </script>
+    </div>
+  </main>
+
+  <footer class="pied">
+    <div class="enveloppe">
+      <nav class="pied-liens" aria-label="Pied de page">
+        <a href="/">Accueil</a>
+        <a href="/aide/">Aide</a>
+        <a href="/confidentialite/">Confidentialité</a>
+        <a href="/conditions/">Conditions</a>
+        <a href="/suppression-de-compte/">Supprimer mon compte</a>
+      </nav>
+      <p>Une question, une remarque, une erreur dans une fiche ? Écris à <a href="mailto:bonjour@ursonapp.fr">bonjour@ursonapp.fr</a>.</p>
+      <p class="mentions">Urson est une application faite par un parent de Bourges, éditée à titre personnel. Site hébergé par GitHub Pages (GitHub, Inc.). Les données de l'app sont hébergées par Supabase, à Paris.</p>
+    </div>
+  </footer>
+</body>
+</html>
