@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Espace pro / asso — Urson</title>
+  <meta name="description" content="L'espace organisateur d'Urson : demander un accès, gérer ses sorties et en déposer de nouvelles." />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="theme-color" content="#FFF8F3" />
+  <link rel="canonical" href="https://ursonapp.fr/pro/" />
+  <link rel="icon" href="/assets/favicon.png" />
+  <link rel="apple-touch-icon" href="/assets/urson-icone.png" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Urson" />
+  <meta property="og:locale" content="fr_FR" />
+  <meta property="og:title" content="Espace pro / asso — Urson" />
+  <meta property="og:description" content="L'espace organisateur d'Urson : demander un accès, gérer ses sorties et en déposer de nouvelles." />
+  <meta property="og:url" content="https://ursonapp.fr/pro/" />
+  <meta property="og:image" content="https://ursonapp.fr/assets/urson-icone.png" />
+  <meta name="twitter:card" content="summary" />
+  <!--
+    Page générée par scripts/build-web-pages.mjs dans le dépôt applicatif.
+    Ne pas modifier ici : la correction serait écrasée à la publication
+    suivante. Les textes de « Confidentialité » et « Aide » viennent de
+    app-activites-enfants/lib/{confidentialite,aide}Content.ts, qui servent
+    aussi les écrans de l'app.
+  -->
+  <style>
+    :root {
+      --coral: #FF6B6B;
+      --coral-deep: #E84D4D;
+      --peach-pale: #FFB088;
+      --bg-app: #FFF8F3;
+      --bg-surface: #FFFFFF;
+      --bg-soft: #FFF1E8;
+      --fg-1: #1F2937;
+      --fg-2: #6B7280;
+      --fg-3: #9CA3AF;
+      --line-soft: #F3F4F6;
+      --line-medium: #E5E7EB;
+      --success: #7FB069;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg-app);
+      color: var(--fg-1);
+      /* Pile système : charger une police distante enverrait l'adresse IP du
+         visiteur à un tiers, ce que la page Confidentialité dit ne pas faire. */
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: 17px;
+      line-height: 1.6;
+      -webkit-text-size-adjust: 100%;
+    }
+    /*
+      Les liens de contenu gardent le soulignement du navigateur : coral-deep
+      sur le crème mesure 3,85:1, sous le seuil AA du texte courant — la couleur
+      ne peut donc pas être le seul signal. Le survol épaissit le trait au lieu
+      d'éclaircir la teinte, qui tomberait à 2,64:1.
+    */
+    a { color: var(--coral-deep); }
+    a:hover { text-decoration-thickness: 2px; }
+    img { max-width: 100%; height: auto; }
+    .enveloppe { max-width: 720px; margin: 0 auto; padding: 0 20px; }
+
+    /* En-tête */
+    .entete {
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--line-soft);
+      position: sticky; top: 0; z-index: 10;
+    }
+    .entete .enveloppe {
+      display: flex; align-items: center; gap: 16px;
+      flex-wrap: wrap; padding-top: 12px; padding-bottom: 12px;
+    }
+    .marque {
+      display: flex; align-items: center; gap: 10px;
+      font-weight: 800; font-size: 19px; color: var(--fg-1);
+      text-decoration: none; margin-right: auto;
+    }
+    .marque img { width: 34px; height: 34px; border-radius: 10px; }
+    .nav { display: flex; gap: 18px; flex-wrap: wrap; }
+    .nav a { color: var(--fg-2); text-decoration: none; font-size: 15px; font-weight: 600; }
+    .nav a:hover, .nav a[aria-current="page"] {
+      color: var(--coral-deep);
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+
+    /* Contenu */
+    main { padding: 40px 0 8px; }
+    h1 { font-size: 30px; line-height: 1.25; margin: 0 0 12px; letter-spacing: -0.5px; }
+    h2 { font-size: 21px; line-height: 1.3; margin: 36px 0 12px; }
+    h3 { font-size: 17px; margin: 24px 0 8px; }
+    p, ul, ol { margin: 0 0 16px; }
+    ul, ol { padding-left: 22px; }
+    li { margin-bottom: 6px; }
+    .chapeau { font-size: 19px; color: var(--fg-2); margin-bottom: 28px; }
+    .date-maj { color: var(--fg-3); font-size: 15px; margin-bottom: 32px; }
+
+    .carte {
+      background: var(--bg-surface);
+      border: 1px solid var(--line-soft);
+      border-radius: 20px;
+      padding: 24px;
+      margin-bottom: 16px;
+    }
+    .carte h2, .carte h3 { margin-top: 0; }
+    .carte :last-child { margin-bottom: 0; }
+    .carte-douce { background: var(--bg-soft); border-color: transparent; }
+
+    .titre-emoji { display: flex; align-items: baseline; gap: 10px; }
+    .titre-emoji .emoji { font-size: 22px; line-height: 1; }
+
+    /* Pied de page */
+    .pied {
+      margin-top: 56px;
+      border-top: 1px solid var(--line-medium);
+      background: var(--bg-surface);
+      padding: 32px 0 40px;
+      font-size: 15px;
+      color: var(--fg-2);
+    }
+    .pied-liens { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-bottom: 20px; }
+    .pied-liens a { font-weight: 600; text-decoration: none; }
+    .pied p { margin: 0 0 8px; }
+    .pied .mentions { color: var(--fg-3); font-size: 14px; }
+
+    @media (max-width: 480px) {
+      body { font-size: 16px; }
+      h1 { font-size: 26px; }
+      main { padding-top: 28px; }
+      .carte { padding: 20px; }
+    }
+    .pro-eyebrow {
+      font-size: 11px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: .05em; color: var(--fg-2); margin: 0 0 8px;
+    }
+    .pro-etat { color: var(--fg-2); }
+    .pro-sous-titre { color: var(--fg-2); font-size: 15px; margin: 0 0 20px; }
+    .pro-carte {
+      background: var(--bg-surface); border-radius: 20px; padding: 24px;
+      box-shadow: 0 4px 20px rgba(255, 107, 107, 0.08); margin-bottom: 16px;
+    }
+    .pro-carte h2 { font-size: 17px; margin: 0 0 6px; }
+    .pro-champ { margin-bottom: 16px; }
+    .pro-champ:last-of-type { margin-bottom: 0; }
+    .pro-label {
+      display: block; font-size: 11px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: .05em; color: var(--fg-2); margin-bottom: 6px;
+    }
+    .pro-ligne-deux { display: flex; gap: 12px; }
+    .pro-ligne-deux > div { flex: 1; min-width: 0; }
+    .pro-input {
+      width: 100%; height: 48px; border-radius: 14px; border: 1px solid var(--line-medium);
+      font-size: 15px; padding: 0 14px; background: var(--bg-surface); font-family: inherit; color: var(--fg-1);
+    }
+    textarea.pro-input { height: auto; padding: 12px 14px; resize: vertical; line-height: 1.5; }
+    .pro-bouton-secondaire {
+      width: 100%; height: 48px; border-radius: 999px; background: var(--bg-surface);
+      border: 1px solid var(--line-medium); color: var(--fg-1); font-size: 15px; font-weight: 600; cursor: pointer;
+    }
+    .pro-bouton-primaire {
+      width: 100%; height: 48px; border-radius: 999px; background: var(--coral); border: none;
+      color: var(--bg-surface); font-size: 15px; font-weight: 700; cursor: pointer;
+      box-shadow: 0 2px 8px rgba(255, 107, 107, 0.12);
+    }
+    .pro-bouton-primaire:disabled, .pro-bouton-secondaire:disabled { opacity: .5; cursor: default; box-shadow: none; }
+    .pro-message { margin: 12px 0 0; font-size: 14px; color: var(--fg-2); min-height: 1.4em; }
+    .pro-message--error { color: var(--coral-deep); }
+    .pro-case {
+      display: flex; align-items: flex-start; gap: 10px; margin-bottom: 16px;
+      font-size: 14px; color: var(--fg-1); cursor: pointer;
+    }
+    .pro-case input[type="checkbox"] {
+      width: 22px; height: 22px; border: 2px solid var(--coral); border-radius: 6px;
+      margin: 1px 0 0; flex-shrink: 0;
+    }
+    .pro-lien-retour {
+      background: none; border: none; padding: 0; color: var(--coral-deep);
+      font-weight: 700; font-size: 15px; cursor: pointer; text-decoration: underline;
+      font-family: inherit;
+    }
+    .pro-note { font-size: 13px; color: var(--fg-3); margin: 8px 0 16px; }
+    .pro-souscarte-titre {
+      font-size: 11px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: .05em; color: var(--fg-2); margin: 20px 0 8px;
+    }
+    .pro-liste-sorties { list-style: none; padding: 0; margin: 0; }
+    .pro-item-sortie { padding: 10px 0; border-bottom: 1px solid var(--line-soft); font-size: 15px; }
+    .pro-item-sortie:last-child { border-bottom: none; }
+    .pro-ligne-resultat {
+      display: flex; justify-content: space-between; align-items: center; gap: 12px;
+      padding: 10px 0; border-bottom: 1px solid var(--line-soft); font-size: 15px;
+    }
+    .pro-ligne-resultat:last-child { border-bottom: none; }
+    .pro-ligne-resultat span { flex: 1; min-width: 0; }
+    @media (max-width: 480px) {
+      .pro-ligne-deux { flex-direction: column; gap: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="entete">
+    <div class="enveloppe">
+      <a class="marque" href="/">
+        <img src="/assets/urson-icone.png" alt="" width="34" height="34" />
+        Urson
+      </a>
+      <nav class="nav" aria-label="Pages du site">
+        <a href="/aide/">Aide</a>
+        <a href="/confidentialite/">Confidentialité</a>
+        <a href="/conditions/">Conditions</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="enveloppe">
+      <div id="pro-app">
+        <p class="pro-eyebrow">Espace pro / asso</p>
+        <p class="pro-etat">Un instant…</p>
+      </div>
+
+      <script src="/assets/supabase-js/supabase.min.js"></script>
+      <script>
+      
+(function () {
+  'use strict';
+
+  // Domaine pas encore branché à l'écriture de cette page — l'API reste en
+  // dur, jamais déduite de window.location (patron organisateur.mjs). Clé
+  // anon PUBLIQUE, déjà publique dans le bundle de l'app.
+  var SUPABASE_URL = 'https://cvycoezoimrbgpbxzrez.supabase.co';
+  var ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN2eWNvZXpvaW1yYmdwYnh6cmV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1NTg2ODIsImV4cCI6MjA5MzEzNDY4Mn0.hq5fGRpHi6xe07BxXdAYBN6o3m6LZbqPzCCxfLwWWyo';
+  var API_URL = SUPABASE_URL + '/functions/v1/organizer-account';
+  var CONTACT = "bonjour@ursonapp.fr";
+
+  var STRUCTURE_KINDS = [
+    ['association', 'Association'],
+    ['entreprise', 'Entreprise'],
+    ['collectivite', 'Collectivité'],
+    ['autre', 'Autre']
+  ];
+
+  // CHECK exact de activities.category (organizer-account/EVENT_CATEGORIES) —
+  // labels recopiés de lib/categories.ts (app), pas d'import cross-runtime.
+  var EVENT_CATEGORIES = [
+    ['culture', 'Culture'], ['nature', 'Nature'], ['parc', 'Parc'], ['sport', 'Sport'],
+    ['creative', 'Créatif'], ['spectacle', 'Spectacle'], ['atelier', 'Atelier'],
+    ['lecture', 'Lecture'], ['jeux', 'Jeux'], ['restaurant', 'Restaurant'],
+    ['boutique', 'Boutique'], ['autre', 'Autre']
+  ];
+
+  var app = document.getElementById('pro-app');
+  // Le jeton n'est lu qu'une fois depuis '?t=', gardé en fermeture — jamais
+  // réinjecté dans le DOM (même règle qu'organisateur.mjs).
+  var jeton = new URLSearchParams(window.location.search).get('t');
+  var sb = null;
+  var emailEnCours = null;
+  var cooldownInterval = null;
+  // Version de la clause telle que rendue par 'ownership_clause' (lecture
+  // publique, sans JWT) — posée juste avant d'afficher le formulaire de
+  // demande, relue à l'envoi (jamais une constante recopiée, voir en-tête).
+  var clauseVersionCourante = null;
+
+  function ech(valeur) {
+    return String(valeur == null ? '' : valeur)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function definirMessage(el, texte, erreur) {
+    if (!el) return;
+    el.textContent = texte;
+    el.className = erreur ? 'pro-message pro-message--error' : 'pro-message';
+  }
+
+  function formateDateFr(iso) {
+    if (!iso) return '';
+    var d = new Date(iso);
+    if (isNaN(d.getTime())) return '';
+    return new Intl.DateTimeFormat('fr-FR', { timeZone: 'Europe/Paris', day: '2-digit', month: '2-digit', year: 'numeric' }).format(d);
+  }
+
+  function formateHeureFr(iso) {
+    if (!iso) return '';
+    var d = new Date(iso);
+    if (isNaN(d.getTime())) return '';
+    return new Intl.DateTimeFormat('fr-FR', { timeZone: 'Europe/Paris', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(d);
+  }
+
+  // Valeur attendue par <input type="date"> ('YYYY-MM-DD') — 'en-CA' est le
+  // seul repère fiable pour obtenir cet ordre sans reconstruire les parts à
+  // la main. Sert à préremplir le formulaire de correction depuis startsAt.
+  function dateInputDepuisIso(iso) {
+    if (!iso) return '';
+    var d = new Date(iso);
+    if (isNaN(d.getTime())) return '';
+    return new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Paris', year: 'numeric', month: '2-digit', day: '2-digit' }).format(d);
+  }
+
+  // Inverse approximatif de buildEventPrice (organizerAccount.ts) pour
+  // préremplir le champ Tarif en correction — 'notes' prime, sinon un
+  // montant simple ou une fourchette, jamais reconstruit à partir de rien.
+  function texteTarifDepuisPrix(prix) {
+    if (!prix || typeof prix !== 'object') return '';
+    if (typeof prix.notes === 'string' && prix.notes) return prix.notes;
+    if (typeof prix.min === 'number' && typeof prix.max === 'number') {
+      if (prix.min === 0 && prix.max === 0) return 'Gratuit';
+      return prix.min === prix.max ? String(prix.min) : (prix.min + ' à ' + prix.max);
+    }
+    return '';
+  }
+
+  function libelleKind(kind) {
+    if (kind === 'place') return 'Lieu';
+    if (kind === 'event') return 'Événement';
+    return kind || '';
+  }
+
+  function optionsHtml(liste, placeholder) {
+    var html = '<option value="" disabled selected hidden>' + ech(placeholder) + '</option>';
+    for (var i = 0; i < liste.length; i++) {
+      html += '<option value="' + ech(liste[i][0]) + '">' + ech(liste[i][1]) + '</option>';
+    }
+    return html;
+  }
+
+  // ── Appel API ─────────────────────────────────────────────────────────
+  // apikey toujours ; Authorization seulement si authRequired ET une session
+  // existe — la clé anon est publique, le compte 'verified' donne le droit,
+  // jamais l'inverse.
+  function appelApi(action, corps, authRequired) {
+    var charge = { action: action };
+    if (corps) { for (var c in corps) { charge[c] = corps[c]; } }
+    var enTeteBase = { 'Content-Type': 'application/json', apikey: ANON_KEY };
+    var pretEnTetes = authRequired
+      ? sb.auth.getSession().then(function (r) {
+          var session = r.data && r.data.session;
+          var jetonAcces = session ? session.access_token : null;
+          if (!jetonAcces) return enTeteBase;
+          var avecAuth = {};
+          for (var k in enTeteBase) { avecAuth[k] = enTeteBase[k]; }
+          avecAuth.Authorization = 'Bearer ' + jetonAcces;
+          return avecAuth;
+        })
+      : Promise.resolve(enTeteBase);
+
+    return pretEnTetes.then(function (enTetes) {
+      return fetch(API_URL, { method: 'POST', headers: enTetes, body: JSON.stringify(charge) });
+    }).then(function (reponse) {
+      return reponse.json().catch(function () { return null; }).then(function (data) {
+        return { ok: reponse.ok, status: reponse.status, data: data };
+      });
+    });
+  }
+
+  // ── États génériques ─────────────────────────────────────────────────
+
+  function afficheChargement() {
+    app.innerHTML = '<p class="pro-eyebrow">Espace pro / asso</p><p class="pro-etat">Un instant…</p>';
+  }
+
+  function afficheErreurReseau() {
+    app.innerHTML =
+      '<p class="pro-eyebrow">Espace pro / asso</p>' +
+      '<h1>Votre espace Urson</h1>' +
+      '<p>Impossible de charger la page, réessayez dans un instant.</p>';
+  }
+
+  // Titre, paragraphes (HTML déjà préparé par l'appelant — jamais de valeur
+  // serveur non passée par ech() avant d'arriver ici), liens d'action
+  // facultatifs. Sert 'en attente', 'refusé', 'suspendu', 'sans compte'.
+  function afficheEtatSimple(titre, paragraphes, liens) {
+    var html = '<p class="pro-eyebrow">Espace pro / asso</p><h1>' + ech(titre) + '</h1>';
+    for (var i = 0; i < paragraphes.length; i++) { html += '<p>' + paragraphes[i] + '</p>'; }
+    if (liens && liens.length > 0) {
+      html += '<p>';
+      for (var j = 0; j < liens.length; j++) {
+        html += '<button type="button" class="pro-lien-retour" id="pro-lien-' + j + '">' + ech(liens[j].libelle) + '</button>';
+        if (j < liens.length - 1) html += ' · ';
+      }
+      html += '</p>';
+    }
+    app.innerHTML = html;
+    if (liens) {
+      for (var k = 0; k < liens.length; k++) {
+        document.getElementById('pro-lien-' + k).addEventListener('click', liens[k].onClick);
+      }
+    }
+  }
+
+  // ── Demande (formulaire public) ─────────────────────────────────────
+  // La clause (texte + version) est lue depuis 'ownership_clause' (sans JWT)
+  // AVANT de rendre le formulaire — plus aucune recopie en dur (voir
+  // en-tête) : le jour où le texte serveur change, cette page reste
+  // synchronisée d'elle-même, sans divergence silencieuse.
+
+  function afficheDemande() {
+    afficheChargement();
+    appelApi('ownership_clause', {}, false).then(function (resultat) {
+      if (!resultat.ok || !resultat.data) { afficheErreurReseau(); return; }
+      clauseVersionCourante = resultat.data.version;
+      rendDemande(resultat.data.text);
+    }).catch(function () { afficheErreurReseau(); });
+  }
+
+  function rendDemande(clauseTexte) {
+    app.innerHTML =
+      '<p class="pro-eyebrow">Espace pro / asso</p>' +
+      '<h1>Faites connaître vos sorties sur Urson</h1>' +
+      "<p>Vous organisez des sorties pour les familles autour de Bourges ? Demandez un espace pour gérer vos fiches et en proposer de nouvelles.</p>" +
+      '<div class="pro-carte">' +
+        '<form id="pro-form-demande">' +
+          '<div class="pro-champ">' +
+            '<label class="pro-label" for="pro-structure-nom">Nom de la structure</label>' +
+            '<input class="pro-input" type="text" id="pro-structure-nom" required maxlength="200" />' +
+          '</div>' +
+          '<div class="pro-champ">' +
+            '<label class="pro-label" for="pro-structure-type">Type de structure</label>' +
+            '<select class="pro-input" id="pro-structure-type" required>' + optionsHtml(STRUCTURE_KINDS, 'Choisir…') + '</select>' +
+          '</div>' +
+          '<div class="pro-champ">' +
+            '<label class="pro-label" for="pro-email">E-mail</label>' +
+            '<input class="pro-input" type="email" id="pro-email" required maxlength="254" />' +
+          '</div>' +
+          '<div class="pro-champ">' +
+            '<label class="pro-label" for="pro-site">Site web (facultatif)</label>' +
+            '<input class="pro-input" type="text" id="pro-site" maxlength="300" placeholder="https://" />' +
+          '</div>' +
+          '<div class="pro-champ pro-ligne-deux">' +
+            '<div>' +
+              '<label class="pro-label" for="pro-contact-nom">Nom du contact (facultatif)</label>' +
+              '<input class="pro-input" type="text" id="pro-contact-nom" maxlength="120" />' +
+            '</div>' +
+            '<div>' +
+              '<label class="pro-label" for="pro-telephone">Téléphone (facultatif)</label>' +
+              '<input class="pro-input" type="tel" id="pro-telephone" maxlength="40" />' +
+            '</div>' +
+          '</div>' +
+          '<div class="pro-champ">' +
+            '<label class="pro-label" for="pro-message">Ce que vous organisez (facultatif)</label>' +
+            '<textarea class="pro-input" id="pro-message" rows="3" maxlength="2000" placeholder="Quelques mots sur vos sorties habituelles"></textarea>' +
+          '</div>' +
+          '<label class="pro-case">' +
+            '<input type="checkbox" id="pro-clause-case" required />' +
+            '<span>' + ech(clauseTexte) + '</span>' +
+          '</label>' +
+          '<button type="submit" class="pro-bouton-primaire">Envoyer la demande</button>' +
+          '<p class="pro-message" id="pro-message-demande"></p>' +
+        '</form>' +
+      '</div>' +
+      '<p><button type="button" class="pro-lien-retour" id="pro-lien-connexion">Vous avez déjà un espace ? Se connecter</button></p>';
+
+    document.getElementById('pro-form-demande').addEventListener('submit', onEnvoiDemande);
+    document.getElementById('pro-lien-connexion').addEventListener('click', function () { afficheConnexion({}); });
+  }
+
+  function onEnvoiDemande(event) {
+    event.preventDefault();
+    var messageEl = document.getElementById('pro-message-demande');
+    var bouton = event.target.querySelector('button[type="submit"]');
+    var corps = {
+      email: document.getElementById('pro-email').value,
+      structure_name: document.getElementById('pro-structure-nom').value,
+      structure_kind: document.getElementById('pro-structure-type').value,
+      website_url: document.getElementById('pro-site').value,
+      contact_name: document.getElementById('pro-contact-nom').value,
+      phone: document.getElementById('pro-telephone').value,
+      message: document.getElementById('pro-message').value,
+      clause_accepted: document.getElementById('pro-clause-case').checked,
+      clause_version: clauseVersionCourante
+    };
+    bouton.disabled = true;
+    definirMessage(messageEl, 'Envoi en cours…', false);
+    appelApi('request_account', corps, false).then(function () {
+      afficheEnAttente();
+    }).catch(function () {
+      bouton.disabled = false;
+      definirMessage(messageEl, "L'envoi n'a pas abouti, réessayez dans un instant.", true);
+    });
+  }
+
+  function afficheEnAttente() {
+    afficheEtatSimple(
+      'Demande envoyée',
+      ["Merci. Un administrateur Urson va l'examiner ; vous recevrez un e-mail dès qu'une décision sera prise."],
+      [{ libelle: 'Vous avez déjà un espace ? Se connecter', onClick: function () { afficheConnexion({}); } }]
+    );
+  }
+
+  // ── Connexion (OTP) ──────────────────────────────────────────────────
+
+  function afficheConnexion(opts) {
+    var noteHaut = opts.apresActivation
+      ? 'Votre espace est prêt. Connectez-vous avec le code que nous allons vous envoyer par e-mail.'
+      : 'Connectez-vous avec le code que nous vous envoyons par e-mail.';
+    // Pré-remplissage après activation par jeton (fix parcours « mauvaise
+    // adresse saisie ») : l'adresse vient de la réponse serveur d'activate,
+    // jamais devinée côté client. Champ modifiable, jamais verrouillé — un
+    // espace peut être rattaché à un alias ou une adresse de structure
+    // différente de la boîte où le mail est arrivé.
+    var noteAdresse = opts.email
+      ? (opts.structureName
+          ? "L'espace de " + opts.structureName + ' est rattaché à cette adresse — vous pouvez la modifier si besoin.'
+          : 'Cette adresse est celle qui a reçu le lien — vous pouvez la modifier si besoin.')
+      : '';
+    app.innerHTML =
+      '<p class="pro-eyebrow">Espace pro / asso</p>' +
+      '<h1>Connexion</h1>' +
+      '<p>' + ech(noteHaut) + '</p>' +
+      (noteAdresse ? '<p>' + ech(noteAdresse) + '</p>' : '') +
+      '<div class="pro-carte">' +
+        '<div class="pro-champ">' +
+          '<label class="pro-label" for="pro-connexion-email">E-mail</label>' +
+          '<input class="pro-input" type="email" id="pro-connexion-email" maxlength="254" value="' + ech(opts.email || '') + '" />' +
+        '</div>' +
+        '<button type="button" class="pro-bouton-primaire" id="pro-bouton-envoyer-code">Envoyer un code</button>' +
+        '<div class="pro-champ" id="pro-bloc-code" style="display:none; margin-top:16px">' +
+          '<label class="pro-label" for="pro-code">Code reçu par e-mail</label>' +
+          '<input class="pro-input" type="text" id="pro-code" inputmode="numeric" maxlength="8" />' +
+          '<button type="button" class="pro-bouton-primaire" id="pro-bouton-valider-code" style="margin-top:12px">Se connecter</button>' +
+        '</div>' +
+        '<p class="pro-message" id="pro-message-connexion"></p>' +
+      '</div>' +
+      '<p><button type="button" class="pro-lien-retour" id="pro-lien-demande">' + "Pas encore d'espace ? Faire une demande" + '</button></p>';
+
+    document.getElementById('pro-bouton-envoyer-code').addEventListener('click', onEnvoyerCode);
+    document.getElementById('pro-bouton-valider-code').addEventListener('click', onValiderCode);
+    document.getElementById('pro-lien-demande').addEventListener('click', function () { afficheDemande(); });
+  }
+
+  function onEnvoyerCode() {
+    var champEmail = document.getElementById('pro-connexion-email');
+    var messageEl = document.getElementById('pro-message-connexion');
+    var bouton = document.getElementById('pro-bouton-envoyer-code');
+    var email = champEmail.value.trim();
+    if (!email) return;
+    emailEnCours = email;
+    bouton.disabled = true;
+    definirMessage(messageEl, 'Envoi en cours…', false);
+
+    // Message et champ code affichés QUOI QU'IL ARRIVE (consigne de sécurité,
+    // PLAN § consigne 4b) : l'erreur de signInWithOtp n'est jamais rendue,
+    // jamais distinguable — sinon cette page publique deviendrait un oracle
+    // d'existence de compte.
+    sb.auth.signInWithOtp({ email: email, options: { shouldCreateUser: false } })
+      .catch(function () {})
+      .then(function () {
+        definirMessage(messageEl, 'Si un espace existe pour cette adresse, vous allez recevoir un code.', false);
+        document.getElementById('pro-bloc-code').style.display = '';
+        demarreCooldown(bouton);
+      });
+  }
+
+  function demarreCooldown(bouton) {
+    var restant = 60;
+    bouton.disabled = true;
+    bouton.textContent = 'Renvoyer un code (' + restant + 's)';
+    if (cooldownInterval) clearInterval(cooldownInterval);
+    cooldownInterval = setInterval(function () {
+      restant -= 1;
+      if (restant <= 0) {
+        clearInterval(cooldownInterval);
+        cooldownInterval = null;
+        bouton.disabled = false;
+        bouton.textContent = 'Renvoyer un code';
+        return;
+      }
+      bouton.textContent = 'Renvoyer un code (' + restant + 's)';
+    }, 1000);
+  }
+
+  function onValiderCode() {
+    var champCode = document.getElementById('pro-code');
+    var messageEl = document.getElementById('pro-message-connexion');
+    var bouton = document.getElementById('pro-bouton-valider-code');
+    var code = champCode.value.trim();
+    if (!code || !emailEnCours) return;
+    bouton.disabled = true;
+    definirMessage(messageEl, 'Vérification…', false);
+    sb.auth.verifyOtp({ email: emailEnCours, token: code, type: 'email' }).then(function (resultat) {
+      bouton.disabled = false;
+      if (resultat.error) {
+        definirMessage(messageEl, 'Code incorrect ou expiré, réessayez.', true);
+        return;
+      }
+      chargeCompte();
+    }).catch(function () {
+      bouton.disabled = false;
+      definirMessage(messageEl, 'Code incorrect ou expiré, réessayez.', true);
+    });
+  }
+
+  // ── Compte authentifié — dispatch selon le statut ───────────────────
+
+  function chargeCompte() {
+    afficheChargement();
+    appelApi('me', {}, true).then(function (resultat) {
+      if (resultat.status === 401) {
+        sb.auth.signOut().then(function () { afficheConnexion({}); });
+        return;
+      }
+      if (!resultat.ok || !resultat.data) { afficheErreurReseau(); return; }
+      var compte = resultat.data.account;
+      var clause = resultat.data.rights_clause;
+      if (!compte) {
+        // Impasse qui se rattrape (fix parcours « mauvaise adresse saisie
+        // après activation ») : l'espace peut être rattaché à un alias ou
+        // une adresse de structure différente de celle où le mail est
+        // arrivé — se déconnecter réessaie avec une autre adresse, même
+        // mécanisme que la déconnexion du tableau de bord.
+        afficheEtatSimple(
+          'Aucun espace trouvé',
+          [
+            "Aucun espace organisateur n'est rattaché à cette adresse.",
+            "L'espace est rattaché à l'adresse qui a reçu le lien d'activation, pas forcément à l'adresse principale de votre boîte mail."
+          ],
+          [
+            { libelle: 'Se déconnecter et réessayer avec une autre adresse', onClick: function () { sb.auth.signOut().then(function () { afficheConnexion({}); }); } },
+            { libelle: 'Faire une demande', onClick: function () { afficheDemande(); } }
+          ]
+        );
+        return;
+      }
+      if (compte.status === 'pending') {
+        afficheEtatSimple(
+          "Demande en cours d'examen",
+          ["Nous examinons toujours votre demande, vous recevrez un e-mail dès qu'une décision sera prise."],
+          null
+        );
+        return;
+      }
+      if (compte.status === 'suspended') {
+        afficheEtatSimple(
+          'Accès suspendu',
+          ['Votre accès a été suspendu. Écrivez-nous à <a href="mailto:' + ech(CONTACT) + '">' + ech(CONTACT) + '</a> pour en savoir plus.'],
+          null
+        );
+        return;
+      }
+      if (compte.status === 'refused') {
+        var motif = compte.refusalReason && compte.refusalReason.trim() ? compte.refusalReason : 'Motif non précisé.';
+        afficheEtatSimple(
+          "Votre demande n'a pas été retenue",
+          [ech(motif), 'Une question ? Écrivez à <a href="mailto:' + ech(CONTACT) + '">' + ech(CONTACT) + '</a>.'],
+          [{ libelle: 'Faire une nouvelle demande', onClick: function () { afficheDemande(); } }]
+        );
+        return;
+      }
+      // status === 'verified'
+      if (compte.needsClauseConfirmation) { afficheClauseGate(clause); return; }
+      afficheDashboard(compte);
+    }).catch(function () { afficheErreurReseau(); });
+  }
+
+  // ── Reconfirmation de la clause au premier accès authentifié ────────
+  // Le texte vient de rights_clause (réponse de 'me'), JAMAIS recopié ici.
+
+  function afficheClauseGate(clause) {
+    var texte = clause ? clause.text : '';
+    var version = clause ? clause.version : null;
+    app.innerHTML =
+      '<p class="pro-eyebrow">Espace pro / asso</p>' +
+      '<h1>Avant de continuer</h1>' +
+      '<div class="pro-carte">' +
+        '<p>' + ech(texte) + '</p>' +
+        '<label class="pro-case">' +
+          '<input type="checkbox" id="pro-clause-confirm-case" />' +
+          '<span>' + "J'accepte cette déclaration." + '</span>' +
+        '</label>' +
+        '<button type="button" class="pro-bouton-primaire" id="pro-bouton-clause-confirmer" disabled>Confirmer</button>' +
+        '<p class="pro-message" id="pro-message-clause"></p>' +
+      '</div>';
+
+    var caseA = document.getElementById('pro-clause-confirm-case');
+    var bouton = document.getElementById('pro-bouton-clause-confirmer');
+    caseA.addEventListener('change', function () { bouton.disabled = !caseA.checked; });
+    bouton.addEventListener('click', function () {
+      var messageEl = document.getElementById('pro-message-clause');
+      bouton.disabled = true;
+      definirMessage(messageEl, 'Envoi en cours…', false);
+      appelApi('me', { confirm_clause: true, clause_version: version }, true).then(function (resultat) {
+        if (!resultat.ok || !resultat.data || !resultat.data.account || resultat.data.account.needsClauseConfirmation) {
+          bouton.disabled = false;
+          definirMessage(messageEl, "La confirmation n'a pas abouti, réessayez.", true);
+          return;
+        }
+        afficheDashboard(resultat.data.account);
+      }).catch(function () {
+        bouton.disabled = false;
+        definirMessage(messageEl, "La confirmation n'a pas abouti, réessayez.", true);
+      });
+    });
+  }
+
+  // ── Tableau de bord (vérifié) ────────────────────────────────────────
+
+  function afficheDashboard(compte) {
+    app.innerHTML =
+      '<p class="pro-eyebrow">Espace pro / asso</p>' +
+      '<h1>' + ech(compte.structureName) + '</h1>' +
+      '<div class="pro-carte">' +
+        '<h2>Mes sorties</h2>' +
+        '<p class="pro-sous-titre">Les sorties rattachées à votre espace. Un administrateur Urson les y rattache.</p>' +
+        '<div id="pro-liste-sorties"></div>' +
+      '</div>' +
+      '<div class="pro-carte">' +
+        '<h2 id="pro-depot-titre-carte">Déposer une sortie</h2>' +
+        '<p class="pro-sous-titre" id="pro-depot-soustitre">Ajoutez une nouvelle sortie au catalogue. Elle est relue avant publication.</p>' +
+        '<div id="pro-depot-zone"></div>' +
+      '</div>' +
+      '<p><button type="button" class="pro-lien-retour" id="pro-lien-deconnexion">Se déconnecter</button></p>';
+
+    document.getElementById('pro-lien-deconnexion').addEventListener('click', function () {
+      sb.auth.signOut().then(function () { afficheDemande(); });
+    });
+    afficheFormulaireEvenement('create', null);
+    chargeMesSorties();
+  }
+
+  function chargeMesSorties() {
+    var zone = document.getElementById('pro-liste-sorties');
+    appelApi('dashboard', {}, true).then(function (resultat) {
+      if (!resultat.ok || !resultat.data) {
+        zone.innerHTML = '<p class="pro-note">Impossible de charger vos sorties pour le moment.</p>';
+        return;
+      }
+      var activites = resultat.data.activities || [];
+      var enAttente = resultat.data.pending_submissions || [];
+      var html = '';
+      if (activites.length === 0) {
+        html += '<p class="pro-note">Aucune sortie rattachée à votre espace pour le moment.</p>';
+      } else {
+        html += '<ul class="pro-liste-sorties">';
+        for (var i = 0; i < activites.length; i++) {
+          var a = activites[i];
+          var quand = a.startsAt ? formateDateFr(a.startsAt) + ' à ' + formateHeureFr(a.startsAt) : '';
+          html += '<li class="pro-item-sortie pro-ligne-resultat"><span><strong>' + ech(a.title) + '</strong> — ' + ech(libelleKind(a.kind));
+          if (quand) html += ' — ' + ech(quand);
+          if (a.city) html += ' — ' + ech(a.city);
+          html += '</span>';
+          // Un lieu (kind='place') rattaché par un admin n'a pas de formulaire
+          // de correction organisateur — update_event le refuse côté serveur
+          // (409 activity_not_event) : le bouton n'apparaît donc que sur un
+          // événement, jamais sur un lieu.
+          if (a.kind === 'event') {
+            html += '<button type="button" class="pro-bouton-secondaire pro-bouton-modifier" data-id="' + ech(a.id) + '" style="width:auto; padding:0 16px; height:36px">Modifier</button>';
+          }
+          html += '</li>';
+        }
+        html += '</ul>';
+      }
+      if (enAttente.length > 0) {
+        html += '<p class="pro-souscarte-titre">En attente de relecture</p><ul class="pro-liste-sorties">';
+        for (var j = 0; j < enAttente.length; j++) {
+          var e = enAttente[j];
+          html += '<li class="pro-item-sortie">' + ech(e.title) + ' — déposée le ' + ech(formateDateFr(e.createdAt)) + '</li>';
+        }
+        html += '</ul>';
+      }
+      zone.innerHTML = html;
+
+      var index = {};
+      for (var k = 0; k < activites.length; k++) { index[activites[k].id] = activites[k]; }
+      var boutons = zone.querySelectorAll('.pro-bouton-modifier');
+      for (var m = 0; m < boutons.length; m++) {
+        boutons[m].addEventListener('click', function (event) {
+          var id = event.currentTarget.getAttribute('data-id');
+          afficheFormulaireEvenement('update', index[id]);
+        });
+      }
+    }).catch(function () {
+      zone.innerHTML = '<p class="pro-note">Impossible de charger vos sorties pour le moment.</p>';
+    });
+  }
+
+  // ── Déposer / modifier une sortie ────────────────────────────────────
+  // Un seul formulaire pour les deux gestes (retour de Kevin, en-tête) :
+  // 'create' envoie create_event (activity_id absent), 'update' envoie
+  // update_event (activity_id = la fiche à corriger, préremplie depuis la
+  // ligne déjà chargée par chargeMesSorties — aucun aller-retour de plus).
+  // Nom du lieu / adresse / ville tapés librement, jamais une recherche du
+  // catalogue.
+
+  function afficheFormulaireEvenement(mode, activite) {
+    var zone = document.getElementById('pro-depot-zone');
+    var estEdition = mode === 'update';
+    var val = function (v) { return v === null || v === undefined ? '' : String(v); };
+
+    var titreCarte = document.getElementById('pro-depot-titre-carte');
+    var sousTitreCarte = document.getElementById('pro-depot-soustitre');
+    if (titreCarte) titreCarte.textContent = estEdition ? 'Modifier la sortie' : 'Déposer une sortie';
+    if (sousTitreCarte) {
+      sousTitreCarte.textContent = estEdition
+        ? 'La correction est relue avant application.'
+        : 'Ajoutez une nouvelle sortie au catalogue. Elle est relue avant publication.';
+    }
+
+    zone.innerHTML =
+      '<form id="pro-form-depot">' +
+        '<div class="pro-champ">' +
+          '<label class="pro-label" for="pro-depot-lieu-nom">Nom du lieu</label>' +
+          '<input class="pro-input" type="text" id="pro-depot-lieu-nom" required maxlength="200" value="' + ech(val(estEdition ? activite.locationName : '')) + '" />' +
+        '</div>' +
+        '<div class="pro-champ">' +
+          '<label class="pro-label" for="pro-depot-adresse">Adresse</label>' +
+          '<input class="pro-input" type="text" id="pro-depot-adresse" required maxlength="300" value="' + ech(val(estEdition ? activite.address : '')) + '" />' +
+        '</div>' +
+        '<div class="pro-champ">' +
+          '<label class="pro-label" for="pro-depot-ville">Ville</label>' +
+          '<input class="pro-input" type="text" id="pro-depot-ville" required maxlength="100" value="' + ech(val(estEdition ? activite.city : '')) + '" />' +
+        '</div>' +
+        '<div class="pro-champ">' +
+          '<label class="pro-label" for="pro-depot-titre">Titre</label>' +
+          '<input class="pro-input" type="text" id="pro-depot-titre" required maxlength="200" value="' + ech(val(estEdition ? activite.title : '')) + '" />' +
+        '</div>' +
+        '<div class="pro-champ">' +
+          '<label class="pro-label" for="pro-depot-categorie">Catégorie</label>' +
+          '<select class="pro-input" id="pro-depot-categorie" required>' + optionsHtml(EVENT_CATEGORIES, 'Choisir…') + '</select>' +
+        '</div>' +
+        '<div class="pro-champ">' +
+          '<label class="pro-label" for="pro-depot-description">Description (facultatif)</label>' +
+          '<textarea class="pro-input" id="pro-depot-description" rows="3" maxlength="5000">' + ech(val(estEdition ? activite.description : '')) + '</textarea>' +
+        '</div>' +
+        '<div class="pro-champ pro-ligne-deux">' +
+          '<div>' +
+            '<label class="pro-label" for="pro-depot-date">Date</label>' +
+            '<input class="pro-input" type="date" id="pro-depot-date" required value="' + ech(estEdition ? dateInputDepuisIso(activite.startsAt) : '') + '" />' +
+          '</div>' +
+          '<div>' +
+            '<label class="pro-label" for="pro-depot-heure">Heure</label>' +
+            '<input class="pro-input" type="time" id="pro-depot-heure" required value="' + ech(estEdition ? formateHeureFr(activite.startsAt) : '') + '" />' +
+          '</div>' +
+        '</div>' +
+        '<div class="pro-champ pro-ligne-deux">' +
+          '<div>' +
+            '<label class="pro-label" for="pro-depot-age-min">Âge minimum (facultatif)</label>' +
+            '<input class="pro-input" type="number" min="0" max="18" id="pro-depot-age-min" value="' + ech(val(estEdition ? activite.ageMin : '')) + '" />' +
+          '</div>' +
+          '<div>' +
+            '<label class="pro-label" for="pro-depot-age-max">Âge maximum (facultatif)</label>' +
+            '<input class="pro-input" type="number" min="0" max="18" id="pro-depot-age-max" value="' + ech(val(estEdition ? activite.ageMax : '')) + '" />' +
+          '</div>' +
+        '</div>' +
+        '<div class="pro-champ">' +
+          '<label class="pro-label" for="pro-depot-tarif">Tarif (facultatif)</label>' +
+          '<input class="pro-input" type="text" id="pro-depot-tarif" maxlength="100" placeholder="Gratuit, 5 €…" value="' + ech(estEdition ? texteTarifDepuisPrix(activite.price) : '') + '" />' +
+        '</div>' +
+        '<div class="pro-champ">' +
+          '<label class="pro-label" for="pro-depot-lien">Lien (facultatif)</label>' +
+          '<input class="pro-input" type="text" id="pro-depot-lien" maxlength="300" placeholder="https://" value="' + ech(val(estEdition ? activite.registrationUrl : '')) + '" />' +
+        '</div>' +
+        '<button type="submit" class="pro-bouton-primaire">' + (estEdition ? 'Enregistrer la correction' : 'Déposer la sortie') + '</button>' +
+        (estEdition ? '<p><button type="button" class="pro-lien-retour" id="pro-depot-annuler">Annuler la modification</button></p>' : '') +
+        '<p class="pro-message" id="pro-depot-form-message"></p>' +
+      '</form>';
+
+    // Un <select> ne prend pas de valeur par défaut dans le HTML émis par
+    // optionsHtml() (placeholder disabled/selected/hidden) — la présélection
+    // en édition se pose après coup.
+    if (estEdition && activite.category) {
+      var champCategorie = document.getElementById('pro-depot-categorie');
+      if (champCategorie) champCategorie.value = activite.category;
+    }
+
+    document.getElementById('pro-form-depot').addEventListener('submit', function (event) {
+      onEnvoiFormulaireEvenement(event, mode, estEdition ? activite.id : null);
+    });
+    if (estEdition) {
+      document.getElementById('pro-depot-annuler').addEventListener('click', function () {
+        afficheFormulaireEvenement('create', null);
+      });
+    }
+  }
+
+  function messageErreurDepot(code) {
+    var messages = {
+      not_verified: "Votre espace n'est plus vérifié.",
+      rate_limited: 'Trop de dépôts, réessayez plus tard.',
+      invalid_title: 'Le titre est invalide.',
+      invalid_category: 'Choisissez une catégorie.',
+      invalid_location_name: 'Le nom du lieu est invalide.',
+      invalid_address: "L'adresse est invalide.",
+      invalid_city: 'La ville est invalide.',
+      invalid_time: "L'heure est invalide.",
+      invalid_date: 'La date est invalide.',
+      invalid_activity_id: 'Sélection invalide.',
+      activity_not_found: "Cette sortie n'est plus disponible.",
+      activity_not_event: "Cette sortie est un lieu, elle ne se modifie pas depuis ce formulaire."
+    };
+    return messages[code] || "L'envoi n'a pas abouti, réessayez.";
+  }
+
+  function onEnvoiFormulaireEvenement(event, mode, activityId) {
+    event.preventDefault();
+    var messageEl = document.getElementById('pro-depot-form-message');
+    var bouton = event.target.querySelector('button[type="submit"]');
+    var corps = {
+      location_name: document.getElementById('pro-depot-lieu-nom').value,
+      address: document.getElementById('pro-depot-adresse').value,
+      city: document.getElementById('pro-depot-ville').value,
+      title: document.getElementById('pro-depot-titre').value,
+      category: document.getElementById('pro-depot-categorie').value,
+      description: document.getElementById('pro-depot-description').value,
+      date: document.getElementById('pro-depot-date').value,
+      time: document.getElementById('pro-depot-heure').value,
+      age_min: document.getElementById('pro-depot-age-min').value,
+      age_max: document.getElementById('pro-depot-age-max').value,
+      price: document.getElementById('pro-depot-tarif').value,
+      link: document.getElementById('pro-depot-lien').value
+    };
+    if (mode === 'update') corps.activity_id = activityId;
+    bouton.disabled = true;
+    definirMessage(messageEl, 'Envoi en cours…', false);
+    appelApi(mode === 'update' ? 'update_event' : 'create_event', corps, true).then(function (resultat) {
+      if (resultat.ok && resultat.data && resultat.data.ok) {
+        chargeMesSorties();
+        afficheFormulaireEvenement('create', null);
+        var zone = document.getElementById('pro-depot-zone');
+        var confirmation = mode === 'update' ? 'Correction envoyée, en cours de relecture.' : 'Envoyée, en cours de relecture.';
+        zone.insertAdjacentHTML('afterbegin', '<p class="pro-message">' + ech(confirmation) + '</p>');
+      } else {
+        bouton.disabled = false;
+        definirMessage(messageEl, messageErreurDepot(resultat.data && resultat.data.error), true);
+      }
+    }).catch(function () {
+      bouton.disabled = false;
+      definirMessage(messageEl, "L'envoi n'a pas abouti, réessayez.", true);
+    });
+  }
+
+  // ── Point d'entrée ───────────────────────────────────────────────────
+
+  function demarre() {
+    sb = window.supabase.createClient(SUPABASE_URL, ANON_KEY, { auth: { detectSessionInUrl: false } });
+    afficheChargement();
+    sb.auth.getSession().then(function (r) {
+      var session = r.data && r.data.session;
+      if (session) { chargeCompte(); return; }
+      if (jeton) {
+        // Toute issue (succès ou 404) retombe sur l'état connexion — jamais
+        // un écran terminal (consigne de sécurité, PLAN § consigne 4a). En
+        // cas de succès, la réponse porte l'adresse de l'espace tout juste
+        // activé — elle pré-remplit l'écran qui suit (fix parcours
+        // « mauvaise adresse saisie »), rien de plus qu'une preuve déjà en
+        // main du porteur du jeton.
+        appelApi('activate', { t: jeton }, false).catch(function () { return null; }).then(function (resultat) {
+          var reponse = resultat && resultat.ok ? resultat.data : null;
+          afficheConnexion({
+            apresActivation: true,
+            email: reponse ? reponse.email : null,
+            structureName: reponse ? reponse.structure_name : null
+          });
+        });
+        return;
+      }
+      afficheDemande();
+    }).catch(function () { afficheErreurReseau(); });
+  }
+
+  demarre();
+})();
+
+      </script>
+    </div>
+  </main>
+
+  <footer class="pied">
+    <div class="enveloppe">
+      <nav class="pied-liens" aria-label="Pied de page">
+        <a href="/">Accueil</a>
+        <a href="/aide/">Aide</a>
+        <a href="/confidentialite/">Confidentialité</a>
+        <a href="/conditions/">Conditions</a>
+        <a href="/suppression-de-compte/">Supprimer mon compte</a>
+        <a href="/signaler-un-contenu/">Signaler un contenu</a>
+      </nav>
+      <p>Une question, une remarque, une erreur dans une fiche ? Écris à <a href="mailto:bonjour@ursonapp.fr">bonjour@ursonapp.fr</a>.</p>
+      <p class="mentions">Urson est une application faite par un parent de Bourges, éditée à titre personnel. Site hébergé par GitHub Pages (GitHub, Inc.). Les données de l'app sont hébergées par Supabase, à Paris.</p>
+    </div>
+  </footer>
+</body>
+</html>
