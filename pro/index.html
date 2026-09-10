@@ -176,6 +176,30 @@
       width: 22px; height: 22px; border: 2px solid var(--coral); border-radius: 6px;
       margin: 1px 0 0; flex-shrink: 0;
     }
+    /* Suggestions d'adresse (API Adresse, BAN) — la liste se superpose au reste
+       du formulaire, d'où le conteneur en position relative et le z-index. */
+    .pro-champ--adresse { position: relative; }
+    .pro-suggestions {
+      position: absolute; top: 100%; left: 0; right: 0; z-index: 20;
+      margin: 4px 0 0; padding: 4px; list-style: none;
+      background: var(--bg-surface); border: 1px solid var(--line-medium);
+      border-radius: 14px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.10);
+      max-height: 260px; overflow-y: auto;
+    }
+    .pro-suggestions[hidden] { display: none; }
+    .pro-suggestion {
+      padding: 10px 12px; border-radius: 10px; font-size: 14px;
+      color: var(--fg-1); cursor: pointer; line-height: 1.35;
+    }
+    .pro-suggestion[aria-selected="true"], .pro-suggestion:hover { background: var(--bg-app); }
+    .pro-suggestion-ville { display: block; font-size: 12px; color: var(--fg-2); }
+    .pro-note-champ { margin: 6px 0 0; font-size: 12px; color: var(--fg-2); line-height: 1.4; }
+    /* Photo jointe au dépôt */
+    .pro-fichier { font-size: 14px; color: var(--fg-1); font-family: inherit; width: 100%; }
+    .pro-apercu {
+      margin: 10px 0 0; max-height: 180px; border-radius: 12px;
+      border: 1px solid var(--line-medium); display: block;
+    }
     .pro-lien-retour {
       background: none; border: none; padding: 0; color: var(--coral-deep);
       font-weight: 700; font-size: 15px; cursor: pointer; text-decoration: underline;
@@ -263,6 +287,22 @@
   // publique, sans JWT) — posée juste avant d'afficher le formulaire de
   // demande, relue à l'envoi (jamais une constante recopiée, voir en-tête).
   var clauseVersionCourante = null;
+  // Clause de DROITS SUR LE VISUEL — à ne pas confondre avec ci-dessus. Elle
+  // vient de visual_rights_clause (réponse de 'me'), servie depuis
+  // _shared/organizerRightsClause.ts, et n'est JAMAIS recopiée ici : un dépôt
+  // qui ne porte pas la version courante est refusé côté serveur. La clé
+  // rights_clause de la même réponse porte, elle, la clause de PROPRIÉTÉ
+  // malgré son nom — nommage historique, jamais renommé (une page en cache
+  // navigateur la lit encore).
+  var clauseVisuelCourante = null;
+  // Coordonnées de la dernière suggestion d'adresse RETENUE par l'organisateur.
+  // Remises à null par toute frappe dans « Adresse » ou « Ville » : c'est
+  // l'invariant du champ — jamais de coordonnées qui ne correspondent plus au
+  // texte affiché. Absentes, le dépôt passe quand même (arbitrage Kevin du
+  // 2026-09-10) et l'admin situe le lieu comme avant.
+  var coordonneesRetenues = null;
+  var suggestionsEnCours = null;
+  var suggestionsTimer = null;
 
   function ech(valeur) {
     return String(valeur == null ? '' : valeur)
@@ -356,6 +396,90 @@
         return { ok: reponse.ok, status: reponse.status, data: data };
       });
     });
+  }
+
+  // Même API, même JWT, mais un corps multipart : c'est la seule façon d'envoyer
+  // un fichier sans le passer en base64 (qui gonflerait la charge d'un tiers et
+  // obligerait le serveur à décoder avant de savoir s'il refuse). Le
+  // Content-Type n'est PAS posé à la main : le navigateur doit y écrire lui-même
+  // la « boundary » du multipart, et un en-tête manuel la lui ferait perdre.
+  function appelApiFichier(action, corps, fichier) {
+    var form = new FormData();
+    form.append('action', action);
+    if (corps) {
+      for (var c in corps) {
+        if (corps[c] === null || corps[c] === undefined) continue;
+        form.append(c, String(corps[c]));
+      }
+    }
+    if (fichier) form.append('file', fichier);
+
+    return sb.auth.getSession().then(function (r) {
+      var session = r.data && r.data.session;
+      var jetonAcces = session ? session.access_token : null;
+      var enTetes = { apikey: ANON_KEY };
+      if (jetonAcces) enTetes.Authorization = 'Bearer ' + jetonAcces;
+      return fetch(API_URL, { method: 'POST', headers: enTetes, body: form });
+    }).then(function (reponse) {
+      return reponse.json().catch(function () { return null; }).then(function (data) {
+        return { ok: reponse.ok, status: reponse.status, data: data };
+      });
+    });
+  }
+
+  // ── Suggestions d'adresse — API Adresse (BAN, data.gouv.fr) ──────────
+  // Service public français, sans compte ni clé, licence ODbL. Il reçoit le
+  // TEXTE TAPÉ dans le champ d'adresse, et rien d'autre : ni l'identité de
+  // l'organisateur, ni son espace, ni le reste du formulaire. Déclaré à ce titre
+  // dans docs/inventaire-donnees.md et dans lib/confidentialiteContent.ts.
+  //
+  // Le biais lat/lon (Bourges) ne restreint rien : il ordonne seulement les
+  // résultats, pour qu'une rue du Berry passe devant son homonyme parisienne.
+  //
+  // Toute panne est SILENCIEUSE — pas de message, pas de blocage. Le champ
+  // redevient un champ texte ordinaire et le dépôt reste possible.
+  var ADRESSE_API_URL = 'https://api-adresse.data.gouv.fr/search/';
+  var ADRESSE_BIAIS = { lat: '47.081', lon: '2.398' };
+  var ADRESSE_DEBOUNCE_MS = 300;
+  var ADRESSE_MIN_CARACTERES = 3;
+
+  function chercheAdresses(texte) {
+    var url = ADRESSE_API_URL +
+      '?q=' + encodeURIComponent(texte) +
+      '&limit=5&lat=' + ADRESSE_BIAIS.lat + '&lon=' + ADRESSE_BIAIS.lon;
+    return fetch(url, { method: 'GET' }).then(function (reponse) {
+      if (!reponse.ok) return [];
+      return reponse.json();
+    }).then(function (data) {
+      var features = data && data.features ? data.features : [];
+      var sorties = [];
+      for (var i = 0; i < features.length; i++) {
+        var f = features[i];
+        var p = f && f.properties ? f.properties : null;
+        var g = f && f.geometry ? f.geometry : null;
+        var coords = g && g.coordinates ? g.coordinates : null;
+        // GeoJSON : [longitude, latitude] — dans CET ordre. L'inverser
+        // publierait chaque sortie du Cher quelque part en mer Noire.
+        var lon = coords ? Number(coords[0]) : NaN;
+        var lat = coords ? Number(coords[1]) : NaN;
+        if (!p || !isFinite(lat) || !isFinite(lon)) continue;
+        if (lat === 0 && lon === 0) continue;
+        // Une COMMUNE entière n'est pas une adresse, et ses coordonnées sont
+        // celles du centre-bourg. Retenue telle quelle, elle donnerait à la
+        // sortie des coordonnées approximatives présentées comme exactes — et
+        // surtout elle ferait taire la garde d'approbation admin, qui ne
+        // vérifie que la PRÉSENCE de coordonnées. Mieux vaut aucune coordonnée,
+        // qui alerte l'admin, qu'une coordonnée vague qui l'endort. Les
+        // lieux-dits ('locality') restent proposés : eux sont situés.
+        // Mesuré le 2026-09-10 : « mehun sur yevre » rend la commune seule.
+        if (p.type === 'municipality') continue;
+        var adresse = p.name || p.label || '';
+        var ville = p.city || '';
+        if (!adresse || !ville) continue;
+        sorties.push({ adresse: adresse, ville: ville, label: p.label || '', lat: lat, lon: lon });
+      }
+      return sorties;
+    }).catch(function () { return []; });
   }
 
   // ── États génériques ─────────────────────────────────────────────────
@@ -607,6 +731,11 @@
       if (!resultat.ok || !resultat.data) { afficheErreurReseau(); return; }
       var compte = resultat.data.account;
       var clause = resultat.data.rights_clause;
+      // Clause de droits sur le visuel, gardée en fermeture pour le formulaire
+      // de dépôt (voir clauseVisuelCourante). Absente d'une réponse servie par
+      // une ancienne version de la fonction : le champ photo ne s'affiche alors
+      // pas du tout, plutôt que d'afficher une case sans texte.
+      clauseVisuelCourante = resultat.data.visual_rights_clause || null;
       if (!compte) {
         // Impasse qui se rattrape (fix parcours « mauvaise adresse saisie
         // après activation ») : l'espace peut être rattaché à un alias ou
@@ -806,9 +935,14 @@
           '<label class="pro-label" for="pro-depot-lieu-nom">Nom du lieu</label>' +
           '<input class="pro-input" type="text" id="pro-depot-lieu-nom" required maxlength="200" value="' + ech(val(estEdition ? activite.locationName : '')) + '" />' +
         '</div>' +
-        '<div class="pro-champ">' +
+        '<div class="pro-champ pro-champ--adresse">' +
           '<label class="pro-label" for="pro-depot-adresse">Adresse</label>' +
-          '<input class="pro-input" type="text" id="pro-depot-adresse" required maxlength="300" value="' + ech(val(estEdition ? activite.address : '')) + '" />' +
+          '<input class="pro-input" type="text" id="pro-depot-adresse" required maxlength="300" ' +
+            'autocomplete="off" role="combobox" aria-expanded="false" aria-autocomplete="list" ' +
+            'aria-controls="pro-depot-suggestions" ' +
+            'value="' + ech(val(estEdition ? activite.address : '')) + '" />' +
+          '<ul class="pro-suggestions" id="pro-depot-suggestions" role="listbox" aria-label="Adresses proposées" hidden></ul>' +
+          '<p class="pro-note-champ">Choisissez une adresse proposée pour situer la sortie sur la carte. Si la vôtre n’apparaît pas, tapez-la simplement.</p>' +
         '</div>' +
         '<div class="pro-champ">' +
           '<label class="pro-label" for="pro-depot-ville">Ville</label>' +
@@ -854,6 +988,7 @@
           '<label class="pro-label" for="pro-depot-lien">Lien (facultatif)</label>' +
           '<input class="pro-input" type="text" id="pro-depot-lien" maxlength="300" placeholder="https://" value="' + ech(val(estEdition ? activite.registrationUrl : '')) + '" />' +
         '</div>' +
+        blocPhotoHtml() +
         '<button type="submit" class="pro-bouton-primaire">' + (estEdition ? 'Enregistrer la correction' : 'Déposer la sortie') + '</button>' +
         (estEdition ? '<p><button type="button" class="pro-lien-retour" id="pro-depot-annuler">Annuler la modification</button></p>' : '') +
         '<p class="pro-message" id="pro-depot-form-message"></p>' +
@@ -867,6 +1002,10 @@
       if (champCategorie) champCategorie.value = activite.category;
     }
 
+    coordonneesRetenues = null;
+    cableAutocompletionAdresse();
+    cablePhoto();
+
     document.getElementById('pro-form-depot').addEventListener('submit', function (event) {
       onEnvoiFormulaireEvenement(event, mode, estEdition ? activite.id : null);
     });
@@ -875,6 +1014,175 @@
         afficheFormulaireEvenement('create', null);
       });
     }
+  }
+
+  // ── Photo jointe ─────────────────────────────────────────────────────
+  // Facultative : un dépôt sans visuel reste exactement ce qu'il était. La case
+  // de droits est DÉCOCHÉE et n'apparaît qu'une fois un fichier choisi — cocher
+  // une clause avant d'avoir quoi que ce soit à déclarer n'aurait aucun sens, et
+  // le serveur refuse de toute façon un fichier sans elle.
+  //
+  // Le texte de la clause vient de clauseVisuelCourante, jamais d'ici. Sans
+  // lui (fonction plus ancienne côté serveur), tout le bloc disparaît : mieux
+  // vaut pas de champ photo qu'un champ photo sans sa clause.
+
+  var PHOTO_MAX_OCTETS = 10 * 1024 * 1024;
+  var PHOTO_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+
+  function blocPhotoHtml() {
+    if (!clauseVisuelCourante || !clauseVisuelCourante.text) return '';
+    return '' +
+      '<div class="pro-champ">' +
+        '<label class="pro-label" for="pro-depot-photo">Photo ou affiche (facultatif)</label>' +
+        '<input class="pro-fichier" type="file" id="pro-depot-photo" accept="image/jpeg,image/png,image/webp" />' +
+        '<p class="pro-note-champ">JPEG, PNG ou WebP, 10 Mo maximum. Elle est relue avant d’être publiée.</p>' +
+        '<div id="pro-depot-photo-zone" hidden>' +
+          '<img class="pro-apercu" id="pro-depot-photo-apercu" alt="Aperçu de la photo choisie" />' +
+          '<label class="pro-case">' +
+            '<input type="checkbox" id="pro-depot-photo-clause" />' +
+            '<span>' + ech(clauseVisuelCourante.text) + '</span>' +
+          '</label>' +
+        '</div>' +
+        '<p class="pro-message" id="pro-depot-photo-message"></p>' +
+      '</div>';
+  }
+
+  function cablePhoto() {
+    var champ = document.getElementById('pro-depot-photo');
+    if (!champ) return;
+    var zone = document.getElementById('pro-depot-photo-zone');
+    var apercu = document.getElementById('pro-depot-photo-apercu');
+    var messageEl = document.getElementById('pro-depot-photo-message');
+
+    champ.addEventListener('change', function () {
+      var fichier = champ.files && champ.files[0] ? champ.files[0] : null;
+      definirMessage(messageEl, '', false);
+      if (apercu.src) { URL.revokeObjectURL(apercu.src); apercu.removeAttribute('src'); }
+      if (!fichier) { zone.hidden = true; return; }
+
+      // Refus côté client : un aller-retour évité, jamais une garantie. Le
+      // serveur renifle les octets et reste seul juge (une extension ne prouve
+      // rien du contenu).
+      if (PHOTO_TYPES.indexOf(fichier.type) === -1) {
+        champ.value = '';
+        zone.hidden = true;
+        definirMessage(messageEl, 'Formats acceptés : JPEG, PNG ou WebP.', true);
+        return;
+      }
+      if (fichier.size > PHOTO_MAX_OCTETS) {
+        champ.value = '';
+        zone.hidden = true;
+        definirMessage(messageEl, 'Cette image dépasse 10 Mo.', true);
+        return;
+      }
+      apercu.src = URL.createObjectURL(fichier);
+      zone.hidden = false;
+    });
+  }
+
+  // ── Autocomplétion d'adresse ─────────────────────────────────────────
+
+  function cableAutocompletionAdresse() {
+    var champAdresse = document.getElementById('pro-depot-adresse');
+    var champVille = document.getElementById('pro-depot-ville');
+    var liste = document.getElementById('pro-depot-suggestions');
+    if (!champAdresse || !champVille || !liste) return;
+
+    var propositions = [];
+    var indexActif = -1;
+
+    function ferme() {
+      liste.hidden = true;
+      liste.innerHTML = '';
+      champAdresse.setAttribute('aria-expanded', 'false');
+      propositions = [];
+      indexActif = -1;
+    }
+
+    function marqueActif() {
+      var elements = liste.querySelectorAll('.pro-suggestion');
+      for (var i = 0; i < elements.length; i++) {
+        elements[i].setAttribute('aria-selected', i === indexActif ? 'true' : 'false');
+      }
+    }
+
+    // Une suggestion retenue remplit adresse ET ville, et mémorise ses
+    // coordonnées. C'est le SEUL endroit qui pose coordonneesRetenues.
+    function retient(proposition) {
+      champAdresse.value = proposition.adresse;
+      champVille.value = proposition.ville;
+      coordonneesRetenues = { lat: proposition.lat, lon: proposition.lon };
+      ferme();
+    }
+
+    function rend(resultats) {
+      propositions = resultats;
+      indexActif = -1;
+      if (!resultats.length) { ferme(); return; }
+      var html = '';
+      for (var i = 0; i < resultats.length; i++) {
+        html += '<li class="pro-suggestion" role="option" aria-selected="false" data-index="' + i + '">' +
+          ech(resultats[i].adresse) +
+          '<span class="pro-suggestion-ville">' + ech(resultats[i].ville) + '</span>' +
+        '</li>';
+      }
+      liste.innerHTML = html;
+      liste.hidden = false;
+      champAdresse.setAttribute('aria-expanded', 'true');
+      var elements = liste.querySelectorAll('.pro-suggestion');
+      for (var m = 0; m < elements.length; m++) {
+        // mousedown et non click : le blur du champ ferme la liste, et un
+        // click n'arriverait jamais jusqu'ici.
+        elements[m].addEventListener('mousedown', function (event) {
+          event.preventDefault();
+          var idx = Number(event.currentTarget.getAttribute('data-index'));
+          if (propositions[idx]) retient(propositions[idx]);
+        });
+      }
+    }
+
+    // L'INVARIANT du champ : toute frappe oublie les coordonnées retenues. Sans
+    // cette ligne, un organisateur pourrait choisir « Rue de Bourges » puis
+    // retaper « Salle des fêtes de Vierzon » et déposer une sortie située à
+    // 60 km de son adresse affichée — une fiche qui se contredit elle-même.
+    function oublieCoordonnees() { coordonneesRetenues = null; }
+    champVille.addEventListener('input', oublieCoordonnees);
+
+    champAdresse.addEventListener('input', function () {
+      oublieCoordonnees();
+      var texte = champAdresse.value.trim();
+      if (suggestionsTimer) { clearTimeout(suggestionsTimer); suggestionsTimer = null; }
+      if (texte.length < ADRESSE_MIN_CARACTERES) { ferme(); return; }
+      suggestionsTimer = setTimeout(function () {
+        // Jeton de fraîcheur : la réponse d'une frappe déjà périmée est
+        // ignorée, sinon une requête lente écraserait une plus récente.
+        var demande = {};
+        suggestionsEnCours = demande;
+        chercheAdresses(texte).then(function (resultats) {
+          if (suggestionsEnCours !== demande) return;
+          rend(resultats);
+        });
+      }, ADRESSE_DEBOUNCE_MS);
+    });
+
+    champAdresse.addEventListener('keydown', function (event) {
+      if (liste.hidden || !propositions.length) return;
+      if (event.key === 'ArrowDown') {
+        event.preventDefault();
+        indexActif = (indexActif + 1) % propositions.length;
+        marqueActif();
+      } else if (event.key === 'ArrowUp') {
+        event.preventDefault();
+        indexActif = indexActif <= 0 ? propositions.length - 1 : indexActif - 1;
+        marqueActif();
+      } else if (event.key === 'Enter') {
+        if (indexActif >= 0) { event.preventDefault(); retient(propositions[indexActif]); }
+      } else if (event.key === 'Escape') {
+        ferme();
+      }
+    });
+
+    champAdresse.addEventListener('blur', function () { setTimeout(ferme, 0); });
   }
 
   function messageErreurDepot(code) {
@@ -890,7 +1198,16 @@
       invalid_date: 'La date est invalide.',
       invalid_activity_id: 'Sélection invalide.',
       activity_not_found: "Cette sortie n'est plus disponible.",
-      activity_not_event: "Cette sortie est un lieu, elle ne se modifie pas depuis ce formulaire."
+      activity_not_event: "Cette sortie est un lieu, elle ne se modifie pas depuis ce formulaire.",
+      // Refus propres au visuel joint. rights_version_mismatch : la clause a
+      // changé pendant que le formulaire était ouvert — recharger la page suffit,
+      // et c'est ce qu'on dit, plutôt que d'évoquer une « version ».
+      rights_required: 'Cochez la case de droits pour joindre une photo.',
+      rights_version_mismatch: 'Nos conditions ont changé. Rechargez la page et redéposez.',
+      missing_file: "La photo n'est pas arrivée, réessayez.",
+      too_large: 'Cette image dépasse 10 Mo.',
+      pdf_not_supported: 'Les PDF ne sont pas acceptés ici. Envoyez une image.',
+      unsupported_type: 'Formats acceptés : JPEG, PNG ou WebP.'
     };
     return messages[code] || "L'envoi n'a pas abouti, réessayez.";
   }
@@ -914,14 +1231,38 @@
       link: document.getElementById('pro-depot-lien').value
     };
     if (mode === 'update') corps.activity_id = activityId;
+
+    // Coordonnées : envoyées SEULEMENT si elles viennent d'une suggestion encore
+    // valide (voir coordonneesRetenues). Absentes, le dépôt part sans elles et
+    // l'admin situe le lieu avant d'approuver, comme aujourd'hui.
+    if (coordonneesRetenues) {
+      corps.latitude = coordonneesRetenues.lat;
+      corps.longitude = coordonneesRetenues.lon;
+    }
+
+    var champPhoto = document.getElementById('pro-depot-photo');
+    var fichier = champPhoto && champPhoto.files && champPhoto.files[0] ? champPhoto.files[0] : null;
+    if (fichier) {
+      var casePhoto = document.getElementById('pro-depot-photo-clause');
+      if (!casePhoto || !casePhoto.checked) {
+        definirMessage(messageEl, messageErreurDepot('rights_required'), true);
+        return;
+      }
+      corps.rights = 'yes';
+      corps.rights_version = clauseVisuelCourante ? clauseVisuelCourante.version : '';
+    }
+
     bouton.disabled = true;
     definirMessage(messageEl, 'Envoi en cours…', false);
-    appelApi(mode === 'update' ? 'update_event' : 'create_event', corps, true).then(function (resultat) {
+    var action = mode === 'update' ? 'update_event' : 'create_event';
+    var envoi = fichier ? appelApiFichier(action, corps, fichier) : appelApi(action, corps, true);
+    envoi.then(function (resultat) {
       if (resultat.ok && resultat.data && resultat.data.ok) {
         chargeMesSorties();
         afficheFormulaireEvenement('create', null);
         var zone = document.getElementById('pro-depot-zone');
         var confirmation = mode === 'update' ? 'Correction envoyée, en cours de relecture.' : 'Envoyée, en cours de relecture.';
+        if (fichier) confirmation += ' Votre photo est relue avant d’être publiée.';
         zone.insertAdjacentHTML('afterbegin', '<p class="pro-message">' + ech(confirmation) + '</p>');
       } else {
         bouton.disabled = false;
