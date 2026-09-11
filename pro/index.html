@@ -132,6 +132,17 @@
       main { padding-top: 28px; }
       .carte { padding: 20px; }
     }
+    /* --fg-ink (#442C2E) est l'encre du texte statique de la phrase
+       « C'est quand ? » — lib/tokens.ts, design-system § 1.11 règle 9. Il
+       n'est pas dans le bloc :root partagé de build-web-pages.mjs parce
+       qu'aucune autre page n'en a l'usage : on le pose ici, à la page. Ce
+       n'est PAS une teinte neutre générique, ne pas s'en servir pour un
+       libellé — les libellés sont en --fg-1.
+       La colonne passe de 720 à 880 px sur CETTE page seulement : un
+       formulaire de dépôt en cartes-questions respire mal à 720. */
+    :root { --fg-ink: #442C2E; }
+    .enveloppe { max-width: 880px; }
+
     .pro-eyebrow {
       font-size: 11px; font-weight: 600; text-transform: uppercase;
       letter-spacing: .05em; color: var(--fg-2); margin: 0 0 8px;
@@ -145,9 +156,59 @@
     .pro-carte h2 { font-size: 17px; margin: 0 0 6px; }
     .pro-champ { margin-bottom: 16px; }
     .pro-champ:last-of-type { margin-bottom: 0; }
+    /* Le libellé redevient une question lisible : 15 px en --fg-1, plus les
+       petites capitales 11 px grises qui faisaient « panneau d'administration ».
+       --fg-1 et non --fg-ink (règle 9 du design-system), et c'est aussi ce
+       que fait le titre de QuestionCard côté app. */
     .pro-label {
-      display: block; font-size: 11px; font-weight: 600; text-transform: uppercase;
-      letter-spacing: .05em; color: var(--fg-2); margin-bottom: 6px;
+      display: block; font-size: 15px; font-weight: 700;
+      color: var(--fg-1); margin-bottom: 6px;
+    }
+    /* Carte-question du dépôt — radius 20 (r-lg, le variant step de
+       QuestionCard), jamais 24 qui n'existe dans aucune échelle.
+       Ombre : deux couches au lieu de la recette shadow-card du site
+       (0 4px 20px coral à 8 %). Écart assumé et voulu — une pile de six
+       cartes a besoin d'un contact net au ras du bord (la couche de 1 px,
+       teintée encre) que la recette d'origine ne donne pas, la seconde
+       couche restant teintée coral-deep comme elle. Jamais de noir pur. */
+    .pro-question {
+      background: var(--bg-surface); border: 1px solid var(--line-soft);
+      border-radius: 20px; padding: 24px 26px 26px; margin-bottom: 14px;
+      box-shadow: 0 1px 2px rgba(68, 44, 46, 0.04), 0 18px 44px -30px rgba(232, 77, 77, 0.34);
+    }
+    /* #FFD9C6 : peach-pale (#FFB088) éclairci — la carte des dates est la
+       seule à porter une bordure teintée, parce qu'elle est la seule à
+       contenir un contrôle plutôt que des champs. */
+    .pro-question--dates { border-color: #FFD9C6; }
+    .pro-q-entete { display: flex; align-items: baseline; gap: 14px; }
+    .pro-q-titre { flex: 1; margin: 0 0 4px; font-size: 21px; font-weight: 800; letter-spacing: -0.4px; color: var(--fg-1); }
+    /* Le numéro de question est un repère d'ordre, pas une information à
+       lire : fg-3, le gris que le site emploie déjà pour ce registre. */
+    .pro-q-num { font-size: 13px; font-weight: 700; color: var(--fg-3); }
+    .pro-q-sous { margin: 0 0 18px; font-size: 15px; line-height: 1.5; color: var(--fg-2); }
+    /* Encart d'aide — c'est lui qui règle la collision « nom du lieu / titre » :
+       il dit, à l'endroit exact où la confusion naît, où va l'autre nom. */
+    .pro-encart {
+      display: flex; align-items: flex-start; gap: 10px; margin: 12px 0 0;
+      padding: 12px 15px; border-radius: 14px; background: var(--bg-app);
+    }
+    .pro-encart p { margin: 0; font-size: 14px; line-height: 1.5; color: var(--fg-2); }
+    .pro-pastilles { display: flex; flex-wrap: wrap; gap: 8px; }
+    .pro-pastille {
+      height: 44px; padding: 0 18px; border-radius: 999px;
+      border: 1px solid var(--line-medium); background: var(--bg-surface);
+      font-family: inherit; font-size: 15px; font-weight: 600; color: var(--fg-1); cursor: pointer;
+    }
+    .pro-pastille[aria-pressed="true"] {
+      border: 1.5px solid var(--coral); background: var(--bg-soft);
+      color: var(--coral-deep); font-weight: 700;
+    }
+    /* Focus : la recette DÉJÀ en place sur ce site (signalement.mjs), sans
+       halo. Une troisième recette de focus sur le même domaine n'apporterait
+       rien qu'une incohérence de plus. */
+    .pro-input:focus-visible, .pro-pastille:focus-visible,
+    .pro-bouton-primaire:focus-visible, .pro-bouton-secondaire:focus-visible {
+      outline: 2px solid var(--coral-deep); outline-offset: 1px;
     }
     .pro-ligne-deux { display: flex; gap: 12px; }
     .pro-ligne-deux > div { flex: 1; min-width: 0; }
@@ -221,7 +282,116 @@
     .pro-ligne-resultat span { flex: 1; min-width: 0; }
     @media (max-width: 480px) {
       .pro-ligne-deux { flex-direction: column; gap: 16px; }
+      .pro-question { padding: 20px 18px 22px; }
+      .pro-q-titre { font-size: 19px; }
     }
+
+    /* ── Phrase « C'est quand ? » ── */
+    .pro-d-bloc { margin-top: 4px; }
+    .pro-d-phrase {
+      display: flex; flex-wrap: wrap; align-items: baseline;
+      font-size: 19px; line-height: 34px; color: var(--fg-ink);
+    }
+    .pro-d-sep { height: 1px; background: var(--line-soft); margin: 16px 0; }
+    .pro-d-mot {
+      font-family: inherit; font-size: 19px; line-height: 34px;
+      border: 0; background: none; padding: 0; margin: 0; text-align: left;
+      color: var(--fg-ink); white-space: pre;
+    }
+    .pro-d-pose {
+      color: var(--coral-deep); font-weight: 700; cursor: pointer;
+      text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 5px;
+    }
+    /* Le trou « en attente » : bordure pointillée de la MÊME teinte que son
+       texte, comme holeInnerPending dans sentenceAtoms.tsx. Un gris plus clair
+       pour la bordure introduirait une seconde teinte que l'app ne connaît pas. */
+    .pro-d-attente {
+      color: var(--fg-2); cursor: pointer; white-space: normal;
+      border-bottom: 1.5px dashed var(--fg-2);
+    }
+    .pro-d-edition {
+      color: var(--coral-deep); font-weight: 700; cursor: pointer;
+      background: var(--bg-soft); border-radius: 6px; padding: 1px 7px;
+    }
+    /* Radius 6 et non 8 : valeur de holeInnerEditing (sentenceAtoms.tsx). */
+    .pro-d-resume { margin: 4px 0 0; font-size: 14px; line-height: 21px; color: var(--fg-2); }
+
+    /* ── Panneaux ── */
+    /* #FFFCFA : un cran plus chaud que bg-surface, pour détacher le panneau
+       ouvert de la carte blanche qui le contient sans poser une seconde
+       bordure. Radius 14 (r-md de l'échelle), sous les 20 de la carte. */
+    .pro-d-panneau {
+      margin-top: 16px; padding: 18px; border-radius: 14px;
+      background: #FFFCFA; border: 1px solid var(--line-soft);
+    }
+    .pro-d-titre-panneau {
+      font-size: 12px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: .05em; color: var(--fg-2); margin: 0 0 10px;
+    }
+    .pro-d-mois { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .pro-d-mois-nom { flex: 1; text-align: center; font-size: 16px; font-weight: 700; color: var(--fg-1); }
+    .pro-d-grille { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 3px; }
+    .pro-d-entete-jour { text-align: center; font-size: 12px; font-weight: 600; color: var(--fg-3); padding-bottom: 4px; }
+    .pro-d-case {
+      height: 44px; border-radius: 12px; border: 0; background: none;
+      font-family: inherit; font-size: 15px; font-weight: 600; color: var(--fg-1); cursor: pointer;
+    }
+    /* #D6D3D1 : les jours du mois voisin et les heures hors plage restent
+       lisibles mais clairement inertes — plus clair que fg-3, qui désigne du
+       texte secondaire ACTIF ailleurs sur le site. */
+    .pro-d-case-hors { color: #D6D3D1; }
+    .pro-d-case-on { background: var(--coral); color: var(--bg-surface); font-weight: 800; }
+    .pro-d-case-bord { background: var(--bg-soft); color: var(--coral-deep); font-weight: 800; }
+
+    .pro-d-pastilles { display: grid; grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); gap: 6px; }
+    .pro-d-pastille {
+      height: 44px; padding: 0 10px; border-radius: 999px;
+      border: 1px solid var(--line-medium); background: var(--bg-surface);
+      font-family: inherit; font-size: 14px; font-weight: 600; color: var(--fg-1); cursor: pointer;
+    }
+    .pro-d-pastille-on { border: 1.5px solid var(--coral); background: var(--bg-soft); color: var(--coral-deep); font-weight: 700; }
+    .pro-d-pastille-off { color: #D6D3D1; cursor: default; }
+    .pro-d-rangee { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .pro-d-rangee-fin {
+      display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+      margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line-soft);
+    }
+    .pro-d-espace { flex: 1; }
+
+    /* ── Compléments et actions ── */
+    .pro-d-complements { margin-top: 18px; }
+    .pro-d-complement {
+      border: 0; background: none; padding: 0 0 2px; font-family: inherit;
+      font-size: 16px; color: var(--fg-2); cursor: pointer;
+      border-bottom: 1.5px dashed var(--fg-2);
+    }
+    .pro-d-lien {
+      border: 0; background: none; padding: 0; font-family: inherit;
+      font-size: 14px; font-weight: 600; color: var(--fg-2); cursor: pointer;
+      text-decoration: underline; text-underline-offset: 3px;
+    }
+    .pro-d-actions { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; margin-top: 18px; }
+    .pro-d-ajouter {
+      display: inline-flex; align-items: center; gap: 8px; height: 48px; padding: 0 20px;
+      border-radius: 999px; background: var(--bg-surface); border: 1px solid var(--line-medium);
+      font-family: inherit; font-size: 15px; font-weight: 700; color: var(--fg-ink); cursor: pointer;
+    }
+    .pro-d-fige {
+      margin: 0; padding: 13px 16px; border-radius: 14px;
+      background: var(--bg-app); font-size: 14px; line-height: 1.5; color: var(--fg-2);
+    }
+    .pro-d-cache { display: none !important; }
+
+    /* Focus clavier — MÊME recette que le reste du site (signalement.mjs) :
+       outline 2px coral-deep, offset 1px, jamais de halo. Sans cette règle,
+       un utilisateur au clavier perdait toute trace de sa position dès qu'il
+       entrait dans le contrôle : la phrase, le calendrier, les horaires et le
+       rythme sont tous des boutons, et aucun ne se signalait. */
+    .pro-d-mot:focus-visible, .pro-d-pastille:focus-visible, .pro-d-case:focus-visible,
+    .pro-d-ajouter:focus-visible, .pro-d-lien:focus-visible, .pro-d-complement:focus-visible {
+      outline: 2px solid var(--coral-deep); outline-offset: 1px;
+    }
+
   </style>
 </head>
 <body>
@@ -301,6 +471,7 @@
   // texte affiché. Absentes, le dépôt passe quand même (arbitrage Kevin du
   // 2026-09-10) et l'admin situe le lieu comme avant.
   var coordonneesRetenues = null;
+  var categorieChoisie = '';
   var suggestionsEnCours = null;
   var suggestionsTimer = null;
 
@@ -867,7 +1038,10 @@
         html += '<ul class="pro-liste-sorties">';
         for (var i = 0; i < activites.length; i++) {
           var a = activites[i];
-          var quand = a.startsAt ? formateDateFr(a.startsAt) + ' à ' + formateHeureFr(a.startsAt) : '';
+          // dateLabel est rendu par le serveur, qui seul connaît toutes les
+          // occurrences de la fiche. Repli sur startsAt : une réponse d'un
+          // serveur plus ancien ne doit pas vider la colonne.
+          var quand = a.dateLabel || (a.startsAt ? formateDateFr(a.startsAt) + ' à ' + formateHeureFr(a.startsAt) : '');
           html += '<li class="pro-item-sortie pro-ligne-resultat"><span><strong>' + ech(a.title) + '</strong> — ' + ech(libelleKind(a.kind));
           if (quand) html += ' — ' + ech(quand);
           if (a.city) html += ' — ' + ech(a.city);
@@ -907,6 +1081,609 @@
     });
   }
 
+
+  // ── Contrôle « C'est quand ? » ───────────────────────────────────────
+  // Bornes IDENTIQUES au serveur, mais ce ne sont qu'un confort : la clé anon
+  // est publique, la page est du code public, et le serveur reste seul juge
+  // (METHODO § Sécurité règle 1).
+  var DATES_MAX_ENTREES = 200;
+  var DATES_MAX_CRENEAUX = 6;
+
+  var JOURS_NOM = ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche'];
+  var JOURS_CLE = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+  var JOURS_INITIALE = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
+  var MOIS_NOM = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin',
+    'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+  var FREQUENCES = [
+    { valeur: 'daily', libelle: 'Chaque jour' },
+    { valeur: 'weekly', libelle: 'Chaque semaine' },
+    { valeur: 'biweekly', libelle: 'Une semaine sur deux' },
+    { valeur: 'monthly', libelle: 'Chaque mois' }
+  ];
+
+  var dEtat = null;
+  var dEmpreinteInitiale = null;
+  var dEditables = true;
+
+  // ── Dates : composants numériques UNIQUEMENT (pièges #102 / #84 / #112) ──
+  // Jamais new Date(chaine). Un curseur de calendrier avance par setDate(),
+  // jamais par arithmetique en millisecondes.
+  function dDeuxChiffres(n) { return (n < 10 ? '0' : '') + n; }
+  function dIsoDe(d) { return d.getFullYear() + '-' + dDeuxChiffres(d.getMonth() + 1) + '-' + dDeuxChiffres(d.getDate()); }
+  function dAnnee(iso) { return parseInt(iso.slice(0, 4), 10); }
+  function dMois(iso) { return parseInt(iso.slice(5, 7), 10); }
+  function dQuantieme(iso) { return parseInt(iso.slice(8, 10), 10); }
+  function dDateDe(iso) { return new Date(dAnnee(iso), dMois(iso) - 1, dQuantieme(iso)); }
+  function dIndexJour(iso) { return (dDateDe(iso).getDay() + 6) % 7; }
+  function dAujourdhui() { return dIsoDe(new Date()); }
+  function dPlusSemaines(iso, n) {
+    var d = dDateDe(iso);
+    d.setDate(d.getDate() + n * 7);
+    return dIsoDe(d);
+  }
+
+  function dLibelleJour(iso) {
+    var q = dQuantieme(iso);
+    return JOURS_NOM[dIndexJour(iso)] + ' ' + (q === 1 ? '1er' : String(q)) + ' ' + MOIS_NOM[dMois(iso) - 1];
+  }
+  function dLibelleCourt(iso) {
+    var q = dQuantieme(iso);
+    return (q === 1 ? '1er' : String(q)) + ' ' + MOIS_NOM[dMois(iso) - 1];
+  }
+  function dLibelleHeure(hhmm) {
+    var h = parseInt(hhmm.slice(0, 2), 10);
+    var m = hhmm.slice(3);
+    return m === '00' ? h + 'h' : h + 'h' + m;
+  }
+  function dLibelleCreneau(c) {
+    if (!c.end) return 'à partir de ' + dLibelleHeure(c.start);
+    return 'de ' + dLibelleHeure(c.start) + ' à ' + dLibelleHeure(c.end);
+  }
+
+  // Libellés de rythme — décalque de describeRepeat (lib/dateRepetition.ts),
+  // repris au mot près, sans le nombre de séances que l'app n'affiche pas non
+  // plus (formatRepeatSummary).
+  function dJoursCoches(repeat) {
+    var noms = [];
+    for (var k = 0; k < JOURS_CLE.length; k++) {
+      if (repeat.weekdays.indexOf(JOURS_CLE[k]) !== -1) noms.push(JOURS_NOM[k]);
+    }
+    if (noms.length === 0) return '';
+    if (noms.length === 1) return noms[0];
+    return noms.slice(0, -1).join(', ') + ' et ' + noms[noms.length - 1];
+  }
+  function dTeteRythme(entree) {
+    var r = entree.repeat;
+    if (r.frequency === 'daily') return 'Chaque jour';
+    if (r.frequency === 'monthly') return 'Le ' + dQuantieme(entree.date) + ' de chaque mois';
+    var liste = dJoursCoches(r);
+    return r.frequency === 'biweekly' ? 'Un ' + liste + ' sur deux' : 'Chaque ' + liste;
+  }
+  function dResumeRythme(entree) {
+    var tete = dTeteRythme(entree);
+    var bas = tete.charAt(0).toLowerCase() + tete.slice(1);
+    return 'Ça revient ' + bas + ', jusqu\u2019au ' + dLibelleCourt(entree.repeat.until) + '.';
+  }
+
+  function dEntreeVide() {
+    return { date: null, slots: [], journee: false, end_date: null, repeat: null };
+  }
+
+  // ── Montage ──────────────────────────────────────────────────────────
+  // entreesInitiales vient du tableau de bord (occurrences réelles de la
+  // fiche) ; editables est false au-delà du plafond serveur, auquel cas la
+  // page n'affiche plus de contrôle et enverra keep_dates (voir lireCorpsDates).
+  function monteControleDates(entreesInitiales, editables) {
+    var entrees = [];
+    if (entreesInitiales && entreesInitiales.length) {
+      for (var i = 0; i < entreesInitiales.length; i++) {
+        var e = entreesInitiales[i];
+        entrees.push({
+          date: e.date || null,
+          slots: e.slots ? e.slots.slice() : [],
+          journee: !!(e.slots && e.slots.length === 0 && e.date),
+          end_date: e.end_date || null,
+          repeat: e.repeat || null
+        });
+      }
+    }
+    dEtat = { entrees: entrees, active: entrees.length > 0 ? entrees.length - 1 : 0, panneau: null, cible: 0, calY: 0, calM: 0 };
+    dEditables = editables !== false;
+    dEmpreinteInitiale = dEmpreinte();
+    dRend();
+  }
+
+  // Empreinte stable des dates — sert à décider, à l'envoi, si l'agenda a
+  // bougé. S'il n'a pas bougé, la page envoie keep_dates plutôt que la liste :
+  // réécrire les occurrences change leurs ids, et trois clés étrangères en
+  // ON DELETE CASCADE (attendances, outing_invitations,
+  // group_outing_invitations) emporteraient les « j'y vais » et les
+  // invitations des familles pour une simple faute de frappe dans le titre.
+  function dEmpreinte() {
+    var utiles = dEntreesUtiles();
+    var parts = [];
+    for (var i = 0; i < utiles.length; i++) {
+      var e = utiles[i];
+      var creneaux = [];
+      for (var j = 0; j < e.slots.length; j++) creneaux.push(e.slots[j].start + '-' + (e.slots[j].end || ''));
+      creneaux.sort();
+      var r = e.repeat ? e.repeat.frequency + ':' + e.repeat.weekdays.slice().sort().join(',') + ':' + e.repeat.until : '';
+      parts.push(e.date + '|' + creneaux.join('+') + '|' + (e.end_date || '') + '|' + r);
+    }
+    parts.sort();
+    return parts.join(';');
+  }
+
+  /** Entrées effectivement envoyables : celles dont le jour est posé. */
+  function dEntreesUtiles() {
+    var out = [];
+    for (var i = 0; i < dEtat.entrees.length; i++) {
+      if (dEtat.entrees[i].date) out.push(dEtat.entrees[i]);
+    }
+    return out;
+  }
+
+  /** Ce que l'envoi doit poser dans le corps — l'un des trois états du contrat
+   *  (PLAN § 4) : keep_dates, event_dates, ou rien (chemin hérité, jamais
+   *  produit par cette page). Rend null si la saisie est incomplète. */
+  function lireCorpsDates(mode) {
+    if (mode === 'update' && !dEditables) return { keep_dates: true };
+    var utiles = dEntreesUtiles();
+    if (utiles.length === 0) return null;
+    if (utiles.length > DATES_MAX_ENTREES) return null;
+    if (mode === 'update' && dEmpreinte() === dEmpreinteInitiale) return { keep_dates: true };
+    var liste = [];
+    for (var i = 0; i < utiles.length; i++) {
+      var e = utiles[i];
+      liste.push({
+        date: e.date,
+        slots: e.slots.slice(),
+        end_date: e.end_date,
+        repeat: e.repeat
+      });
+    }
+    return { event_dates: liste };
+  }
+
+  function messageSaisieDates(mode) {
+    if (mode === 'update' && !dEditables) return null;
+    var utiles = dEntreesUtiles();
+    if (utiles.length === 0) return 'Indiquez au moins un jour.';
+    if (utiles.length > DATES_MAX_ENTREES) {
+      return 'Au-delà de ' + DATES_MAX_ENTREES + ' dates, utilisez « Une plage de jours » plutôt qu\u2019une répétition quotidienne.';
+    }
+    return null;
+  }
+
+  // ── Rendu ────────────────────────────────────────────────────────────
+  function dRend() {
+    var zone = document.getElementById('pro-depot-dates');
+    if (!zone) return;
+    if (!dEditables) {
+      zone.innerHTML = '<p class="pro-d-fige">' +
+        'Cette sortie a plus de ' + DATES_MAX_ENTREES + ' dates. Vous pouvez corriger le reste de la fiche ; ' +
+        'pour changer les dates, écrivez-nous à ' + ech(CONTACT) + '.</p>';
+      return;
+    }
+    var html = '<div class="pro-d-bloc">' + dRendPhrases() + dRendPanneau() + dRendComplements() + dRendActions() + '</div>';
+    zone.innerHTML = html;
+  }
+
+  function dRendPhrases() {
+    var html = '';
+    for (var i = 0; i < dEtat.entrees.length; i++) {
+      if (i > 0) html += '<div class="pro-d-sep"></div>';
+      html += '<div class="pro-d-phrase">' + dMotsDe(i) + '</div>';
+      if (dEtat.entrees[i].repeat) {
+        html += '<p class="pro-d-resume">' + ech(dResumeRythme(dEtat.entrees[i])) + '</p>';
+      }
+    }
+    if (dEtat.entrees.length === 0) {
+      html += '<div class="pro-d-phrase">' + dMotStatique('Le ') +
+        dMot('quel jour\u00a0?', 'attente', 'jour', 0, null) + '</div>';
+    }
+    return html;
+  }
+
+  function dMotStatique(texte) {
+    return '<span class="pro-d-mot">' + ech(texte) + '</span>';
+  }
+
+  function dMot(texte, etat, action, i, cible) {
+    var classe = etat === 'attente' ? 'pro-d-attente' : (etat === 'edition' ? 'pro-d-edition' : 'pro-d-pose');
+    return '<button type="button" class="pro-d-mot ' + classe + '" data-a="' + action + '" data-i="' + i + '"' +
+      (cible === null || cible === undefined ? '' : ' data-c="' + cible + '"') + '>' + ech(texte) + '</button>';
+  }
+
+  function dEtatMot(i, action) {
+    return (dEtat.panneau && dEtat.panneau.i === i && dEtat.panneau.quoi === action) ? 'edition' : 'pose';
+  }
+
+  function dMotsDe(i) {
+    var e = dEtat.entrees[i];
+    var html = '';
+    var panneauIci = dEtat.panneau && dEtat.panneau.i === i;
+
+    if (e.repeat) {
+      html += dMot(dTeteRythme(e), dEtatMot(i, 'rythme'), 'rythme', i, null);
+    } else if (e.end_date) {
+      html += dMotStatique('Du ');
+      html += dMot(dLibelleJour(e.date), dEtatMot(i, 'jour'), 'jour', i, null);
+      html += dMotStatique(' au ');
+      html += dMot(dLibelleCourt(e.end_date), dEtatMot(i, 'periode'), 'periode', i, null);
+    } else if (e.date) {
+      html += dMotStatique('Le ');
+      html += dMot(dLibelleJour(e.date), dEtatMot(i, 'jour'), 'jour', i, null);
+    } else {
+      html += dMotStatique('Le ');
+      html += dMot('quel jour\u00a0?', panneauIci && dEtat.panneau.quoi === 'jour' ? 'edition' : 'attente', 'jour', i, null);
+    }
+
+    html += dMotStatique(', ');
+
+    if (e.journee && e.slots.length === 0) {
+      html += dMot('toute la journée', dEtatMot(i, 'heure'), 'heure', i, 0);
+    } else if (e.slots.length === 0) {
+      html += dMot('à quelle heure\u00a0?', panneauIci && dEtat.panneau.quoi === 'heure' ? 'edition' : 'attente', 'heure', i, 0);
+    } else {
+      for (var s = 0; s < e.slots.length; s++) {
+        if (s > 0) html += dMotStatique(' et ');
+        var enEdition = panneauIci && dEtat.panneau.quoi === 'heure' && dEtat.cible === s;
+        html += dMot(dLibelleCreneau(e.slots[s]), enEdition ? 'edition' : 'pose', 'heure', i, s);
+      }
+    }
+
+    if (e.repeat) {
+      html += dMotStatique(', jusqu\u2019au ');
+      html += dMot(dLibelleCourt(e.repeat.until), dEtatMot(i, 'rythme'), 'rythme', i, null);
+    }
+
+    var repondu = e.journee || e.slots.length > 0;
+    if (!panneauIci && repondu && e.date) html += dMotStatique('.');
+    return html;
+  }
+
+  // ── Panneaux ─────────────────────────────────────────────────────────
+  function dRendPanneau() {
+    if (!dEtat.panneau) return '';
+    var quoi = dEtat.panneau.quoi;
+    if (quoi === 'jour' || quoi === 'periode' || quoi === 'butoir') return dRendCalendrier();
+    if (quoi === 'heure') return dRendHeures();
+    if (quoi === 'rythme') return dRendRythme();
+    return '';
+  }
+
+  function dTitreCalendrier() {
+    var quoi = dEtat.panneau.quoi;
+    if (quoi === 'periode') return 'Jusqu\u2019à quel jour ça dure\u00a0?';
+    if (quoi === 'butoir') return 'Ça se répète jusqu\u2019à quand\u00a0?';
+    return 'Quel jour\u00a0?';
+  }
+
+  function dRendCalendrier() {
+    var i = dEtat.panneau.i;
+    var e = dEtat.entrees[i] || dEntreeVide();
+    var quoi = dEtat.panneau.quoi;
+    var html = '<div class="pro-d-panneau"><p class="pro-d-titre-panneau">' + ech(dTitreCalendrier()) + '</p>';
+    html += '<div class="pro-d-mois">' +
+      '<button type="button" class="pro-d-pastille" data-a="moisprec" aria-label="Mois précédent">\u2039</button>' +
+      '<span class="pro-d-mois-nom">' + ech(MOIS_NOM[dEtat.calM - 1] + ' ' + dEtat.calY) + '</span>' +
+      '<button type="button" class="pro-d-pastille" data-a="moissuiv" aria-label="Mois suivant">\u203a</button></div>';
+    html += '<div class="pro-d-grille">';
+    for (var k = 0; k < 7; k++) html += '<div class="pro-d-entete-jour">' + JOURS_INITIALE[k] + '</div>';
+    var premier = new Date(dEtat.calY, dEtat.calM - 1, 1);
+    var decalage = (premier.getDay() + 6) % 7;
+    for (var c = 0; c < 42; c++) {
+      var jour = new Date(dEtat.calY, dEtat.calM - 1, 1 - decalage + c);
+      var iso = dIsoDe(jour);
+      var dansLeMois = jour.getMonth() === dEtat.calM - 1;
+      var classe = dansLeMois ? '' : ' pro-d-case-hors';
+      if (quoi === 'jour' && iso === e.date) classe = ' pro-d-case-on';
+      if (quoi === 'periode' && iso === e.date) classe = ' pro-d-case-bord';
+      if (quoi === 'periode' && iso === e.end_date) classe = ' pro-d-case-on';
+      if (quoi === 'butoir' && e.repeat && iso === e.repeat.until) classe = ' pro-d-case-on';
+      html += '<button type="button" class="pro-d-case' + classe + '" data-a="caljour" data-d="' + iso + '">' +
+        jour.getDate() + '</button>';
+    }
+    html += '</div></div>';
+    return html;
+  }
+
+  function dTitreHeures() {
+    var e = dEtat.entrees[dEtat.panneau.i];
+    if (dEtat.cible === 'neuf') return 'Et aussi, de quelle heure à quelle heure\u00a0?';
+    var c = e.slots[dEtat.cible];
+    if (!c) return 'Ça commence à quelle heure\u00a0?';
+    if (!c.end) return 'Ça finit à quelle heure\u00a0?';
+    return 'De quelle heure à quelle heure\u00a0?';
+  }
+
+  function dRendHeures() {
+    var e = dEtat.entrees[dEtat.panneau.i];
+    var courant = dEtat.cible === 'neuf' ? null : e.slots[dEtat.cible];
+    var choisitFin = !!(courant && courant.start && !courant.end);
+    var html = '<div class="pro-d-panneau"><p class="pro-d-titre-panneau">' + ech(dTitreHeures()) + '</p>';
+    html += '<div class="pro-d-pastilles">';
+    for (var h = 7; h <= 22; h++) {
+      for (var q = 0; q < 2; q++) {
+        if (h === 22 && q === 1) continue;
+        var hhmm = dDeuxChiffres(h) + ':' + (q === 0 ? '00' : '30');
+        var classe = '';
+        if (choisitFin && hhmm < courant.start) classe = ' pro-d-pastille-off';
+        if (courant && (courant.start === hhmm || courant.end === hhmm)) classe = ' pro-d-pastille-on';
+        html += '<button type="button" class="pro-d-pastille' + classe + '" data-a="heurechoix" data-h="' + hhmm + '">' +
+          ech(dLibelleHeure(hhmm)) + '</button>';
+      }
+    }
+    html += '</div><div class="pro-d-rangee-fin">' +
+      '<button type="button" class="pro-d-pastille" data-a="journee">Toute la journée</button>' +
+      '<button type="button" class="pro-d-pastille" data-a="finconnue">Je ne sais pas encore</button>' +
+      '<span class="pro-d-espace"></span>' +
+      '<button type="button" class="pro-d-lien" data-a="retirercreneau">Retirer ce créneau</button>' +
+      '</div></div>';
+    return html;
+  }
+
+  function dRendRythme() {
+    var e = dEtat.entrees[dEtat.panneau.i];
+    if (!e.repeat) return '';
+    var html = '<div class="pro-d-panneau"><p class="pro-d-titre-panneau">Ça revient</p><div class="pro-d-rangee">';
+    for (var f = 0; f < FREQUENCES.length; f++) {
+      var actif = e.repeat.frequency === FREQUENCES[f].valeur ? ' pro-d-pastille-on' : '';
+      html += '<button type="button" class="pro-d-pastille' + actif + '" data-a="freq" data-f="' + FREQUENCES[f].valeur + '">' +
+        ech(FREQUENCES[f].libelle) + '</button>';
+    }
+    html += '</div>';
+    var parJour = e.repeat.frequency === 'weekly' || e.repeat.frequency === 'biweekly';
+    if (parJour) {
+      html += '<p class="pro-d-titre-panneau" style="margin-top:16px">Quels jours</p><div class="pro-d-rangee">';
+      for (var j = 0; j < JOURS_CLE.length; j++) {
+        var coche = e.repeat.weekdays.indexOf(JOURS_CLE[j]) !== -1 ? ' pro-d-pastille-on' : '';
+        html += '<button type="button" class="pro-d-pastille' + coche + '" data-a="jourrythme" data-w="' + JOURS_CLE[j] +
+          '" aria-label="' + ech(JOURS_NOM[j]) + '" style="width:52px">' + JOURS_INITIALE[j] + '</button>';
+      }
+      html += '</div>';
+    }
+    html += '<div class="pro-d-rangee-fin">' +
+      '<span style="font-size:15px;font-weight:700;color:var(--fg-1)">Jusqu\u2019au</span>' +
+      '<button type="button" class="pro-d-pastille pro-d-pastille-on" data-a="butoir">' +
+      ech(dLibelleCourt(e.repeat.until)) + '</button>' +
+      '<span class="pro-d-espace"></span>' +
+      '<button type="button" class="pro-d-lien" data-a="arretrythme">Ne plus répéter</button>' +
+      '</div></div>';
+    return html;
+  }
+
+  // ── Compléments et actions ───────────────────────────────────────────
+  function dRendComplements() {
+    if (dEtat.panneau) return '';
+    var e = dEtat.entrees[dEtat.active];
+    if (!e || !e.date) return '';
+    var repondu = e.journee || e.slots.length > 0;
+    if (!repondu) return '';
+    var peutCreneau = e.slots.length > 0 && e.slots.length < DATES_MAX_CRENEAUX;
+    var peutClause = !e.end_date && !e.repeat;
+    if (!peutCreneau && !peutClause) return '';
+    var html = '<div class="pro-d-complements"><p class="pro-d-titre-panneau">Ajouter si besoin</p><div class="pro-d-rangee">';
+    if (peutCreneau) html += '<button type="button" class="pro-d-complement" data-a="compcreneau">Un créneau horaire</button>';
+    if (peutClause) html += '<button type="button" class="pro-d-complement" data-a="compperiode">Une plage de jours</button>';
+    if (peutClause) html += '<button type="button" class="pro-d-complement" data-a="comprythme">Une répétition</button>';
+    html += '</div></div>';
+    return html;
+  }
+
+  function dRendActions() {
+    var html = '<div class="pro-d-actions">' +
+      '<button type="button" class="pro-d-ajouter" data-a="plusjour">' +
+      '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true">' +
+      '<path d="M12 5v14M5 12h14"></path></svg>Ajouter un jour</button>';
+    if (dEtat.entrees.length > 1) {
+      html += '<button type="button" class="pro-d-lien" data-a="retirerjour">Retirer ce jour</button>';
+    }
+    html += '</div>';
+    return html;
+  }
+
+  // ── Interactions ─────────────────────────────────────────────────────
+  function dOuvre(i, quoi, ancre) {
+    var base = ancre || dAujourdhui();
+    dEtat.active = i;
+    dEtat.panneau = { i: i, quoi: quoi };
+    dEtat.calY = dAnnee(base);
+    dEtat.calM = dMois(base);
+  }
+
+  function dCableControleDates() {
+    var zone = document.getElementById('pro-depot-dates');
+    if (!zone) return;
+    zone.addEventListener('click', function (event) {
+      var cible = event.target;
+      while (cible && cible !== zone && !cible.getAttribute('data-a')) cible = cible.parentNode;
+      if (!cible || cible === zone) return;
+      event.preventDefault();
+      dAgit(cible.getAttribute('data-a'), cible);
+      dRend();
+    });
+  }
+
+  function dAgit(action, el) {
+    var i = el.getAttribute('data-i') === null ? dEtat.active : parseInt(el.getAttribute('data-i'), 10);
+    var e = dEtat.entrees[i];
+
+    if (action === 'jour') {
+      if (dEtat.entrees.length === 0) dEtat.entrees.push(dEntreeVide());
+      dOuvre(i, 'jour', dEtat.entrees[i] ? dEtat.entrees[i].date : null);
+      return;
+    }
+    if (action === 'periode') { dOuvre(i, 'periode', e.end_date || e.date); return; }
+    if (action === 'rythme') { dOuvre(i, 'rythme', e.date); return; }
+    if (action === 'butoir') { dOuvre(i, 'butoir', e.repeat ? e.repeat.until : e.date); return; }
+    if (action === 'heure') {
+      var c = el.getAttribute('data-c');
+      dEtat.cible = c === null ? 0 : parseInt(c, 10);
+      dOuvre(i, 'heure', e ? e.date : null);
+      return;
+    }
+
+    if (action === 'moisprec' || action === 'moissuiv') {
+      var pas = action === 'moisprec' ? -1 : 1;
+      var m = dEtat.calM + pas;
+      var y = dEtat.calY;
+      if (m < 1) { m = 12; y -= 1; }
+      if (m > 12) { m = 1; y += 1; }
+      dEtat.calM = m;
+      dEtat.calY = y;
+      return;
+    }
+
+    if (action === 'caljour') { dPoseJour(el.getAttribute('data-d')); return; }
+    if (action === 'heurechoix') { dPoseHeure(el.getAttribute('data-h'), el.className.indexOf('pro-d-pastille-off') !== -1); return; }
+    if (action === 'journee') {
+      var ej = dEtat.entrees[dEtat.panneau.i];
+      ej.journee = true;
+      ej.slots = [];
+      dEtat.panneau = null;
+      return;
+    }
+    if (action === 'finconnue') {
+      // Cible 'neuf' : aucun début posé pour ce créneau-là, il n'y a rien à
+      // laisser ouvert — on referme sans toucher au créneau précédent.
+      if (dEtat.cible === 'neuf') { dEtat.panneau = null; return; }
+      var ef = dEtat.entrees[dEtat.panneau.i];
+      if (ef.slots[dEtat.cible]) ef.slots[dEtat.cible] = { start: ef.slots[dEtat.cible].start, end: null };
+      dEtat.panneau = null;
+      return;
+    }
+    if (action === 'retirercreneau') {
+      if (dEtat.cible === 'neuf') { dEtat.panneau = null; return; }
+      var er = dEtat.entrees[dEtat.panneau.i];
+      er.slots.splice(dEtat.cible, 1);
+      if (er.slots.length === 0) er.journee = false;
+      dEtat.panneau = null;
+      return;
+    }
+
+    if (action === 'freq') {
+      var ef2 = dEtat.entrees[dEtat.panneau.i];
+      var val = el.getAttribute('data-f');
+      var parJour = val === 'weekly' || val === 'biweekly';
+      ef2.repeat = {
+        frequency: val,
+        weekdays: parJour ? (ef2.repeat.weekdays.length > 0 ? ef2.repeat.weekdays : [JOURS_CLE[dIndexJour(ef2.date)]]) : [],
+        until: ef2.repeat.until
+      };
+      return;
+    }
+    if (action === 'jourrythme') {
+      var ew = dEtat.entrees[dEtat.panneau.i];
+      var cle = el.getAttribute('data-w');
+      var pos = ew.repeat.weekdays.indexOf(cle);
+      var suite = ew.repeat.weekdays.slice();
+      if (pos === -1) suite.push(cle); else suite.splice(pos, 1);
+      if (suite.length === 0) suite = [cle];
+      ew.repeat = { frequency: ew.repeat.frequency, weekdays: suite, until: ew.repeat.until };
+      return;
+    }
+    if (action === 'arretrythme') {
+      dEtat.entrees[dEtat.panneau.i].repeat = null;
+      dEtat.panneau = null;
+      return;
+    }
+
+    if (action === 'compcreneau') {
+      dEtat.cible = 'neuf';
+      dOuvre(dEtat.active, 'heure', dEtat.entrees[dEtat.active].date);
+      return;
+    }
+    if (action === 'compperiode') {
+      var ep = dEtat.entrees[dEtat.active];
+      dOuvre(dEtat.active, 'periode', ep.date);
+      return;
+    }
+    if (action === 'comprythme') {
+      var et = dEtat.entrees[dEtat.active];
+      if (!et.date) return;
+      et.repeat = {
+        frequency: 'weekly',
+        weekdays: [JOURS_CLE[dIndexJour(et.date)]],
+        until: dPlusSemaines(et.date, 11)
+      };
+      dOuvre(dEtat.active, 'rythme', et.date);
+      return;
+    }
+
+    if (action === 'plusjour') {
+      dEtat.entrees.push(dEntreeVide());
+      var dernier = dEtat.entrees.length - 1;
+      dOuvre(dernier, 'jour', null);
+      return;
+    }
+    if (action === 'retirerjour') {
+      if (dEtat.entrees.length < 2) return;
+      dEtat.entrees.splice(dEtat.active, 1);
+      dEtat.active = Math.max(0, dEtat.active - 1);
+      dEtat.panneau = null;
+      return;
+    }
+  }
+
+  function dPoseJour(iso) {
+    var i = dEtat.panneau.i;
+    var quoi = dEtat.panneau.quoi;
+    var e = dEtat.entrees[i];
+    if (quoi === 'jour') {
+      e.date = iso;
+      // Un rythme posé garde son ancre : si le jour change, les jours cochés
+      // par défaut doivent suivre, sinon la phrase dit une chose et le serveur
+      // en déplie une autre.
+      if (e.repeat && (e.repeat.frequency === 'weekly' || e.repeat.frequency === 'biweekly')) {
+        if (e.repeat.weekdays.length === 1) e.repeat = { frequency: e.repeat.frequency, weekdays: [JOURS_CLE[dIndexJour(iso)]], until: e.repeat.until };
+      }
+      dEtat.panneau = null;
+      return;
+    }
+    if (quoi === 'periode') {
+      if (!e.date || iso <= e.date) return;
+      e.end_date = iso;
+      e.repeat = null;
+      dEtat.panneau = null;
+      return;
+    }
+    if (quoi === 'butoir') {
+      if (!e.repeat || !e.date || iso < e.date) return;
+      e.repeat = { frequency: e.repeat.frequency, weekdays: e.repeat.weekdays, until: iso };
+      dEtat.panneau = { i: i, quoi: 'rythme' };
+      return;
+    }
+  }
+
+  function dPoseHeure(hhmm, bloque) {
+    if (bloque) return;
+    var i = dEtat.panneau.i;
+    var e = dEtat.entrees[i];
+    e.journee = false;
+
+    if (dEtat.cible === 'neuf') {
+      if (e.slots.length >= DATES_MAX_CRENEAUX) { dEtat.panneau = null; return; }
+      e.slots.push({ start: hhmm, end: null });
+      dEtat.cible = e.slots.length - 1;
+      return;
+    }
+    var c = e.slots[dEtat.cible];
+    if (!c) {
+      e.slots[dEtat.cible] = { start: hhmm, end: null };
+      return;
+    }
+    if (!c.end) {
+      if (hhmm <= c.start) return;
+      e.slots[dEtat.cible] = { start: c.start, end: hhmm };
+      dEtat.panneau = null;
+      return;
+    }
+    e.slots[dEtat.cible] = { start: hhmm, end: null };
+  }
+
+
   // ── Déposer / modifier une sortie ────────────────────────────────────
   // Un seul formulaire pour les deux gestes (retour de Kevin, en-tête) :
   // 'create' envoie create_event (activity_id absent), 'update' envoie
@@ -922,89 +1699,137 @@
 
     var titreCarte = document.getElementById('pro-depot-titre-carte');
     var sousTitreCarte = document.getElementById('pro-depot-soustitre');
-    if (titreCarte) titreCarte.textContent = estEdition ? 'Modifier la sortie' : 'Déposer une sortie';
+    if (titreCarte) titreCarte.textContent = estEdition ? 'Modifier la sortie' : 'Déposer une activité';
     if (sousTitreCarte) {
       sousTitreCarte.textContent = estEdition
         ? 'La correction est relue avant application.'
-        : 'Ajoutez une nouvelle sortie au catalogue. Elle est relue avant publication.';
+        : 'Cinq questions. Elle est relue avant publication.';
     }
 
+    categorieChoisie = estEdition && activite.category ? activite.category : '';
+
+    // L'ordre des questions EST le correctif de la collision « nom du lieu /
+    // titre » (maquettes validées le 2026-09-11) : on demande d'abord comment
+    // l'activité s'appelle, et le lieu qui l'accueille arrive trois questions
+    // plus bas, à un endroit où le mot « lieu » ne peut plus désigner autre
+    // chose. L'encart sous le titre le dit en toutes lettres.
     zone.innerHTML =
       '<form id="pro-form-depot">' +
-        '<div class="pro-champ">' +
-          '<label class="pro-label" for="pro-depot-lieu-nom">Nom du lieu</label>' +
-          '<input class="pro-input" type="text" id="pro-depot-lieu-nom" required maxlength="200" value="' + ech(val(estEdition ? activite.locationName : '')) + '" />' +
-        '</div>' +
-        '<div class="pro-champ pro-champ--adresse">' +
-          '<label class="pro-label" for="pro-depot-adresse">Adresse</label>' +
-          '<input class="pro-input" type="text" id="pro-depot-adresse" required maxlength="300" ' +
-            'autocomplete="off" role="combobox" aria-expanded="false" aria-autocomplete="list" ' +
-            'aria-controls="pro-depot-suggestions" ' +
-            'value="' + ech(val(estEdition ? activite.address : '')) + '" />' +
-          '<ul class="pro-suggestions" id="pro-depot-suggestions" role="listbox" aria-label="Adresses proposées" hidden></ul>' +
-          '<p class="pro-note-champ">Choisissez une adresse proposée pour situer la sortie sur la carte. Si la vôtre n’apparaît pas, tapez-la simplement.</p>' +
-        '</div>' +
-        '<div class="pro-champ">' +
-          '<label class="pro-label" for="pro-depot-ville">Ville</label>' +
-          '<input class="pro-input" type="text" id="pro-depot-ville" required maxlength="100" value="' + ech(val(estEdition ? activite.city : '')) + '" />' +
-        '</div>' +
-        '<div class="pro-champ">' +
-          '<label class="pro-label" for="pro-depot-titre">Titre</label>' +
-          '<input class="pro-input" type="text" id="pro-depot-titre" required maxlength="200" value="' + ech(val(estEdition ? activite.title : '')) + '" />' +
-        '</div>' +
-        '<div class="pro-champ">' +
-          '<label class="pro-label" for="pro-depot-categorie">Catégorie</label>' +
-          '<select class="pro-input" id="pro-depot-categorie" required>' + optionsHtml(EVENT_CATEGORIES, 'Choisir…') + '</select>' +
-        '</div>' +
-        '<div class="pro-champ">' +
-          '<label class="pro-label" for="pro-depot-description">Description (facultatif)</label>' +
-          '<textarea class="pro-input" id="pro-depot-description" rows="3" maxlength="5000">' + ech(val(estEdition ? activite.description : '')) + '</textarea>' +
-        '</div>' +
-        '<div class="pro-champ pro-ligne-deux">' +
-          '<div>' +
-            '<label class="pro-label" for="pro-depot-date">Date</label>' +
-            '<input class="pro-input" type="date" id="pro-depot-date" required value="' + ech(estEdition ? dateInputDepuisIso(activite.startsAt) : '') + '" />' +
-          '</div>' +
-          '<div>' +
-            '<label class="pro-label" for="pro-depot-heure">Heure</label>' +
-            '<input class="pro-input" type="time" id="pro-depot-heure" required value="' + ech(estEdition ? formateHeureFr(activite.startsAt) : '') + '" />' +
-          '</div>' +
-        '</div>' +
-        '<div class="pro-champ pro-ligne-deux">' +
-          '<div>' +
-            '<label class="pro-label" for="pro-depot-age-min">Âge minimum (facultatif)</label>' +
-            '<input class="pro-input" type="number" min="0" max="18" id="pro-depot-age-min" value="' + ech(val(estEdition ? activite.ageMin : '')) + '" />' +
-          '</div>' +
-          '<div>' +
-            '<label class="pro-label" for="pro-depot-age-max">Âge maximum (facultatif)</label>' +
-            '<input class="pro-input" type="number" min="0" max="18" id="pro-depot-age-max" value="' + ech(val(estEdition ? activite.ageMax : '')) + '" />' +
-          '</div>' +
-        '</div>' +
-        '<div class="pro-champ">' +
-          '<label class="pro-label" for="pro-depot-tarif">Tarif (facultatif)</label>' +
-          '<input class="pro-input" type="text" id="pro-depot-tarif" maxlength="100" placeholder="Gratuit, 5 €…" value="' + ech(estEdition ? texteTarifDepuisPrix(activite.price) : '') + '" />' +
-        '</div>' +
-        '<div class="pro-champ">' +
-          '<label class="pro-label" for="pro-depot-lien">Lien (facultatif)</label>' +
-          '<input class="pro-input" type="text" id="pro-depot-lien" maxlength="300" placeholder="https://" value="' + ech(val(estEdition ? activite.registrationUrl : '')) + '" />' +
-        '</div>' +
-        blocPhotoHtml() +
-        '<button type="submit" class="pro-bouton-primaire">' + (estEdition ? 'Enregistrer la correction' : 'Déposer la sortie') + '</button>' +
-        (estEdition ? '<p><button type="button" class="pro-lien-retour" id="pro-depot-annuler">Annuler la modification</button></p>' : '') +
-        '<p class="pro-message" id="pro-depot-form-message"></p>' +
-      '</form>';
 
-    // Un <select> ne prend pas de valeur par défaut dans le HTML émis par
-    // optionsHtml() (placeholder disabled/selected/hidden) — la présélection
-    // en édition se pose après coup.
-    if (estEdition && activite.category) {
-      var champCategorie = document.getElementById('pro-depot-categorie');
-      if (champCategorie) champCategorie.value = activite.category;
-    }
+        '<div class="pro-question">' +
+          '<div class="pro-q-entete">' +
+            '<h3 class="pro-q-titre"><label for="pro-depot-titre">Ça s’appelle comment ?</label></h3>' +
+            '<span class="pro-q-num">1</span>' +
+          '</div>' +
+          '<p class="pro-q-sous">Le nom de l’activité, tel que les familles le liront en premier.</p>' +
+          '<input class="pro-input" type="text" id="pro-depot-titre" required maxlength="200" value="' + ech(val(estEdition ? activite.title : '')) + '" />' +
+          '<div class="pro-encart">' +
+            '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:3px;color:var(--fg-3)" aria-hidden="true">' +
+            '<circle cx="12" cy="12" r="9"></circle><path d="M12 11v5M12 7.6v.1"></path></svg>' +
+            '<p>Ce n’est pas le nom de votre structure ni celui de la salle. Le lieu se renseigne plus bas, à « Ça se passe où ? ».</p>' +
+          '</div>' +
+        '</div>' +
+
+        '<div class="pro-question pro-question--dates">' +
+          '<div class="pro-q-entete">' +
+            '<h3 class="pro-q-titre">C’est quand ?</h3>' +
+            '<span class="pro-q-num">2</span>' +
+          '</div>' +
+          '<p class="pro-q-sous">Ajoutez chaque jour concerné, et les horaires si vous les connaissez. Tapez sur les mots soulignés.</p>' +
+          '<div id="pro-depot-dates"></div>' +
+        '</div>' +
+
+        '<div class="pro-question">' +
+          '<div class="pro-q-entete">' +
+            '<h3 class="pro-q-titre">Ça se passe où ?</h3>' +
+            '<span class="pro-q-num">3</span>' +
+          '</div>' +
+          '<p class="pro-q-sous">L’adresse exacte : c’est elle qui place l’activité sur la carte des familles.</p>' +
+          '<div class="pro-champ">' +
+            '<label class="pro-label" for="pro-depot-lieu-nom">Le lieu qui accueille l’activité</label>' +
+            '<p class="pro-note-champ" style="margin:0 0 8px">La salle, le parc, le bâtiment.</p>' +
+            '<input class="pro-input" type="text" id="pro-depot-lieu-nom" required maxlength="200" value="' + ech(val(estEdition ? activite.locationName : '')) + '" />' +
+          '</div>' +
+          '<div class="pro-champ pro-champ--adresse">' +
+            '<label class="pro-label" for="pro-depot-adresse">Adresse</label>' +
+            '<p class="pro-note-champ" style="margin:0 0 8px">Choisissez une adresse proposée pour situer la sortie sur la carte. Si la vôtre n’apparaît pas, tapez-la simplement.</p>' +
+            '<input class="pro-input" type="text" id="pro-depot-adresse" required maxlength="300" ' +
+              'autocomplete="off" role="combobox" aria-expanded="false" aria-autocomplete="list" ' +
+              'aria-controls="pro-depot-suggestions" ' +
+              'value="' + ech(val(estEdition ? activite.address : '')) + '" />' +
+            '<ul class="pro-suggestions" id="pro-depot-suggestions" role="listbox" aria-label="Adresses proposées" hidden></ul>' +
+          '</div>' +
+          '<div class="pro-champ">' +
+            '<label class="pro-label" for="pro-depot-ville">Ville</label>' +
+            '<input class="pro-input" type="text" id="pro-depot-ville" required maxlength="100" value="' + ech(val(estEdition ? activite.city : '')) + '" />' +
+          '</div>' +
+        '</div>' +
+
+        '<div class="pro-question">' +
+          '<div class="pro-q-entete">' +
+            '<h3 class="pro-q-titre">C’est plutôt quel genre ?</h3>' +
+            '<span class="pro-q-num">4</span>' +
+          '</div>' +
+          '<p class="pro-q-sous">Une seule catégorie : c’est elle qui fait trouver l’activité dans l’app.</p>' +
+          '<div class="pro-pastilles" id="pro-depot-categories" role="group" aria-label="Catégorie">' + pastillesCategorieHtml() + '</div>' +
+          '<p class="pro-message" id="pro-depot-message-categorie"></p>' +
+        '</div>' +
+
+        '<div class="pro-question">' +
+          '<div class="pro-q-entete">' +
+            '<h3 class="pro-q-titre">Encore quelques détails ?</h3>' +
+            '<span class="pro-q-num">5</span>' +
+          '</div>' +
+          '<p class="pro-q-sous">Rien d’obligatoire ici. Mais chaque info fait gagner du temps aux familles, et évite un aller-retour avec la relecture.</p>' +
+          '<div class="pro-champ">' +
+            '<label class="pro-label" for="pro-depot-description">Description</label>' +
+            '<textarea class="pro-input" id="pro-depot-description" rows="3" maxlength="5000">' + ech(val(estEdition ? activite.description : '')) + '</textarea>' +
+          '</div>' +
+          '<div class="pro-champ pro-ligne-deux">' +
+            '<div>' +
+              '<label class="pro-label" for="pro-depot-age-min">À partir de quel âge ?</label>' +
+              '<input class="pro-input" type="number" min="0" max="18" id="pro-depot-age-min" value="' + ech(val(estEdition ? activite.ageMin : '')) + '" />' +
+            '</div>' +
+            '<div>' +
+              '<label class="pro-label" for="pro-depot-age-max">Jusqu’à quel âge ?</label>' +
+              '<input class="pro-input" type="number" min="0" max="18" id="pro-depot-age-max" value="' + ech(val(estEdition ? activite.ageMax : '')) + '" />' +
+            '</div>' +
+          '</div>' +
+          '<div class="pro-champ">' +
+            '<label class="pro-label" for="pro-depot-tarif">Tarif</label>' +
+            '<input class="pro-input" type="text" id="pro-depot-tarif" maxlength="100" placeholder="Gratuit, 5 €…" value="' + ech(estEdition ? texteTarifDepuisPrix(activite.price) : '') + '" />' +
+          '</div>' +
+          '<div class="pro-champ">' +
+            '<label class="pro-label" for="pro-depot-lien">Inscription ou renseignements</label>' +
+            '<p class="pro-note-champ" style="margin:0 0 8px">Un lien vers votre page, si vous en avez une.</p>' +
+            '<input class="pro-input" type="text" id="pro-depot-lien" maxlength="300" placeholder="https://" value="' + ech(val(estEdition ? activite.registrationUrl : '')) + '" />' +
+          '</div>' +
+          blocPhotoHtml() +
+        '</div>' +
+
+        '<div class="pro-question">' +
+          '<button type="submit" class="pro-bouton-primaire">' + (estEdition ? 'Enregistrer la correction' : 'Déposer l’activité') + '</button>' +
+          '<p class="pro-note" style="margin:12px 0 0">Un relecteur Urson vérifie la fiche sous un à deux jours. Vous recevrez un e-mail dans les deux cas.</p>' +
+          (estEdition ? '<p style="margin:12px 0 0"><button type="button" class="pro-lien-retour" id="pro-depot-annuler">Annuler la modification</button></p>' : '') +
+          '<p class="pro-message" id="pro-depot-form-message"></p>' +
+        '</div>' +
+
+      '</form>';
 
     coordonneesRetenues = null;
     cableAutocompletionAdresse();
     cablePhoto();
+    cableCategories();
+
+    // Les dates viennent des occurrences RÉELLES de la fiche (dashboard), pas
+    // du seul starts_at : sans elles, enregistrer une correction rabattrait la
+    // fiche sur une seule date et supprimerait les autres (fn_apply_activity_edit
+    // remplace event_occurrences en bloc dès que la clé occurrences est là).
+    monteControleDates(
+      estEdition && activite.eventDates ? activite.eventDates : [],
+      estEdition ? activite.datesEditable !== false : true
+    );
+    dCableControleDates();
 
     document.getElementById('pro-form-depot').addEventListener('submit', function (event) {
       onEnvoiFormulaireEvenement(event, mode, estEdition ? activite.id : null);
@@ -1014,6 +1839,41 @@
         afficheFormulaireEvenement('create', null);
       });
     }
+  }
+
+  // ── Catégorie en pastilles ───────────────────────────────────────────
+  // Un <select> natif obligeait à ouvrir une liste pour découvrir douze
+  // options ; les pastilles les montrent toutes. Valeur gardée en fermeture
+  // (categorieChoisie), jamais lue depuis le DOM : aria-pressed porte l'état
+  // visible, la variable porte l'état envoyé, et les deux se posent au même
+  // endroit.
+
+  function pastillesCategorieHtml() {
+    var html = '';
+    for (var i = 0; i < EVENT_CATEGORIES.length; i++) {
+      var valeur = EVENT_CATEGORIES[i][0];
+      var libelle = EVENT_CATEGORIES[i][1];
+      var actif = valeur === categorieChoisie ? 'true' : 'false';
+      html += '<button type="button" class="pro-pastille" aria-pressed="' + actif + '" data-cat="' + ech(valeur) + '">' +
+        ech(libelle) + '</button>';
+    }
+    return html;
+  }
+
+  function cableCategories() {
+    var zone = document.getElementById('pro-depot-categories');
+    if (!zone) return;
+    zone.addEventListener('click', function (event) {
+      var cible = event.target;
+      while (cible && cible !== zone && !cible.getAttribute('data-cat')) cible = cible.parentNode;
+      if (!cible || cible === zone) return;
+      categorieChoisie = cible.getAttribute('data-cat');
+      var pastilles = zone.querySelectorAll('.pro-pastille');
+      for (var i = 0; i < pastilles.length; i++) {
+        pastilles[i].setAttribute('aria-pressed', pastilles[i] === cible ? 'true' : 'false');
+      }
+      definirMessage(document.getElementById('pro-depot-message-categorie'), '', false);
+    });
   }
 
   // ── Photo jointe ─────────────────────────────────────────────────────
@@ -1195,7 +2055,13 @@
       invalid_address: "L'adresse est invalide.",
       invalid_city: 'La ville est invalide.',
       invalid_time: "L'heure est invalide.",
+      // Deux codes voisins et distincts : invalid_date au singulier vient du
+      // chemin hérité (une date, une heure), invalid_dates au pluriel du
+      // chemin neuf (la liste entière). Sans les deux, un refus tombe sur le
+      // message générique et l'organisateur ne sait pas quoi corriger.
       invalid_date: 'La date est invalide.',
+      invalid_dates: "Les dates n'ont pas été acceptées. Vérifiez les jours et les horaires saisis.",
+      activity_has_many_dates: 'Cette sortie a plusieurs dates. Rechargez la page pour les corriger.',
       invalid_activity_id: 'Sélection invalide.',
       activity_not_found: "Cette sortie n'est plus disponible.",
       activity_not_event: "Cette sortie est un lieu, elle ne se modifie pas depuis ce formulaire.",
@@ -1216,21 +2082,44 @@
     event.preventDefault();
     var messageEl = document.getElementById('pro-depot-form-message');
     var bouton = event.target.querySelector('button[type="submit"]');
+    if (!categorieChoisie) {
+      definirMessage(document.getElementById('pro-depot-message-categorie'), 'Choisissez une catégorie.', true);
+      return;
+    }
+    var refusDates = messageSaisieDates(mode);
+    if (refusDates) {
+      definirMessage(messageEl, refusDates, true);
+      return;
+    }
+
     var corps = {
       location_name: document.getElementById('pro-depot-lieu-nom').value,
       address: document.getElementById('pro-depot-adresse').value,
       city: document.getElementById('pro-depot-ville').value,
       title: document.getElementById('pro-depot-titre').value,
-      category: document.getElementById('pro-depot-categorie').value,
+      category: categorieChoisie,
       description: document.getElementById('pro-depot-description').value,
-      date: document.getElementById('pro-depot-date').value,
-      time: document.getElementById('pro-depot-heure').value,
       age_min: document.getElementById('pro-depot-age-min').value,
       age_max: document.getElementById('pro-depot-age-max').value,
       price: document.getElementById('pro-depot-tarif').value,
       link: document.getElementById('pro-depot-lien').value
     };
     if (mode === 'update') corps.activity_id = activityId;
+
+    // Un des trois états du contrat de dates, jamais deux : keep_dates (rien
+    // ne bouge à l'agenda), event_dates (la liste), ou — jamais produit par
+    // cette page — l'ancien couple date + heure. keep_dates est le seul chemin
+    // qui ne réécrit pas les occurrences, donc le seul qui ne casse pas les
+    // « j'y vais » et les invitations posées dessus par les familles
+    // (attendances / outing_invitations / group_outing_invitations sont en
+    // ON DELETE CASCADE sur event_occurrences).
+    var partDates = lireCorpsDates(mode);
+    if (partDates) {
+      if (partDates.keep_dates) corps.keep_dates = true;
+      // Le multipart ne transporte que des chaînes : la liste part encodée, et
+      // le serveur la relit avec la même borne de taille avant de la parser.
+      else corps.event_dates = partDates.event_dates;
+    }
 
     // Coordonnées : envoyées SEULEMENT si elles viennent d'une suggestion encore
     // valide (voir coordonneesRetenues). Absentes, le dépôt part sans elles et
@@ -1255,13 +2144,31 @@
     bouton.disabled = true;
     definirMessage(messageEl, 'Envoi en cours…', false);
     var action = mode === 'update' ? 'update_event' : 'create_event';
-    var envoi = fichier ? appelApiFichier(action, corps, fichier) : appelApi(action, corps, true);
+    var envoi;
+    if (fichier) {
+      var corpsFichier = {};
+      for (var cle in corps) {
+        if (!Object.prototype.hasOwnProperty.call(corps, cle)) continue;
+        corpsFichier[cle] = cle === 'event_dates' ? JSON.stringify(corps[cle]) : corps[cle];
+      }
+      envoi = appelApiFichier(action, corpsFichier, fichier);
+    } else {
+      envoi = appelApi(action, corps, true);
+    }
     envoi.then(function (resultat) {
       if (resultat.ok && resultat.data && resultat.data.ok) {
         chargeMesSorties();
         afficheFormulaireEvenement('create', null);
         var zone = document.getElementById('pro-depot-zone');
         var confirmation = mode === 'update' ? 'Correction envoyée, en cours de relecture.' : 'Envoyée, en cours de relecture.';
+        // Le nombre de séances vient du SERVEUR, seul à avoir déplié la
+        // répétition. La page ne le calcule pas : une copie de l'expansion ici
+        // ne serait exécutée par aucun gate, et un nombre faux se lirait comme
+        // un nombre vrai.
+        var nb = resultat.data.occurrences_count;
+        if (typeof nb === 'number' && nb > 1) {
+          confirmation += ' ' + nb + ' séances partent en relecture.';
+        }
         if (fichier) confirmation += ' Votre photo est relue avant d’être publiée.';
         zone.insertAdjacentHTML('afterbegin', '<p class="pro-message">' + ech(confirmation) + '</p>');
       } else {
