@@ -392,6 +392,43 @@
       outline: 2px solid var(--coral-deep); outline-offset: 1px;
     }
 
+    .pro-tarif-bascule { display: flex; gap: 10px; margin-bottom: 14px; }
+    .pro-tarif-liste { display: flex; flex-direction: column; gap: 12px; }
+    .pro-tarif-ligne {
+      border: 1px solid var(--line-medium); border-radius: 16px;
+      padding: 14px; background: var(--bg-surface);
+    }
+    .pro-tarif-entete { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .pro-tarif-entete .pro-input { flex: 1; min-width: 0; }
+    .pro-tarif-montant { display: flex; align-items: center; gap: 6px; width: 108px; flex: none; }
+    .pro-tarif-montant .pro-input { text-align: right; padding-right: 8px; }
+    .pro-tarif-euro { font-size: 15px; font-weight: 700; color: var(--fg-2); }
+    .pro-tarif-sup {
+      height: 40px; width: 40px; flex: none; border-radius: 999px;
+      border: 1px solid var(--line-medium); background: var(--bg-surface);
+      font-family: inherit; font-size: 18px; line-height: 1; color: var(--fg-2); cursor: pointer;
+    }
+    .pro-tarif-sup:hover { color: var(--coral-deep); border-color: var(--coral); }
+    .pro-tarif-qui { display: flex; flex-wrap: wrap; gap: 8px; }
+    .pro-tarif-qui .pro-pastille { height: 38px; padding: 0 14px; font-size: 14px; }
+    .pro-tarif-precision { margin-top: 10px; }
+    .pro-tarif-precision .pro-label { font-size: 13px; }
+    .pro-tarif-forfait {
+      display: flex; align-items: center; gap: 8px; margin-top: 10px;
+      font-size: 14px; color: var(--fg-1);
+    }
+    .pro-tarif-ajout {
+      margin-top: 12px; height: 44px; border-radius: 999px;
+      border: 1px dashed var(--line-medium); background: transparent;
+      font-family: inherit; font-size: 15px; font-weight: 600; color: var(--coral-deep);
+      cursor: pointer; width: 100%;
+    }
+    .pro-tarif-ajout:hover { border-color: var(--coral); background: var(--bg-soft); }
+    .pro-tarif-conditions { margin-top: 18px; display: flex; flex-direction: column; gap: 8px; }
+    .pro-tarif-condition { display: flex; align-items: center; gap: 8px; font-size: 15px; color: var(--fg-1); }
+    .pro-tarif-sup:focus-visible, .pro-tarif-ajout:focus-visible {
+      outline: 2px solid var(--coral-deep); outline-offset: 1px;
+    }
     /* Cadre de carte — radius 18 et hauteur 220 sont les valeurs de
        LocationMapCard cote app ; overflow hidden pour que la grille de tuiles
        se coupe net aux angles. touch-action: pan-y — voir l'en-tete du module. */
@@ -620,19 +657,6 @@
     var d = new Date(iso);
     if (isNaN(d.getTime())) return '';
     return new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Paris', year: 'numeric', month: '2-digit', day: '2-digit' }).format(d);
-  }
-
-  // Inverse approximatif de buildEventPrice (organizerAccount.ts) pour
-  // préremplir le champ Tarif en correction — 'notes' prime, sinon un
-  // montant simple ou une fourchette, jamais reconstruit à partir de rien.
-  function texteTarifDepuisPrix(prix) {
-    if (!prix || typeof prix !== 'object') return '';
-    if (typeof prix.notes === 'string' && prix.notes) return prix.notes;
-    if (typeof prix.min === 'number' && typeof prix.max === 'number') {
-      if (prix.min === 0 && prix.max === 0) return 'Gratuit';
-      return prix.min === prix.max ? String(prix.min) : (prix.min + ' à ' + prix.max);
-    }
-    return '';
   }
 
   function libelleKind(kind) {
@@ -1893,6 +1917,330 @@
   }
 
 
+  // ── Contrôle « Combien ça coûte ? » ─────────────────────────────────────
+  // Bornes IDENTIQUES au serveur, mais ce ne sont qu'un confort : le serveur
+  // revalide (METHODO § Sécurité règle 1).
+  var TARIFS_MAX_LIGNES = 12;
+  var TARIFS_MAX_LABEL = 80;
+
+  var AUDIENCES = [
+    { valeur: 'all', libelle: 'Tout le monde' },
+    { valeur: 'adult', libelle: 'Adulte' },
+    { valeur: 'child', libelle: 'Enfant' },
+    { valeur: 'reduced', libelle: 'Tarif réduit' },
+    { valeur: 'family', libelle: 'Famille' }
+  ];
+
+  var CONDITIONS = [
+    { valeur: 'booking', libelle: 'Sur inscription ou réservation' },
+    { valeur: 'limited_seats', libelle: 'Places limitées' },
+    { valeur: 'membership', libelle: 'Adhésion requise' },
+    { valeur: 'onsite_only', libelle: 'Paiement sur place uniquement' }
+  ];
+
+  var tEtat = { gratuit: false, lignes: [], conditions: [] };
+  var tPret = false;
+
+  function tLibelleAudience(valeur) {
+    for (var i = 0; i < AUDIENCES.length; i++) {
+      if (AUDIENCES[i].valeur === valeur) return AUDIENCES[i].libelle;
+    }
+    return AUDIENCES[0].libelle;
+  }
+
+  function tLigneNeuve(audience) {
+    var qui = audience || 'all';
+    return {
+      label: tLibelleAudience(qui),
+      amount: '',
+      audience: qui,
+      ageMin: '',
+      ageMax: '',
+      partySize: '',
+      forfait: qui === 'family'
+    };
+  }
+
+  // Nombre saisi : virgule acceptée, jamais de NaN rendu au serveur.
+  function tNombre(texte) {
+    if (typeof texte !== 'string') return null;
+    var net = texte.trim().replace(',', '.');
+    if (net === '') return null;
+    var n = parseFloat(net);
+    return isFinite(n) && n >= 0 ? n : null;
+  }
+  function tEntier(texte) {
+    var n = tNombre(texte);
+    if (n === null) return null;
+    var e = Math.round(n);
+    return e > 0 ? e : null;
+  }
+
+  // ── Rendu ───────────────────────────────────────────────────────────────
+  function tHtmlQui(ligne, index) {
+    var html = '<div class="pro-tarif-qui" role="group" aria-label="À qui s\u2019applique ce tarif">';
+    for (var i = 0; i < AUDIENCES.length; i++) {
+      var choisi = AUDIENCES[i].valeur === ligne.audience ? 'true' : 'false';
+      html += '<button type="button" class="pro-pastille" data-tarif-qui="' + index +
+        '" data-valeur="' + AUDIENCES[i].valeur + '" aria-pressed="' + choisi + '">' +
+        ech(AUDIENCES[i].libelle) + '</button>';
+    }
+    return html + '</div>';
+  }
+
+  function tHtmlPrecision(ligne, index) {
+    if (ligne.audience === 'child' || ligne.audience === 'reduced') {
+      return '<div class="pro-tarif-precision pro-ligne-deux">' +
+        '<div><label class="pro-label" for="pro-tarif-agemin-' + index + '">À partir de quel âge\u00a0?</label>' +
+        '<input class="pro-input" type="number" min="0" max="18" id="pro-tarif-agemin-' + index +
+        '" data-tarif-agemin="' + index + '" value="' + ech(ligne.ageMin) + '" /></div>' +
+        '<div><label class="pro-label" for="pro-tarif-agemax-' + index + '">Jusqu\u2019à quel âge\u00a0?</label>' +
+        '<input class="pro-input" type="number" min="0" max="18" id="pro-tarif-agemax-' + index +
+        '" data-tarif-agemax="' + index + '" value="' + ech(ligne.ageMax) + '" /></div></div>';
+    }
+    if (ligne.audience === 'family') {
+      return '<div class="pro-tarif-precision">' +
+        '<label class="pro-label" for="pro-tarif-taille-' + index + '">Pour combien de personnes\u00a0?</label>' +
+        '<input class="pro-input" type="number" min="2" max="20" id="pro-tarif-taille-' + index +
+        '" data-tarif-taille="' + index + '" value="' + ech(ligne.partySize) + '" />' +
+        '<label class="pro-tarif-forfait"><input type="checkbox" data-tarif-forfait="' + index + '"' +
+        (ligne.forfait ? ' checked' : '') + ' />Ce montant couvre le groupe entier</label></div>';
+    }
+    return '';
+  }
+
+  function tHtmlLigne(ligne, index) {
+    return '<div class="pro-tarif-ligne">' +
+      '<div class="pro-tarif-entete">' +
+        '<input class="pro-input" type="text" maxlength="' + TARIFS_MAX_LABEL +
+        '" data-tarif-label="' + index + '" placeholder="Nom du tarif" value="' + ech(ligne.label) + '" ' +
+        'aria-label="Nom du tarif" />' +
+        '<span class="pro-tarif-montant">' +
+          '<input class="pro-input" type="text" inputmode="decimal" maxlength="8" data-tarif-montant="' + index +
+          '" placeholder="0" value="' + ech(ligne.amount) + '" aria-label="Montant en euros" />' +
+          '<span class="pro-tarif-euro">€</span>' +
+        '</span>' +
+        '<button type="button" class="pro-tarif-sup" data-tarif-sup="' + index +
+        '" aria-label="Retirer ce tarif">×</button>' +
+      '</div>' +
+      tHtmlQui(ligne, index) +
+      tHtmlPrecision(ligne, index) +
+    '</div>';
+  }
+
+  function tHtmlConditions() {
+    var html = '<div class="pro-tarif-conditions">';
+    for (var i = 0; i < CONDITIONS.length; i++) {
+      var coche = tEtat.conditions.indexOf(CONDITIONS[i].valeur) !== -1 ? ' checked' : '';
+      html += '<label class="pro-tarif-condition"><input type="checkbox" data-tarif-condition="' +
+        CONDITIONS[i].valeur + '"' + coche + ' />' + ech(CONDITIONS[i].libelle) + '</label>';
+    }
+    return html + '</div>';
+  }
+
+  function tRendre() {
+    var zone = document.getElementById('pro-depot-tarifs');
+    if (!zone) return;
+    var html = '<div class="pro-tarif-bascule" role="group" aria-label="Tarif">' +
+      '<button type="button" class="pro-pastille" data-tarif-mode="gratuit" aria-pressed="' +
+      (tEtat.gratuit ? 'true' : 'false') + '">Gratuit</button>' +
+      '<button type="button" class="pro-pastille" data-tarif-mode="payant" aria-pressed="' +
+      (tEtat.gratuit ? 'false' : 'true') + '">Payant</button></div>';
+
+    if (!tEtat.gratuit) {
+      html += '<div class="pro-tarif-liste">';
+      for (var i = 0; i < tEtat.lignes.length; i++) html += tHtmlLigne(tEtat.lignes[i], i);
+      html += '</div>';
+      if (tEtat.lignes.length < TARIFS_MAX_LIGNES) {
+        html += '<button type="button" class="pro-tarif-ajout" data-tarif-ajout="1">' +
+          '+ Ajouter un tarif</button>';
+      }
+      html += '<p class="pro-note-champ" style="margin:10px 0 0">' +
+        'Une ligne par tarif affiché sur votre communication\u00a0: adulte, enfant, réduit, ' +
+        'forfait famille… Les familles voient la ligne qui les concerne.</p>';
+    }
+    html += tHtmlConditions();
+    zone.innerHTML = html;
+  }
+
+  // ── Saisie ──────────────────────────────────────────────────────────────
+  function tSurClic(ev) {
+    var cible = ev.target;
+    if (!cible || !cible.getAttribute) return;
+
+    var mode = cible.getAttribute('data-tarif-mode');
+    if (mode) {
+      tEtat.gratuit = mode === 'gratuit';
+      if (!tEtat.gratuit && tEtat.lignes.length === 0) tEtat.lignes.push(tLigneNeuve('all'));
+      tRendre();
+      return;
+    }
+    if (cible.getAttribute('data-tarif-ajout')) {
+      if (tEtat.lignes.length < TARIFS_MAX_LIGNES) tEtat.lignes.push(tLigneNeuve('all'));
+      tRendre();
+      return;
+    }
+    var sup = cible.getAttribute('data-tarif-sup');
+    if (sup !== null) {
+      tEtat.lignes.splice(parseInt(sup, 10), 1);
+      tRendre();
+      return;
+    }
+    var qui = cible.getAttribute('data-tarif-qui');
+    if (qui !== null) {
+      var ligne = tEtat.lignes[parseInt(qui, 10)];
+      if (!ligne) return;
+      var valeur = cible.getAttribute('data-valeur');
+      // Le libellé suit l'audience tant que l'organisateur ne l'a pas réécrit
+      // lui-même — sinon on écraserait « Enfant 6-14 ans » en « Enfant ».
+      if (ligne.label === '' || ligne.label === tLibelleAudience(ligne.audience)) {
+        ligne.label = tLibelleAudience(valeur);
+      }
+      ligne.audience = valeur;
+      if (valeur === 'family' && ligne.forfait !== true) ligne.forfait = true;
+      tRendre();
+    }
+  }
+
+  function tSurSaisie(ev) {
+    var cible = ev.target;
+    if (!cible || !cible.getAttribute) return;
+    var lu = function (nom) {
+      var brut = cible.getAttribute(nom);
+      return brut === null ? null : tEtat.lignes[parseInt(brut, 10)];
+    };
+    var l;
+    if ((l = lu('data-tarif-label'))) { l.label = cible.value; return; }
+    if ((l = lu('data-tarif-montant'))) { l.amount = cible.value; return; }
+    if ((l = lu('data-tarif-agemin'))) { l.ageMin = cible.value; return; }
+    if ((l = lu('data-tarif-agemax'))) { l.ageMax = cible.value; return; }
+    if ((l = lu('data-tarif-taille'))) { l.partySize = cible.value; return; }
+  }
+
+  function tSurBascule(ev) {
+    var cible = ev.target;
+    if (!cible || !cible.getAttribute) return;
+    var forfait = cible.getAttribute('data-tarif-forfait');
+    if (forfait !== null) {
+      var ligne = tEtat.lignes[parseInt(forfait, 10)];
+      if (ligne) ligne.forfait = cible.checked === true;
+      return;
+    }
+    var condition = cible.getAttribute('data-tarif-condition');
+    if (condition !== null) {
+      var place = tEtat.conditions.indexOf(condition);
+      if (cible.checked === true && place === -1) tEtat.conditions.push(condition);
+      if (cible.checked !== true && place !== -1) tEtat.conditions.splice(place, 1);
+    }
+  }
+
+  // ── Préremplissage en correction ────────────────────────────────────────
+  // Une fiche qui porte déjà une grille la retrouve telle quelle. Une fiche
+  // qui n'en porte pas repart d'une ligne unique construite depuis min/max —
+  // jamais depuis les notes, qui sont du texte libre (invariant 3 du PLAN :
+  // pas de tarif déduit d'une phrase).
+  function tInitialiser(prix) {
+    tEtat = { gratuit: false, lignes: [], conditions: [] };
+
+    if (prix && typeof prix === 'object') {
+      if (Array.isArray(prix.conditions)) {
+        for (var c = 0; c < prix.conditions.length; c++) {
+          if (typeof prix.conditions[c] === 'string') tEtat.conditions.push(prix.conditions[c]);
+        }
+      }
+      if (Array.isArray(prix.tiers) && prix.tiers.length > 0) {
+        for (var i = 0; i < prix.tiers.length; i++) {
+          var t = prix.tiers[i];
+          if (!t || typeof t !== 'object') continue;
+          tEtat.lignes.push({
+            label: typeof t.label === 'string' ? t.label : '',
+            amount: typeof t.amount === 'number' ? String(t.amount) : '',
+            audience: typeof t.audience === 'string' ? t.audience : 'all',
+            ageMin: typeof t.age_min === 'number' ? String(t.age_min) : '',
+            ageMax: typeof t.age_max === 'number' ? String(t.age_max) : '',
+            partySize: typeof t.party_size === 'number' ? String(t.party_size) : '',
+            forfait: t.per_person === false
+          });
+        }
+      } else if (prix.min === 0 && prix.max === 0) {
+        tEtat.gratuit = true;
+      } else if (typeof prix.min === 'number' || typeof prix.max === 'number') {
+        var montant = typeof prix.min === 'number' ? prix.min : prix.max;
+        var seule = tLigneNeuve('all');
+        seule.amount = String(montant);
+        tEtat.lignes.push(seule);
+      }
+    }
+
+    if (!tEtat.gratuit && tEtat.lignes.length === 0) tEtat.lignes.push(tLigneNeuve('all'));
+
+    if (!tPret) {
+      document.addEventListener('click', tSurClic);
+      document.addEventListener('input', tSurSaisie);
+      document.addEventListener('change', tSurBascule);
+      tPret = true;
+    }
+    tRendre();
+  }
+
+  // ── Lecture pour l'envoi ────────────────────────────────────────────────
+  // Une ligne sans montant lisible est ignorée : mieux vaut une grille plus
+  // courte qu'un tarif inventé. Une grille entièrement vide ne part pas —
+  // le serveur reçoit alors un prix vide, jamais un « gratuit » déduit.
+  function tLignesValides() {
+    var sortie = [];
+    for (var i = 0; i < tEtat.lignes.length; i++) {
+      var l = tEtat.lignes[i];
+      var montant = tNombre(l.amount);
+      if (montant === null) continue;
+      var libelle = (l.label || '').trim();
+      if (libelle === '') libelle = tLibelleAudience(l.audience);
+      var forfait = l.audience === 'family' && l.forfait === true;
+      sortie.push({
+        label: libelle.slice(0, TARIFS_MAX_LABEL),
+        amount: montant,
+        audience: l.audience,
+        age_min: l.audience === 'child' || l.audience === 'reduced' ? tNombre(l.ageMin) : null,
+        age_max: l.audience === 'child' || l.audience === 'reduced' ? tNombre(l.ageMax) : null,
+        party_size: l.audience === 'family' ? tEntier(l.partySize) : null,
+        per_person: !forfait
+      });
+      if (sortie.length >= TARIFS_MAX_LIGNES) break;
+    }
+    return sortie;
+  }
+
+  // Message de refus, ou chaîne vide. Même contrat que messageSaisieDates.
+  function messageSaisieTarifs() {
+    if (tEtat.gratuit) return '';
+    for (var i = 0; i < tEtat.lignes.length; i++) {
+      var l = tEtat.lignes[i];
+      if ((l.amount || '').trim() !== '' && tNombre(l.amount) === null) {
+        return 'Un montant n\u2019est pas lisible\u00a0: écrivez un nombre, par exemple 5 ou 5,50.';
+      }
+      if (l.audience === 'family' && tNombre(l.amount) !== null && tEntier(l.partySize) === null) {
+        return 'Indiquez pour combien de personnes vaut le forfait famille.';
+      }
+    }
+    return '';
+  }
+
+  // Rend les trois champs du corps : 'Gratuit' ou '' pour le champ texte
+  // historique, la grille sérialisée, et les conditions — le multipart ne
+  // transporte que des chaînes, comme event_dates.
+  //
+  // Les conditions partent INDÉPENDAMMENT du mode : une sortie gratuite peut
+  // être sur inscription, et c'est même le cas le plus fréquent du catalogue
+  // (28 fiches « Gratuit, sur inscription » au 2026-09-12).
+  function lireCorpsTarifs() {
+    var conditions = tEtat.conditions.length > 0 ? JSON.stringify(tEtat.conditions) : '';
+    if (tEtat.gratuit) return { price: 'Gratuit', tiers: '', conditions: conditions };
+    var lignes = tLignesValides();
+    if (lignes.length === 0) return { price: '', tiers: '', conditions: conditions };
+    return { price: '', tiers: JSON.stringify(lignes), conditions: conditions };
+  }
+
+
   // ── Carte de choix d'adresse ─────────────────────────────────────────
   function tuilesParCote(z) {
     return Math.pow(2, z);
@@ -2645,8 +2993,8 @@
             '</div>' +
           '</div>' +
           '<div class="pro-champ">' +
-            '<label class="pro-label" for="pro-depot-tarif">Tarif</label>' +
-            '<input class="pro-input" type="text" id="pro-depot-tarif" maxlength="100" placeholder="Gratuit, 5 €…" value="' + ech(estEdition ? texteTarifDepuisPrix(activite.price) : '') + '" />' +
+            '<span class="pro-label">Combien ça coûte ?</span>' +
+            '<div id="pro-depot-tarifs"></div>' +
           '</div>' +
           '<div class="pro-champ">' +
             '<label class="pro-label" for="pro-depot-lien">Inscription ou renseignements</label>' +
@@ -2679,6 +3027,7 @@
       estEdition ? activite.datesEditable !== false : true
     );
     dCableControleDates();
+    tInitialiser(estEdition ? activite.price : null);
 
     document.getElementById('pro-form-depot').addEventListener('submit', function (event) {
       onEnvoiFormulaireEvenement(event, mode, estEdition ? activite.id : null);
@@ -2951,6 +3300,12 @@
       definirMessage(messageEl, refusDates, true);
       return;
     }
+    var refusTarifs = messageSaisieTarifs();
+    if (refusTarifs) {
+      definirMessage(messageEl, refusTarifs, true);
+      return;
+    }
+    var partTarifs = lireCorpsTarifs();
 
     var corps = {
       location_name: document.getElementById('pro-depot-lieu-nom').value,
@@ -2961,9 +3316,15 @@
       description: document.getElementById('pro-depot-description').value,
       age_min: document.getElementById('pro-depot-age-min').value,
       age_max: document.getElementById('pro-depot-age-max').value,
-      price: document.getElementById('pro-depot-tarif').value,
+      price: partTarifs.price,
       link: document.getElementById('pro-depot-lien').value
     };
+    // La grille et les conditions partent sérialisées : le multipart ne
+    // transporte que des chaînes, même contrat que event_dates. Vide = aucune
+    // grille, jamais un tarif déduit. Les conditions sont indépendantes du
+    // montant — une sortie gratuite peut être sur inscription.
+    if (partTarifs.tiers) corps.tiers = partTarifs.tiers;
+    if (partTarifs.conditions) corps.conditions = partTarifs.conditions;
     if (mode === 'update') corps.activity_id = activityId;
 
     // Un des trois états du contrat de dates, jamais deux : keep_dates (rien
