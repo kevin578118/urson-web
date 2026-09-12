@@ -392,6 +392,114 @@
       outline: 2px solid var(--coral-deep); outline-offset: 1px;
     }
 
+    /* Cadre de carte — radius 18 et hauteur 220 sont les valeurs de
+       LocationMapCard cote app ; overflow hidden pour que la grille de tuiles
+       se coupe net aux angles. touch-action: pan-y — voir l'en-tete du module. */
+    .pro-c-cadre {
+      position: relative; height: 220px; margin-top: 10px;
+      border-radius: 18px; border: 1px solid var(--line-soft);
+      background: var(--bg-app);
+      box-shadow: 0 4px 20px rgba(255, 107, 107, 0.08);
+      overflow: hidden; cursor: grab; touch-action: pan-y;
+      user-select: none; -webkit-user-select: none;
+    }
+    .pro-c-cadre.pro-c-glisse { cursor: grabbing; }
+    /* Deux doigts posés : le cadre prend la main sur TOUT le geste, le temps du
+       pincement. Sans ce basculement, un pincement legerement oblique fait
+       engager au navigateur son pan vertical, qui emet pointercancel et tue le
+       pincement en cours. Rendu a pan-y au relachement, pour que le doigt
+       continue de faire defiler le formulaire. */
+    .pro-c-cadre.pro-c-pince { touch-action: none; }
+    /* Sur navigateur, la place existe : retour device de Kevin du 2026-09-12,
+       « agrandie la carte on a de la place sur navigateur ». 220 reste la
+       valeur en dessous, parce que c'est celle de LocationMapCard cote app et
+       qu'un ecran de telephone n'a pas cette place. 720 n'est pas choisi au
+       hasard : c'est le seul autre point de bascule du site (organisateur.mjs),
+       et une valeur neuve de plus serait une valeur de plus a tenir. */
+    @media (min-width: 720px) {
+      .pro-c-cadre { height: 380px; }
+    }
+    /* Fond crème explicite : une tuile absente ne doit jamais laisser le blanc
+       par defaut du navigateur, qui jurerait avec le reste de la page. */
+    .pro-c-tuiles { position: absolute; inset: 0; background: var(--bg-app); }
+    /* Une tuile reste une tuile : sans ceci, le navigateur repond a un
+       glissement par SON glisser-deposer d'image (fantome a la souris,
+       capture du pointeur perdue) et la carte ne bouge jamais. Retour
+       device de Kevin, 2026-09-12. La meme garde est posee trois fois :
+       ici, sur l'attribut draggable de chaque tuile, et sur dragstart. */
+    .pro-c-tuile {
+      position: absolute; width: 256px; height: 256px;
+      -webkit-user-drag: none; user-drag: none;
+    }
+    /* Epingle fixe au centre — seule touche vive de la carte, meme poids que le
+       badge de marqueur de l'app. La pointe touche le centre exact, d'ou le
+       decalage vertical de la hauteur du dessin. */
+    .pro-c-epingle {
+      position: absolute; left: 50%; top: 50%;
+      width: 28px; height: 36px; margin-left: -14px; margin-top: -36px;
+      pointer-events: none;
+    }
+    /* La couleur se pose en REGLE CSS, jamais en attribut de presentation :
+       l'attribut ne resout pas var() partout, la regle si. Sans ca, les deux
+       couleurs de l'epingle seraient des hex en dur alors que les tokens
+       existent. */
+    .pro-c-epingle-corps { fill: var(--coral-deep); }
+    .pro-c-epingle-centre { fill: var(--bg-surface); }
+    .pro-c-zooms { position: absolute; right: 10px; bottom: 10px; display: flex; flex-direction: column; gap: 6px; }
+    /* 44 px, le plancher de cible tactile du depot. Le bouton flottant de la
+       carte cote app est a 34, mais c'est une dette non arbitree que
+       pro-dates.mjs interdit justement de recopier sur une surface neuve — et
+       ici il n'y a aucune zone de clic elargie pour compenser. Releve au
+       retour de @design-keeper. */
+    .pro-c-zoom {
+      width: 44px; height: 44px; border-radius: 999px;
+      background: var(--bg-surface); border: 1px solid var(--line-medium);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+      font-family: inherit; font-size: 18px; line-height: 1; color: var(--fg-1);
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      padding: 0;
+    }
+    /* Attribution ODbL — a GAUCHE, pas a droite ou s'empilent les zooms : elle
+       doit rester lisible et cliquable. 12 px est un plancher pour ce registre,
+       il ne se negocie pas vers le bas. */
+    .pro-c-attribution {
+      position: absolute; left: 8px; bottom: 8px;
+      padding: 4px 8px; border-radius: 6px;
+      /* Fond quasi opaque et texte en --fg-1 : le design-system a mesure que
+         --fg-2 tombe sous AA des que le fond n'est plus bg-surface pur, et ici
+         le fond est une TUILE dont la couleur varie. Un contraste qu'on ne peut
+         pas mesurer statiquement se paie d'avance. */
+      background: rgba(255, 255, 255, 0.94);
+      font-size: 12px; line-height: 1.3; color: var(--fg-1);
+    }
+    .pro-c-attribution a { color: var(--fg-1); }
+    .pro-c-valider {
+      margin-top: 10px; height: 44px; padding: 0 18px; border-radius: 999px;
+      background: var(--bg-surface); border: 1.5px solid var(--coral);
+      font-family: inherit; font-size: 15px; font-weight: 700; color: var(--coral-deep);
+      cursor: pointer;
+    }
+    .pro-c-note { margin: 8px 0 0; font-size: 13px; line-height: 1.45; color: var(--fg-2); }
+    .pro-c-etat { display: block; margin-top: 8px; }
+    .pro-c-zoom:focus-visible, .pro-c-valider:focus-visible, .pro-c-cadre:focus-visible {
+      outline: 2px solid var(--coral-deep); outline-offset: 1px;
+    }
+
+    .pro-e-entete { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+    .pro-e-titre-ligne { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+    /* « Vos chiffres » n'est PAS une carte : ni un inventaire vide (qui
+       disparaitrait), ni un flux vide (qui se dirait), mais une fonctionnalite
+       pas encore construite. Lui donner le fond blanc et l'ombre d'une vraie
+       carte la ferait rivaliser avec « Mes sorties », qui porte du contenu
+       reel. Titre de section au patron deja en place, une phrase, rien de plus. */
+    .pro-e-chiffres { margin: 4px 0 26px; }
+    .pro-e-chiffres p { margin: 0; font-size: 15px; color: var(--fg-2); }
+    .pro-e-actions { margin-top: 22px; }
+    .pro-e-resume {
+      margin: 0 0 20px; font-size: 16px; line-height: 1.6; color: var(--fg-1);
+    }
+    .pro-e-liens { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-top: 6px; }
+
   </style>
 </head>
 <body>
@@ -472,6 +580,7 @@
   // 2026-09-10) et l'admin situe le lieu comme avant.
   var coordonneesRetenues = null;
   var categorieChoisie = '';
+  var routageCable = false;
   var suggestionsEnCours = null;
   var suggestionsTimer = null;
 
@@ -609,7 +718,10 @@
   //
   // Toute panne est SILENCIEUSE — pas de message, pas de blocage. Le champ
   // redevient un champ texte ordinaire et le dépôt reste possible.
-  var ADRESSE_API_URL = 'https://api-adresse.data.gouv.fr/search/';
+  // Une SEULE litterale porte l'hote : le geocodage direct et l'inverse en
+  // derivent tous les deux. C'est ce que le test d'allowlist des hotes lit.
+  var ADRESSE_API_BASE = 'https://api-adresse.data.gouv.fr/';
+  var ADRESSE_API_URL = ADRESSE_API_BASE + 'search/';
   var ADRESSE_BIAIS = { lat: '47.081', lon: '2.398' };
   var ADRESSE_DEBOUNCE_MS = 300;
   var ADRESSE_MIN_CARACTERES = 3;
@@ -670,6 +782,10 @@
   // serveur non passée par ech() avant d'arriver ici), liens d'action
   // facultatifs. Sert 'en attente', 'refusé', 'suspendu', 'sans compte'.
   function afficheEtatSimple(titre, paragraphes, liens) {
+    // Écran hors-route : on normalise le fragment, sinon l'URL continue
+    // d'afficher #/depot alors qu'on rend la connexion — elle mentirait,
+    // durablement.
+    quitteRoutes();
     var html = '<p class="pro-eyebrow">Espace pro / asso</p><h1>' + ech(titre) + '</h1>';
     for (var i = 0; i < paragraphes.length; i++) { html += '<p>' + paragraphes[i] + '</p>'; }
     if (liens && liens.length > 0) {
@@ -695,6 +811,10 @@
   // synchronisée d'elle-même, sans divergence silencieuse.
 
   function afficheDemande() {
+    // Écran hors-route : on normalise le fragment, sinon l'URL continue
+    // d'afficher #/depot alors qu'on rend la connexion — elle mentirait,
+    // durablement.
+    quitteRoutes();
     afficheChargement();
     appelApi('ownership_clause', {}, false).then(function (resultat) {
       if (!resultat.ok || !resultat.data) { afficheErreurReseau(); return; }
@@ -790,6 +910,10 @@
   // ── Connexion (OTP) ──────────────────────────────────────────────────
 
   function afficheConnexion(opts) {
+    // Écran hors-route : on normalise le fragment, sinon l'URL continue
+    // d'afficher #/depot alors qu'on rend la connexion — elle mentirait,
+    // durablement.
+    quitteRoutes();
     var noteHaut = opts.apresActivation
       ? 'Votre espace est prêt. Connectez-vous avec le code que nous allons vous envoyer par e-mail.'
       : 'Connectez-vous avec le code que nous vous envoyons par e-mail.';
@@ -961,6 +1085,10 @@
   // Le texte vient de rights_clause (réponse de 'me'), JAMAIS recopié ici.
 
   function afficheClauseGate(clause) {
+    // Écran hors-route : on normalise le fragment, sinon l'URL continue
+    // d'afficher #/depot alors qu'on rend la connexion — elle mentirait,
+    // durablement.
+    quitteRoutes();
     var texte = clause ? clause.text : '';
     var version = clause ? clause.version : null;
     app.innerHTML =
@@ -999,27 +1127,13 @@
 
   // ── Tableau de bord (vérifié) ────────────────────────────────────────
 
+  // L'écran d'accueil, la page de dépôt et l'écran de réussite vivent dans
+  // ./pro-ecrans.mjs. Ici, on pose seulement le compte en mémoire, on câble le
+  // routage une fois, et on rend.
   function afficheDashboard(compte) {
-    app.innerHTML =
-      '<p class="pro-eyebrow">Espace pro / asso</p>' +
-      '<h1>' + ech(compte.structureName) + '</h1>' +
-      '<div class="pro-carte">' +
-        '<h2>Mes sorties</h2>' +
-        '<p class="pro-sous-titre">Les sorties rattachées à votre espace. Un administrateur Urson les y rattache.</p>' +
-        '<div id="pro-liste-sorties"></div>' +
-      '</div>' +
-      '<div class="pro-carte">' +
-        '<h2 id="pro-depot-titre-carte">Déposer une sortie</h2>' +
-        '<p class="pro-sous-titre" id="pro-depot-soustitre">Ajoutez une nouvelle sortie au catalogue. Elle est relue avant publication.</p>' +
-        '<div id="pro-depot-zone"></div>' +
-      '</div>' +
-      '<p><button type="button" class="pro-lien-retour" id="pro-lien-deconnexion">Se déconnecter</button></p>';
-
-    document.getElementById('pro-lien-deconnexion').addEventListener('click', function () {
-      sb.auth.signOut().then(function () { afficheDemande(); });
-    });
-    afficheFormulaireEvenement('create', null);
-    chargeMesSorties();
+    compteCourant = compte;
+    if (!routageCable) { cableRoutage(); routageCable = true; }
+    rendEcran();
   }
 
   function chargeMesSorties() {
@@ -1073,7 +1187,7 @@
       for (var m = 0; m < boutons.length; m++) {
         boutons[m].addEventListener('click', function (event) {
           var id = event.currentTarget.getAttribute('data-id');
-          afficheFormulaireEvenement('update', index[id]);
+          ouvreCorrection(index[id]);
         });
       }
     }).catch(function () {
@@ -1089,11 +1203,10 @@
   var DATES_MAX_ENTREES = 200;
   var DATES_MAX_CRENEAUX = 6;
 
-  var JOURS_NOM = ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche'];
-  var JOURS_CLE = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+  // JOURS_NOM, JOURS_CLE, MOIS_NOM et tous les libellés de date viennent de
+  // SOURCE_PHRASE (./pro-phrase.mjs) : ce sont de vraies fonctions, testées,
+  // dont la source est émise ici telle quelle. Ne pas les redéclarer.
   var JOURS_INITIALE = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
-  var MOIS_NOM = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin',
-    'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
   var FREQUENCES = [
     { valeur: 'daily', libelle: 'Chaque jour' },
     { valeur: 'weekly', libelle: 'Chaque semaine' },
@@ -1101,27 +1214,30 @@
     { valeur: 'monthly', libelle: 'Chaque mois' }
   ];
 
-  var dEtat = null;
-  var dEmpreinteInitiale = null;
-  var dEditables = true;
-
-  // ── Dates : composants numériques UNIQUEMENT (pièges #102 / #84 / #112) ──
-  // Jamais new Date(chaine). Un curseur de calendrier avance par setDate(),
-  // jamais par arithmetique en millisecondes.
-  function dDeuxChiffres(n) { return (n < 10 ? '0' : '') + n; }
-  function dIsoDe(d) { return d.getFullYear() + '-' + dDeuxChiffres(d.getMonth() + 1) + '-' + dDeuxChiffres(d.getDate()); }
-  function dAnnee(iso) { return parseInt(iso.slice(0, 4), 10); }
-  function dMois(iso) { return parseInt(iso.slice(5, 7), 10); }
-  function dQuantieme(iso) { return parseInt(iso.slice(8, 10), 10); }
-  function dDateDe(iso) { return new Date(dAnnee(iso), dMois(iso) - 1, dQuantieme(iso)); }
-  function dIndexJour(iso) { return (dDateDe(iso).getDay() + 6) % 7; }
-  function dAujourdhui() { return dIsoDe(new Date()); }
-  function dPlusSemaines(iso, n) {
-    var d = dDateDe(iso);
-    d.setDate(d.getDate() + n * 7);
-    return dIsoDe(d);
+  var JOURS_NOM = ["lundi","mardi","mercredi","jeudi","vendredi","samedi","dimanche"];
+  var JOURS_CLE = ["mon","tue","wed","thu","fri","sat","sun"];
+  var MOIS_NOM = ["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
+  function dDeuxChiffres(n) {
+    return (n < 10 ? '0' : '') + n;
   }
-
+  function dAnnee(iso) {
+    return parseInt(iso.slice(0, 4), 10);
+  }
+  function dMois(iso) {
+    return parseInt(iso.slice(5, 7), 10);
+  }
+  function dQuantieme(iso) {
+    return parseInt(iso.slice(8, 10), 10);
+  }
+  function dDateDe(iso) {
+    return new Date(dAnnee(iso), dMois(iso) - 1, dQuantieme(iso));
+  }
+  function dIsoDe(d) {
+    return d.getFullYear() + '-' + dDeuxChiffres(d.getMonth() + 1) + '-' + dDeuxChiffres(d.getDate());
+  }
+  function dIndexJour(iso) {
+    return (dDateDe(iso).getDay() + 6) % 7;
+  }
   function dLibelleJour(iso) {
     var q = dQuantieme(iso);
     return JOURS_NOM[dIndexJour(iso)] + ' ' + (q === 1 ? '1er' : String(q)) + ' ' + MOIS_NOM[dMois(iso) - 1];
@@ -1139,10 +1255,6 @@
     if (!c.end) return 'à partir de ' + dLibelleHeure(c.start);
     return 'de ' + dLibelleHeure(c.start) + ' à ' + dLibelleHeure(c.end);
   }
-
-  // Libellés de rythme — décalque de describeRepeat (lib/dateRepetition.ts),
-  // repris au mot près, sans le nombre de séances que l'app n'affiche pas non
-  // plus (formatRepeatSummary).
   function dJoursCoches(repeat) {
     var noms = [];
     for (var k = 0; k < JOURS_CLE.length; k++) {
@@ -1162,7 +1274,72 @@
   function dResumeRythme(entree) {
     var tete = dTeteRythme(entree);
     var bas = tete.charAt(0).toLowerCase() + tete.slice(1);
-    return 'Ça revient ' + bas + ', jusqu\u2019au ' + dLibelleCourt(entree.repeat.until) + '.';
+    return 'Ça revient ' + bas + ', jusqu’au ' + dLibelleCourt(entree.repeat.until) + '.';
+  }
+  function phraseComplete(entree) {
+    var repondu = entree.journee || entree.slots.length > 0;
+    return !!entree.date && repondu;
+  }
+  function phraseJetonsDe(entree) {
+    var jetons = [];
+    var e = entree;
+  
+    if (e.repeat) {
+      jetons.push({ t: dTeteRythme(e), r: 'rythme' });
+    } else if (e.end_date) {
+      jetons.push({ t: 'Du ', r: 'st' });
+      jetons.push({ t: dLibelleJour(e.date), r: 'jour' });
+      jetons.push({ t: ' au ', r: 'st' });
+      jetons.push({ t: dLibelleCourt(e.end_date), r: 'periode' });
+    } else if (e.date) {
+      jetons.push({ t: 'Le ', r: 'st' });
+      jetons.push({ t: dLibelleJour(e.date), r: 'jour' });
+    } else {
+      jetons.push({ t: 'Le ', r: 'st' });
+      jetons.push({ t: 'quel jour ?', r: 'attente-jour' });
+    }
+  
+    jetons.push({ t: ', ', r: 'st' });
+  
+    if (e.journee && e.slots.length === 0) {
+      jetons.push({ t: 'toute la journée', r: 'journee', i: 0 });
+    } else if (e.slots.length === 0) {
+      jetons.push({ t: 'à quelle heure ?', r: 'attente-heure', i: 0 });
+    } else {
+      for (var s = 0; s < e.slots.length; s++) {
+        if (s > 0) jetons.push({ t: ' et ', r: 'st' });
+        jetons.push({ t: dLibelleCreneau(e.slots[s]), r: 'heure', i: s });
+      }
+    }
+  
+    if (e.repeat) {
+      jetons.push({ t: ', jusqu’au ', r: 'st' });
+      jetons.push({ t: dLibelleCourt(e.repeat.until), r: 'butoir' });
+    }
+  
+    if (phraseComplete(e)) jetons.push({ t: '.', r: 'point' });
+    return jetons;
+  }
+  function phraseTexteDe(entree) {
+    if (!phraseComplete(entree)) return '';
+    var jetons = phraseJetonsDe(entree);
+    var texte = '';
+    for (var k = 0; k < jetons.length; k++) texte += jetons[k].t;
+    return texte;
+  }
+
+  var dEtat = null;
+  var dEmpreinteInitiale = null;
+  var dEditables = true;
+
+  // ── Dates : composants numériques UNIQUEMENT (pièges #102 / #84 / #112) ──
+  // Jamais new Date(chaine). Un curseur de calendrier avance par setDate(),
+  // jamais par arithmetique en millisecondes.
+  function dAujourdhui() { return dIsoDe(new Date()); }
+  function dPlusSemaines(iso, n) {
+    var d = dDateDe(iso);
+    d.setDate(d.getDate() + n * 7);
+    return dIsoDe(d);
   }
 
   function dEntreeVide() {
@@ -1245,6 +1422,25 @@
     return { event_dates: liste };
   }
 
+  /** Les entrées telles qu'elles sont saisies, pour l'écran de réussite —
+   *  lecture seule, jamais un chemin d'écriture. Copie défensive : l'écran de
+   *  réussite survit au démontage du contrôle. */
+  function lireEntreesAffichables() {
+    var utiles = dEntreesUtiles();
+    var out = [];
+    for (var i = 0; i < utiles.length; i++) {
+      var e = utiles[i];
+      out.push({
+        date: e.date,
+        slots: e.slots.slice(),
+        journee: e.journee,
+        end_date: e.end_date,
+        repeat: e.repeat
+      });
+    }
+    return out;
+  }
+
   function messageSaisieDates(mode) {
     if (mode === 'update' && !dEditables) return null;
     var utiles = dEntreesUtiles();
@@ -1299,47 +1495,44 @@
     return (dEtat.panneau && dEtat.panneau.i === i && dEtat.panneau.quoi === action) ? 'edition' : 'pose';
   }
 
+  // Habillage des jetons rendus par phraseJetonsDe (./pro-phrase.mjs) — le
+  // découpage de la phrase est pur et testé, ici on ne fait que l'habiller.
+  // UNE divergence voulue : le point final est retiré tant qu'un panneau est
+  // ouvert sur cette entrée (comportement d'origine, PR #661). Les jetons
+  // d'attente, eux, n'existent que de ce côté-ci : le rendu texte n'est défini
+  // que sur des entrées complètes.
   function dMotsDe(i) {
     var e = dEtat.entrees[i];
-    var html = '';
     var panneauIci = dEtat.panneau && dEtat.panneau.i === i;
+    var jetons = phraseJetonsDe(e);
+    var html = '';
 
-    if (e.repeat) {
-      html += dMot(dTeteRythme(e), dEtatMot(i, 'rythme'), 'rythme', i, null);
-    } else if (e.end_date) {
-      html += dMotStatique('Du ');
-      html += dMot(dLibelleJour(e.date), dEtatMot(i, 'jour'), 'jour', i, null);
-      html += dMotStatique(' au ');
-      html += dMot(dLibelleCourt(e.end_date), dEtatMot(i, 'periode'), 'periode', i, null);
-    } else if (e.date) {
-      html += dMotStatique('Le ');
-      html += dMot(dLibelleJour(e.date), dEtatMot(i, 'jour'), 'jour', i, null);
-    } else {
-      html += dMotStatique('Le ');
-      html += dMot('quel jour\u00a0?', panneauIci && dEtat.panneau.quoi === 'jour' ? 'edition' : 'attente', 'jour', i, null);
-    }
+    for (var k = 0; k < jetons.length; k++) {
+      var j = jetons[k];
 
-    html += dMotStatique(', ');
-
-    if (e.journee && e.slots.length === 0) {
-      html += dMot('toute la journée', dEtatMot(i, 'heure'), 'heure', i, 0);
-    } else if (e.slots.length === 0) {
-      html += dMot('à quelle heure\u00a0?', panneauIci && dEtat.panneau.quoi === 'heure' ? 'edition' : 'attente', 'heure', i, 0);
-    } else {
-      for (var s = 0; s < e.slots.length; s++) {
-        if (s > 0) html += dMotStatique(' et ');
-        var enEdition = panneauIci && dEtat.panneau.quoi === 'heure' && dEtat.cible === s;
-        html += dMot(dLibelleCreneau(e.slots[s]), enEdition ? 'edition' : 'pose', 'heure', i, s);
+      if (j.r === 'st') { html += dMotStatique(j.t); continue; }
+      if (j.r === 'point') {
+        if (!panneauIci) html += dMotStatique(j.t);
+        continue;
       }
+      if (j.r === 'attente-jour') {
+        html += dMot(j.t, panneauIci && dEtat.panneau.quoi === 'jour' ? 'edition' : 'attente', 'jour', i, null);
+        continue;
+      }
+      if (j.r === 'attente-heure') {
+        html += dMot(j.t, panneauIci && dEtat.panneau.quoi === 'heure' ? 'edition' : 'attente', 'heure', i, null);
+        continue;
+      }
+      if (j.r === 'heure' || j.r === 'journee') {
+        var enEdition = panneauIci && dEtat.panneau.quoi === 'heure' && dEtat.cible === j.i;
+        html += dMot(j.t, enEdition ? 'edition' : 'pose', 'heure', i, j.i);
+        continue;
+      }
+      // jour, periode, rythme, butoir — la tête et la butoir d'une répétition
+      // ouvrent le MÊME panneau, comme avant.
+      var action = j.r === 'butoir' ? 'rythme' : j.r;
+      html += dMot(j.t, dEtatMot(i, action), action, i, null);
     }
-
-    if (e.repeat) {
-      html += dMotStatique(', jusqu\u2019au ');
-      html += dMot(dLibelleCourt(e.repeat.until), dEtatMot(i, 'rythme'), 'rythme', i, null);
-    }
-
-    var repondu = e.journee || e.slots.length > 0;
-    if (!panneauIci && repondu && e.date) html += dMotStatique('.');
     return html;
   }
 
@@ -1385,7 +1578,18 @@
       html += '<button type="button" class="pro-d-case' + classe + '" data-a="caljour" data-d="' + iso + '">' +
         jour.getDate() + '</button>';
     }
-    html += '</div></div>';
+    html += '</div>';
+    // Retirer une plage posée — symétrie avec « Retirer ce créneau » (panneau
+    // horaires) et « Ne plus répéter » (panneau rythme). Son absence était le
+    // premier défaut du retour device : une fois « Du X au Y » écrit, aucun
+    // geste ne revenait en arrière.
+    if (quoi === 'periode' && e.end_date) {
+      html += '<div class="pro-d-rangee-fin">' +
+        '<span class="pro-d-espace"></span>' +
+        '<button type="button" class="pro-d-lien" data-a="retirerplage">Retirer la plage de jours</button>' +
+        '</div>';
+    }
+    html += '</div>';
     return html;
   }
 
@@ -1584,6 +1788,11 @@
       ew.repeat = { frequency: ew.repeat.frequency, weekdays: suite, until: ew.repeat.until };
       return;
     }
+    if (action === 'retirerplage') {
+      dEtat.entrees[dEtat.panneau.i].end_date = null;
+      dEtat.panneau = null;
+      return;
+    }
     if (action === 'arretrythme') {
       dEtat.entrees[dEtat.panneau.i].repeat = null;
       dEtat.panneau = null;
@@ -1684,6 +1893,645 @@
   }
 
 
+  // ── Carte de choix d'adresse ─────────────────────────────────────────
+  function tuilesParCote(z) {
+    return Math.pow(2, z);
+  }
+  function tuileXDeLon(lon, z) {
+    return (lon + 180) / 360 * tuilesParCote(z);
+  }
+  function tuileYDeLat(lat, z) {
+    var rad = lat * Math.PI / 180;
+    return (1 - Math.log(Math.tan(rad) + 1 / Math.cos(rad)) / Math.PI) / 2 * tuilesParCote(z);
+  }
+  function lonDeTuileX(x, z) {
+    return x / tuilesParCote(z) * 360 - 180;
+  }
+  function latDeTuileY(y, z) {
+    var n = Math.PI * (1 - 2 * y / tuilesParCote(z));
+    var sinh = (Math.exp(n) - Math.exp(-n)) / 2;
+    return Math.atan(sinh) * 180 / Math.PI;
+  }
+  function urlAdresseInverse(base, lat, lon) {
+    return base + 'reverse/?lon=' + encodeURIComponent(lon) + '&lat=' + encodeURIComponent(lat);
+  }
+  function pasDePincement(rapport) {
+    if (!isFinite(rapport) || rapport <= 0) return 0;
+    if (rapport > 1.4) return 1;
+    if (rapport < 0.71) return -1;
+    return 0;
+  }
+  function pasDeMolette(cumul, deltaY, deltaMode) {
+    var facteur = deltaMode === 1 ? 60 : (deltaMode === 2 ? 120 : 1);
+    var pixels = deltaY * facteur;
+    if (!isFinite(pixels) || pixels === 0) return { pas: 0, cumul: cumul };
+    var total = (cumul > 0) === (pixels > 0) ? cumul + pixels : pixels;
+    if (total >= 120) return { pas: -1, cumul: total - 120 };
+    if (total <= -120) return { pas: 1, cumul: total + 120 };
+    return { pas: 0, cumul: total };
+  }
+
+  var CARTE_TUILE = 256;
+  var CARTE_ZOOM_MIN = 12;
+  var CARTE_ZOOM_MAX = 18;
+  var CARTE_ZOOM_DEFAUT = 16;
+  var CARTE_TUILES_URL = 'https://tile.openstreetmap.org/';
+
+  // Etat de la carte montee, ou null. Une seule carte a la fois sur la page.
+  var carte = null;
+  // L'observateur de taille du cadre. Il vit ICI et pas dans "carte" : demonteCarte
+  // est appelee depuis quatre endroits, parfois alors que carte vaut deja null, et
+  // une reference rangee dans carte fuirait sur ce chemin-la.
+  var carteObservateur = null;
+  // Jeton de la recherche d'adresse en vol, ou null. Le plus recent gagne ; tout
+  // ce qui n'est pas le jeton courant est jete sans rien ecrire.
+  var inverseEnCours = null;
+  // Borne de l'attente. Sans elle, un reseau qui pend laisse le message
+  // d'attente eternellement, et le bouton d'envoi gele avec lui.
+  var CARTE_INVERSE_DELAI_MS = 8000;
+
+  /**
+   * LE seul endroit qui pose ou retire le jeton — et qui accorde le bouton
+   * d'envoi dans le meme geste.
+   *
+   * Le jeton est retire depuis CINQ endroits : le retour de l'appel, le delai,
+   * un glissement qui reconstruit la note, le demontage de la carte, et un
+   * second clic. Un gel pose a la main d'un cote et retire de l'autre
+   * laisserait le bouton d'envoi desactive pour de bon des qu'un seul de ces
+   * chemins oublie sa moitie de la paire.
+   *
+   * Pourquoi geler l'envoi : la soumission lit coordonneesRetenues de facon
+   * synchrone. Envoyer pendant que la recherche est en vol deposerait une fiche
+   * dont le POINT est deja le nouveau et dont le TEXTE est encore l'ancien —
+   * pas l'ecart qu'on assume (entre le point vise et l'adresse BAN la plus
+   * proche), mais un etat a mi-ecriture.
+   */
+  function poseInverse(jeton) {
+    inverseEnCours = jeton;
+    var envoi = document.getElementById('pro-depot-envoyer');
+    if (envoi) envoi.disabled = jeton !== null;
+  }
+
+  function carteEstMontee() { return carte !== null; }
+
+  /** Monte la carte sous le champ d'adresse, centree sur le point d'une
+   *  suggestion retenue. Ne fait rien si le conteneur n'est pas la. */
+  function monteCarte(lat, lon) {
+    var zone = document.getElementById('pro-depot-carte');
+    if (!zone) return;
+    demonteCarte();
+
+    carte = {
+      lat: lat, lon: lon,
+      centreLat: lat, centreLon: lon,
+      zoom: CARTE_ZOOM_DEFAUT,
+      deplace: false,
+      glisse: null,
+      // Cumul de molette normalise, et les pointeurs tactiles poses.
+      molette: 0,
+      pointeurs: [],
+      ecartement: 0
+    };
+
+    zone.innerHTML =
+      '<div class="pro-c-cadre" id="pro-c-cadre" tabindex="0" role="application" ' +
+        'aria-label="Carte du point retenu. Faites glisser pour deplacer.">' +
+        '<div class="pro-c-tuiles" id="pro-c-tuiles"></div>' +
+        '<svg class="pro-c-epingle" viewBox="0 0 28 36" aria-hidden="true">' +
+          '<path class="pro-c-epingle-corps" d="M14 36C14 36 26 22.5 26 14A12 12 0 1 0 2 14c0 8.5 12 22 12 22z"/>' +
+          '<circle class="pro-c-epingle-centre" cx="14" cy="14" r="4.5"/>' +
+        '</svg>' +
+        '<div class="pro-c-zooms">' +
+          '<button type="button" class="pro-c-zoom" data-c="zoomplus" aria-label="Zoomer">+</button>' +
+          '<button type="button" class="pro-c-zoom" data-c="zoommoins" aria-label="Dezoomer">\u2212</button>' +
+        '</div>' +
+        '<p class="pro-c-attribution">\u00a9 <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors</p>' +
+      '</div>' +
+      '<p class="pro-c-note" id="pro-c-note">Le point vient de l\u2019adresse choisie. Faites glisser la carte si vous voulez l\u2019ajuster.</p>';
+
+    cableCarte();
+    dessineCarte();
+    observeCadre();
+  }
+
+  /** Redessine quand le CADRE change de taille — jamais un ecouteur sur la
+   *  fenetre, qui survivrait aux remplacements de contenu de cette page et
+   *  s'empilerait. Le rappel part une premiere fois a l'observe(), juste apres
+   *  le dessin du montage : memes URL de tuiles, servies du cache. */
+  function observeCadre() {
+    var cadre = document.getElementById('pro-c-cadre');
+    if (!cadre || !window.ResizeObserver) return;
+    carteObservateur = new window.ResizeObserver(function () {
+      if (carte) dessineCarte();
+    });
+    carteObservateur.observe(cadre);
+  }
+
+  /** Retire la carte et tout ce qui y pend. Appelee par toute frappe dans
+   *  « Adresse » OU « Ville » — les DEUX champs qui oublient les coordonnees —
+   *  et par le demontage du formulaire. */
+  function demonteCarte() {
+    // En tete, et sans condition : ce chemin est parcouru alors que carte vaut
+    // deja null (monteCarte appelle demonteCarte en premier).
+    if (carteObservateur) { carteObservateur.disconnect(); carteObservateur = null; }
+    poseInverse(null);
+    var zone = document.getElementById('pro-depot-carte');
+    if (zone) zone.innerHTML = '';
+    carte = null;
+  }
+
+  function cableCarte() {
+    var cadre = document.getElementById('pro-c-cadre');
+    if (!cadre) return;
+
+    // Refuse le glisser-deposer natif du navigateur, qui prenait la main sur le
+    // deplacement de la carte. Pose sur le cadre, il couvre aussi tout element
+    // ajoute plus tard a l'interieur.
+    cadre.addEventListener('dragstart', function (event) { event.preventDefault(); });
+
+    /** Registre des doigts poses. Un seul : on glisse. Deux : on pince. */
+    function indexPointeur(id) {
+      for (var i = 0; i < carte.pointeurs.length; i++) {
+        if (carte.pointeurs[i].id === id) return i;
+      }
+      return -1;
+    }
+
+    function ecartementCourant() {
+      var a = carte.pointeurs[0];
+      var b = carte.pointeurs[1];
+      var dx = a.x - b.x;
+      var dy = a.y - b.y;
+      return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    cadre.addEventListener('pointerdown', function (event) {
+      if (!carte) return;
+      // Un appui sur un bouton de zoom n'amorce jamais un geste : c'est le
+      // dernier hit-test du module, petit mais reel.
+      if (event.target && event.target.getAttribute && event.target.getAttribute('data-c')) return;
+      if (indexPointeur(event.pointerId) === -1) {
+        carte.pointeurs.push({ id: event.pointerId, x: event.clientX, y: event.clientY });
+      }
+      // La capture est posee EN DERNIER et sous try : elle leve quand le pointeur
+      // n'est plus actif au moment ou le gestionnaire tourne, et une exception
+      // ici laisserait le geste a moitie amorce — ni glissement, ni pincement.
+      prendLePointeur(cadre, event.pointerId);
+
+      if (carte.pointeurs.length >= 2) {
+        // Le pincement prend la main : plus de glissement, et le cadre reclame
+        // tout le geste au navigateur le temps des deux doigts.
+        carte.glisse = null;
+        carte.ecartement = ecartementCourant();
+        cadre.classList.remove('pro-c-glisse');
+        cadre.classList.add('pro-c-pince');
+        return;
+      }
+      carte.glisse = { x: event.clientX, y: event.clientY };
+      cadre.classList.add('pro-c-glisse');
+    });
+
+    function prendLePointeur(el, id) {
+      if (!el.setPointerCapture) return;
+      try { el.setPointerCapture(id); } catch (e) {}
+    }
+
+    cadre.addEventListener('pointermove', function (event) {
+      if (!carte) return;
+      var i = indexPointeur(event.pointerId);
+      if (i !== -1) {
+        carte.pointeurs[i].x = event.clientX;
+        carte.pointeurs[i].y = event.clientY;
+      }
+
+      if (carte.pointeurs.length >= 2) {
+        if (!carte.ecartement) return;
+        var pas = pasDePincement(ecartementCourant() / carte.ecartement);
+        // La reference repart du nouvel ecartement a CHAQUE cran rendu : sans
+        // ca, un pincement lent et continu sauterait plusieurs niveaux.
+        if (pas) { carte.ecartement = ecartementCourant(); zoomeDe(pas); }
+        return;
+      }
+
+      if (!carte.glisse) return;
+      var dx = event.clientX - carte.glisse.x;
+      var dy = event.clientY - carte.glisse.y;
+      carte.glisse.x = event.clientX;
+      carte.glisse.y = event.clientY;
+      deplaceCarte(dx, dy);
+    });
+
+    var fin = function (event) {
+      if (!carte) return;
+      var i = indexPointeur(event.pointerId);
+      if (i !== -1) carte.pointeurs.splice(i, 1);
+
+      if (carte.pointeurs.length < 2) {
+        cadre.classList.remove('pro-c-pince');
+        carte.ecartement = 0;
+      }
+      if (carte.pointeurs.length === 1) {
+        // Un doigt reste : le glissement reprend SUR LUI, sinon la carte
+        // sauterait de l'ecart accumule entre les deux doigts.
+        carte.glisse = { x: carte.pointeurs[0].x, y: carte.pointeurs[0].y };
+        cadre.classList.add('pro-c-glisse');
+      } else if (carte.pointeurs.length === 0) {
+        carte.glisse = null;
+        cadre.classList.remove('pro-c-glisse');
+      }
+      if (cadre.releasePointerCapture && event.pointerId !== undefined) {
+        try { cadre.releasePointerCapture(event.pointerId); } catch (e) {}
+      }
+    };
+    cadre.addEventListener('pointerup', fin);
+    cadre.addEventListener('pointercancel', fin);
+
+    // Molette. { passive: false } est explicite : sur un element ordinaire
+    // l'ecouteur n'est pas passif par defaut, mais l'ecrire evite le doute le
+    // jour ou quelqu'un deplace cet ecouteur plus haut dans l'arbre.
+    cadre.addEventListener('wheel', function (event) {
+      if (!carte) return;
+      event.preventDefault();
+      var r = pasDeMolette(carte.molette, event.deltaY, event.deltaMode);
+      carte.molette = r.cumul;
+      if (r.pas) zoomeDe(r.pas);
+    }, { passive: false });
+
+    cadre.addEventListener('click', function (event) {
+      if (!carte) return;
+      var cible = event.target;
+      while (cible && cible !== cadre && !cible.getAttribute('data-c')) cible = cible.parentNode;
+      if (!cible || cible === cadre) return;
+      var quoi = cible.getAttribute('data-c');
+      if (quoi === 'zoomplus') zoomeDe(1);
+      if (quoi === 'zoommoins') zoomeDe(-1);
+    });
+  }
+
+  /** Change de niveau de zoom en PRESERVANT le centre. Il n'arme donc pas
+   *  « Utiliser ce point » — et c'est correct : le point n'a pas bouge. Vrai
+   *  des boutons, de la molette et du pincement, sans exception. */
+  function zoomeDe(pas) {
+    var vise = carte.zoom + pas;
+    if (vise < CARTE_ZOOM_MIN) vise = CARTE_ZOOM_MIN;
+    if (vise > CARTE_ZOOM_MAX) vise = CARTE_ZOOM_MAX;
+    if (vise === carte.zoom) return;
+    carte.zoom = vise;
+    dessineCarte();
+  }
+
+  /** Deplace le centre de dx/dy pixels. Ce qui arme « Utiliser ce point », c'est
+   *  un CENTRE QUI A CHANGE, jamais un geste : dit ainsi, le cas du zoom est
+   *  determine au lieu d'etre laisse en suspens. */
+  function deplaceCarte(dx, dy) {
+    var n = tuilesParCote(carte.zoom);
+    var x = tuileXDeLon(carte.centreLon, carte.zoom) - dx / CARTE_TUILE;
+    var y = tuileYDeLat(carte.centreLat, carte.zoom) - dy / CARTE_TUILE;
+    if (y < 0) y = 0;
+    if (y > n) y = n;
+    carte.centreLon = lonDeTuileX(x, carte.zoom);
+    carte.centreLat = latDeTuileY(y, carte.zoom);
+    carte.deplace = true;
+    dessineCarte();
+    majNoteCarte();
+  }
+
+  /**
+   * La note sous la carte : le bouton qui retient le point, et une ligne d'etat.
+   *
+   * Appelee a CHAQUE pointermove d'un glissement, elle reconstruit la note. Elle
+   * jette donc la recherche d'adresse en vol : sa reponse ecraserait l'etat du
+   * point qu'on vient tout juste de viser.
+   */
+  function majNoteCarte() {
+    var note = document.getElementById('pro-c-note');
+    if (!note || !carte.deplace) return;
+    poseInverse(null);
+    note.innerHTML =
+      '<button type="button" class="pro-c-valider" data-a-carte="valider">Utiliser ce point</button>' +
+      '<span class="pro-c-etat" id="pro-c-etat">L\u2019adresse du champ prendra celle de ce point.</span>';
+    var bouton = note.querySelector('.pro-c-valider');
+    if (!bouton) return;
+
+    // Le bouton NE SE DESARME PAS. Un fetch sur une connexion qui pend ne rejette
+    // pas avant des dizaines de secondes : un bouton grise serait le seul etat
+    // sans issue du parcours. Le jeton suffit — un second clic jette le premier.
+    bouton.addEventListener('click', function () {
+      var point = { lat: carte.centreLat, lon: carte.centreLon };
+      // Le point est retenu AVANT l'appel reseau : une panne ne doit jamais
+      // faire perdre le geste.
+      coordonneesRetenues = point;
+      carte.deplace = false;
+      var jeton = {};
+      poseInverse(jeton);
+      ditEtatCarte('Point retenu. Je cherche l\u2019adresse de ce point\u2026');
+
+      // L'attente est bornee : un reseau qui pend ne doit laisser ni message
+      // d'attente eternel, ni bouton d'envoi gele. Un retard qui arriverait
+      // apres est jete par la garde de jeton, comme tout le reste.
+      var minuteur = setTimeout(function () {
+        if (inverseEnCours !== jeton) return;
+        poseInverse(null);
+        ditNoteCarte('Point retenu. L\u2019adresse n\u2019a pas pu être mise à jour, vérifiez-la.');
+      }, CARTE_INVERSE_DELAI_MS);
+
+      chercheAdresseInverse(point.lat, point.lon).then(function (trouve) {
+        // Les quatre gardes, chacune pour un cas distinct :
+        // (a) un geste plus recent a jete cette recherche ;
+        // (b) la carte a ete demontee (frappe dans Adresse ou Ville, envoi reussi) ;
+        // (c) le champ n'est plus dans le document ;
+        // (d) les coordonnees ne sont plus CELLES QUE J'AI POSEES — comparaison
+        //     d'identite, pas de valeurs : le formulaire remonte remet la
+        //     variable a null et recree un champ de meme id.
+        if (inverseEnCours !== jeton) return;
+        clearTimeout(minuteur);
+        // Le jeton tombe ICI, avant les gardes suivantes : elles peuvent
+        // renoncer a ecrire, jamais laisser le bouton d'envoi gele.
+        poseInverse(null);
+        if (!carteEstMontee()) return;
+        var champAdresse = document.getElementById('pro-depot-adresse');
+        var champVille = document.getElementById('pro-depot-ville');
+        if (!champAdresse || !champVille) return;
+        if (coordonneesRetenues !== point) return;
+
+        if (!trouve) {
+          ditNoteCarte('Point retenu. L\u2019adresse n\u2019a pas pu être mise à jour, vérifiez-la.');
+          return;
+        }
+        // Ecrire .value n'emet PAS d'evenement input : l'invariant du champ
+        // (toute frappe oublie les coordonnees) ne se declenche donc pas, et la
+        // carte survit a ce remplissage.
+        champAdresse.value = trouve.adresse;
+        champVille.value = trouve.ville;
+        ditNoteCarte('Point retenu, adresse mise à jour.');
+      });
+    });
+  }
+
+  function ditEtatCarte(texte) {
+    var etat = document.getElementById('pro-c-etat');
+    if (etat) etat.textContent = texte;
+  }
+
+  function ditNoteCarte(texte) {
+    var note = document.getElementById('pro-c-note');
+    if (note) note.textContent = texte;
+  }
+
+  /**
+   * L'adresse la plus proche d'un point, sur l'API Adresse (BAN). Rend null des
+   * que rien n'est exploitable — panne comprise, silencieuse comme le reste des
+   * appels a cette API sur cette page.
+   *
+   * Memes rejets que la recherche par texte : une COMMUNE entiere n'est pas une
+   * adresse, et il faut un nom ET une ville pour remplir les deux champs.
+   */
+  function chercheAdresseInverse(lat, lon) {
+    return fetch(urlAdresseInverse(ADRESSE_API_BASE, lat, lon), { method: 'GET' })
+      .then(function (reponse) {
+        if (!reponse.ok) return null;
+        return reponse.json();
+      })
+      .then(function (data) {
+        var features = data && data.features ? data.features : [];
+        for (var i = 0; i < features.length; i++) {
+          var f = features[i];
+          var pr = f && f.properties ? f.properties : null;
+          if (!pr) continue;
+          if (pr.type === 'municipality') continue;
+          var adresse = pr.name || pr.label || '';
+          var ville = pr.city || '';
+          if (!adresse || !ville) continue;
+          return { adresse: adresse, ville: ville };
+        }
+        return null;
+      })
+      .catch(function () { return null; });
+  }
+
+  function dessineCarte() {
+    var cadre = document.getElementById('pro-c-cadre');
+    var zone = document.getElementById('pro-c-tuiles');
+    if (!cadre || !zone) return;
+    var largeur = cadre.clientWidth || 600;
+    var hauteur = cadre.clientHeight || 220;
+    var z = carte.zoom;
+    var n = tuilesParCote(z);
+
+    var cx = tuileXDeLon(carte.centreLon, z);
+    var cy = tuileYDeLat(carte.centreLat, z);
+    // Coin haut-gauche du cadre, en coordonnees de tuile.
+    var x0 = cx - (largeur / 2) / CARTE_TUILE;
+    var y0 = cy - (hauteur / 2) / CARTE_TUILE;
+
+    var html = '';
+    var premierX = Math.floor(x0);
+    var premierY = Math.floor(y0);
+    var derniereX = Math.floor(x0 + largeur / CARTE_TUILE);
+    var derniereY = Math.floor(y0 + hauteur / CARTE_TUILE);
+
+    for (var ty = premierY; ty <= derniereY; ty++) {
+      if (ty < 0 || ty >= n) continue;
+      for (var tx = premierX; tx <= derniereX; tx++) {
+        var tnx = ((tx % n) + n) % n;
+        var gauche = Math.round((tx - x0) * CARTE_TUILE);
+        var haut = Math.round((ty - y0) * CARTE_TUILE);
+        html += '<img class="pro-c-tuile" alt="" loading="lazy" draggable="false" ' +
+          'style="left:' + gauche + 'px;top:' + haut + 'px" ' +
+          'src="' + CARTE_TUILES_URL + z + '/' + tnx + '/' + ty + '.png" />';
+      }
+    }
+    zone.innerHTML = html;
+  }
+
+
+  // ── Écrans et routage ────────────────────────────────────────────────
+  var ROUTE_ACCUEIL = '#/';
+  var ROUTE_DEPOT = '#/depot';
+  var ROUTE_DEPOSE = '#/depose';
+
+  // Compte vérifié en mémoire. Sans lui, aucune route ne rend d'écran privé.
+  var compteCourant = null;
+  // La sortie en cours de correction, et ce qui vient d'être déposé. Un
+  // fragment ne les transporte pas : vidés, la route retombe sur l'accueil.
+  var sortieACorriger = null;
+  var dernierDepot = null;
+
+  function routeCourante() {
+    var h = window.location.hash || '';
+    if (h === ROUTE_DEPOT) return ROUTE_DEPOT;
+    if (h === ROUTE_DEPOSE) return ROUTE_DEPOSE;
+    return ROUTE_ACCUEIL;
+  }
+
+  /** Pose le fragment SANS déclencher le routeur — la navigation appelle
+   *  rendEcran() elle-même. Poser un fragment identique n'émettrait de toute
+   *  façon aucun hashchange : c'est exactement le bouton mort qu'on évite. */
+  function poseRoute(route) {
+    if (window.location.hash !== route) {
+      if (window.history && window.history.pushState) {
+        window.history.pushState(null, '', route);
+      } else {
+        window.location.hash = route;
+      }
+    }
+  }
+
+  function vaVers(route) {
+    poseRoute(route);
+    rendEcran();
+  }
+
+  /** Normalise le fragment quand on rend un écran hors-route (connexion,
+   *  clause, demande, états). Sans ça, l'URL continue d'afficher #/depot. */
+  function quitteRoutes() {
+    if (window.location.hash && window.location.hash !== ROUTE_ACCUEIL) {
+      if (window.history && window.history.replaceState) {
+        window.history.replaceState(null, '', window.location.pathname + window.location.search);
+      }
+    }
+  }
+
+  /** LE point de rendu unique. Appelé par l'amorçage, par chaque geste de
+   *  navigation, et par hashchange. La garde vit ici et nulle part ailleurs. */
+  function rendEcran() {
+    if (!compteCourant) { quitteRoutes(); return; }
+    var route = routeCourante();
+
+    if (route === ROUTE_DEPOSE) {
+      if (!dernierDepot) { vaVers(ROUTE_ACCUEIL); return; }
+      afficheReussite();
+      return;
+    }
+    if (route === ROUTE_DEPOT) {
+      afficheEcranDepot();
+      return;
+    }
+    afficheAccueilCompte();
+  }
+
+  function cableRoutage() {
+    window.addEventListener('hashchange', function () { rendEcran(); });
+    window.addEventListener('popstate', function () { rendEcran(); });
+  }
+
+  // ── Accueil du compte ────────────────────────────────────────────────
+  function afficheAccueilCompte() {
+    sortieACorriger = null;
+    app.innerHTML =
+      '<p class="pro-eyebrow">Espace pro / asso</p>' +
+      '<h1>' + ech(compteCourant.structureName) + '</h1>' +
+      '<div class="pro-e-chiffres">' +
+        '<p class="pro-souscarte-titre" style="margin-top:14px">Vos chiffres</p>' +
+        '<p>Bientôt\u00a0: le nombre de vues et de familles intéressées.</p>' +
+      '</div>' +
+      '<div class="pro-carte">' +
+        '<h2>Mes sorties</h2>' +
+        '<p class="pro-sous-titre">Les sorties rattachées à votre espace. Un administrateur Urson les y rattache.</p>' +
+        '<div id="pro-liste-sorties"></div>' +
+      '</div>' +
+      '<div class="pro-e-actions">' +
+        '<button type="button" class="pro-bouton-primaire" id="pro-e-vers-depot">Déposer une activité</button>' +
+      '</div>' +
+      '<p style="margin-top:22px"><button type="button" class="pro-lien-retour" id="pro-lien-deconnexion">Se déconnecter</button></p>';
+
+    document.getElementById('pro-e-vers-depot').addEventListener('click', function () {
+      sortieACorriger = null;
+      vaVers(ROUTE_DEPOT);
+    });
+    document.getElementById('pro-lien-deconnexion').addEventListener('click', function () {
+      sb.auth.signOut().then(function () {
+        compteCourant = null;
+        dernierDepot = null;
+        sortieACorriger = null;
+        quitteRoutes();
+        afficheDemande();
+      });
+    });
+    chargeMesSorties();
+  }
+
+  // ── Page de dépôt ────────────────────────────────────────────────────
+  function afficheEcranDepot() {
+    var estEdition = sortieACorriger !== null;
+    app.innerHTML =
+      '<p style="margin:0 0 14px"><button type="button" class="pro-lien-retour" id="pro-e-retour">\u2190 Mon espace</button></p>' +
+      '<p class="pro-eyebrow">Espace pro / asso</p>' +
+      '<h1 id="pro-depot-titre-carte">' + (estEdition ? 'Modifier la sortie' : 'Déposer une activité') + '</h1>' +
+      '<p class="pro-sous-titre" id="pro-depot-soustitre">' +
+        (estEdition ? 'La correction est relue avant application.' : 'Cinq questions. Elle est relue avant publication.') +
+      '</p>' +
+      '<div id="pro-depot-zone"></div>';
+
+    document.getElementById('pro-e-retour').addEventListener('click', function () {
+      vaVers(ROUTE_ACCUEIL);
+    });
+    afficheFormulaireEvenement(estEdition ? 'update' : 'create', sortieACorriger);
+  }
+
+  /** Appelé par le bouton « Modifier » de la liste des sorties. */
+  function ouvreCorrection(activite) {
+    sortieACorriger = activite;
+    vaVers(ROUTE_DEPOT);
+  }
+
+  // ── Écran de réussite ────────────────────────────────────────────────
+  // Patron d'afficheEtatSimple, qui sert déjà « en attente », « refusé » et
+  // « suspendu » : eyebrow, titre, paragraphes, liens texte. Pas de carte de
+  // résumé, pas d'illustration, pas de gros boutons — la pilule pleine est
+  // réservée aux formulaires actifs sur cette page.
+  function afficheReussite() {
+    var d = dernierDepot;
+    app.innerHTML =
+      '<p class="pro-eyebrow">Espace pro / asso</p>' +
+      '<h1>' + (d.correction ? 'C\u2019est envoyé.' : 'C\u2019est déposé.') + '</h1>' +
+      '<p class="chapeau">' +
+        (d.correction
+          ? 'La correction est relue avant application. Vous recevrez un e-mail dans les deux cas.'
+          : 'Un relecteur Urson vérifie la fiche sous un à deux jours. Vous recevrez un e-mail dans les deux cas.') +
+      '</p>' +
+      '<p class="pro-e-resume">' + ech(resumeDepot(d)) + '</p>' +
+      '<div class="pro-e-liens">' +
+        '<button type="button" class="pro-lien-retour" id="pro-e-encore">Déposer une autre activité</button>' +
+        '<button type="button" class="pro-lien-retour" id="pro-e-espace">Retour à mon espace</button>' +
+      '</div>';
+
+    document.getElementById('pro-e-encore').addEventListener('click', function () {
+      dernierDepot = null;
+      sortieACorriger = null;
+      vaVers(ROUTE_DEPOT);
+    });
+    document.getElementById('pro-e-espace').addEventListener('click', function () {
+      dernierDepot = null;
+      vaVers(ROUTE_ACCUEIL);
+    });
+  }
+
+  /** Le résumé tient dans UNE phrase, séparateurs au point médian. Empiler
+   *  titre, catégorie, dates, séances, lieu et photo sur six lignes ferait de
+   *  cet écran le plus dense de la page, quand tous ses voisins tiennent en
+   *  deux phrases.
+   *  La phrase de dates vient de phraseTexteDe (./pro-phrase.mjs), la même
+   *  source que la phrase du formulaire ; le nombre de séances vient du
+   *  SERVEUR, seul à avoir déplié la répétition. */
+  function resumeDepot(d) {
+    var bouts = [];
+    if (d.titre) bouts.push(d.titre);
+    if (d.categorie) bouts.push(d.categorie);
+    for (var i = 0; i < d.entrees.length; i++) {
+      var phrase = phraseTexteDe(d.entrees[i]);
+      if (phrase) bouts.push(phrase.charAt(phrase.length - 1) === '.' ? phrase.slice(0, -1) : phrase);
+    }
+    if (typeof d.seances === 'number' && d.seances > 1) bouts.push(d.seances + ' séances');
+    var ou = [];
+    if (d.lieu) ou.push(d.lieu);
+    if (d.ville) ou.push(d.ville);
+    if (ou.length) bouts.push(ou.join(', '));
+    if (d.photo) bouts.push('photo jointe, relue avant publication');
+    return bouts.join(' \u00b7 ') + '.';
+  }
+
+
   // ── Déposer / modifier une sortie ────────────────────────────────────
   // Un seul formulaire pour les deux gestes (retour de Kevin, en-tête) :
   // 'create' envoie create_event (activity_id absent), 'update' envoie
@@ -1758,6 +2606,7 @@
               'aria-controls="pro-depot-suggestions" ' +
               'value="' + ech(val(estEdition ? activite.address : '')) + '" />' +
             '<ul class="pro-suggestions" id="pro-depot-suggestions" role="listbox" aria-label="Adresses proposées" hidden></ul>' +
+            '<div id="pro-depot-carte"></div>' +
           '</div>' +
           '<div class="pro-champ">' +
             '<label class="pro-label" for="pro-depot-ville">Ville</label>' +
@@ -1808,7 +2657,7 @@
         '</div>' +
 
         '<div class="pro-question">' +
-          '<button type="submit" class="pro-bouton-primaire">' + (estEdition ? 'Enregistrer la correction' : 'Déposer l’activité') + '</button>' +
+          '<button type="submit" class="pro-bouton-primaire" id="pro-depot-envoyer">' + (estEdition ? 'Enregistrer la correction' : 'Déposer l’activité') + '</button>' +
           '<p class="pro-note" style="margin:12px 0 0">Un relecteur Urson vérifie la fiche sous un à deux jours. Vous recevrez un e-mail dans les deux cas.</p>' +
           (estEdition ? '<p style="margin:12px 0 0"><button type="button" class="pro-lien-retour" id="pro-depot-annuler">Annuler la modification</button></p>' : '') +
           '<p class="pro-message" id="pro-depot-form-message"></p>' +
@@ -1967,12 +2816,19 @@
     }
 
     // Une suggestion retenue remplit adresse ET ville, et mémorise ses
-    // coordonnées. C'est le SEUL endroit qui pose coordonneesRetenues.
+    // coordonnées. C'est l'un des DEUX endroits qui posent coordonneesRetenues :
+    // l'autre est « Utiliser ce point » sous la carte, qui fait le chemin
+    // inverse — il part du point et réécrit les deux champs.
     function retient(proposition) {
       champAdresse.value = proposition.adresse;
       champVille.value = proposition.ville;
       coordonneesRetenues = { lat: proposition.lat, lon: proposition.lon };
       ferme();
+      // La carte ne se monte QU'ICI : jamais au chargement de la page, jamais
+      // sans point à montrer. Sobriété d'appel exigée par la Tile Usage Policy
+      // d'OpenStreetMap, et rien à afficher tant qu'aucune adresse n'est
+      // choisie.
+      monteCarte(proposition.lat, proposition.lon);
     }
 
     function rend(resultats) {
@@ -2005,7 +2861,11 @@
     // cette ligne, un organisateur pourrait choisir « Rue de Bourges » puis
     // retaper « Salle des fêtes de Vierzon » et déposer une sortie située à
     // 60 km de son adresse affichée — une fiche qui se contredit elle-même.
-    function oublieCoordonnees() { coordonneesRetenues = null; }
+    // La carte tombe AVEC les coordonnées, depuis les deux champs. Une carte
+    // qui survivrait à une frappe dans « Ville » resterait bien visible alors
+    // que ses coordonnées ne partent plus : exactement la fiche qui se
+    // contredit elle-même que cet invariant existe pour empêcher.
+    function oublieCoordonnees() { coordonneesRetenues = null; demonteCarte(); }
     champVille.addEventListener('input', oublieCoordonnees);
 
     champAdresse.addEventListener('input', function () {
@@ -2157,20 +3017,27 @@
     }
     envoi.then(function (resultat) {
       if (resultat.ok && resultat.data && resultat.data.ok) {
-        chargeMesSorties();
-        afficheFormulaireEvenement('create', null);
-        var zone = document.getElementById('pro-depot-zone');
-        var confirmation = mode === 'update' ? 'Correction envoyée, en cours de relecture.' : 'Envoyée, en cours de relecture.';
         // Le nombre de séances vient du SERVEUR, seul à avoir déplié la
         // répétition. La page ne le calcule pas : une copie de l'expansion ici
         // ne serait exécutée par aucun gate, et un nombre faux se lirait comme
         // un nombre vrai.
         var nb = resultat.data.occurrences_count;
-        if (typeof nb === 'number' && nb > 1) {
-          confirmation += ' ' + nb + ' séances partent en relecture.';
+        var libelleCategorie = '';
+        for (var c = 0; c < EVENT_CATEGORIES.length; c++) {
+          if (EVENT_CATEGORIES[c][0] === categorieChoisie) libelleCategorie = EVENT_CATEGORIES[c][1];
         }
-        if (fichier) confirmation += ' Votre photo est relue avant d’être publiée.';
-        zone.insertAdjacentHTML('afterbegin', '<p class="pro-message">' + ech(confirmation) + '</p>');
+        dernierDepot = {
+          correction: mode === 'update',
+          titre: corps.title,
+          categorie: libelleCategorie,
+          lieu: corps.location_name,
+          ville: corps.city,
+          seances: typeof nb === 'number' ? nb : null,
+          photo: !!fichier,
+          entrees: lireEntreesAffichables()
+        };
+        demonteCarte();
+        vaVers('#/depose');
       } else {
         bouton.disabled = false;
         definirMessage(messageEl, messageErreurDepot(resultat.data && resultat.data.error), true);
