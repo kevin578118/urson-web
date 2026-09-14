@@ -1044,7 +1044,7 @@
     afficheChargement();
     appelApi('me', {}, true).then(function (resultat) {
       if (resultat.status === 401) {
-        sb.auth.signOut().then(function () { afficheConnexion({}); });
+        sb.auth.signOut({ scope: 'local' }).then(function () { afficheConnexion({}); });
         return;
       }
       if (!resultat.ok || !resultat.data) { afficheErreurReseau(); return; }
@@ -1068,7 +1068,7 @@
             "L'espace est rattaché à l'adresse qui a reçu le lien d'activation, pas forcément à l'adresse principale de votre boîte mail."
           ],
           [
-            { libelle: 'Se déconnecter et réessayer avec une autre adresse', onClick: function () { sb.auth.signOut().then(function () { afficheConnexion({}); }); } },
+            { libelle: 'Se déconnecter et réessayer avec une autre adresse', onClick: function () { sb.auth.signOut({ scope: 'local' }).then(function () { afficheConnexion({}); }); } },
             { libelle: 'Faire une demande', onClick: function () { afficheDemande(); } }
           ]
         );
@@ -2788,7 +2788,9 @@
       vaVers(ROUTE_DEPOT);
     });
     document.getElementById('pro-lien-deconnexion').addEventListener('click', function () {
-      sb.auth.signOut().then(function () {
+      // Portée locale : le défaut global de supabase-js déconnecterait aussi
+      // l'app mobile de l'organisateur (piège #550).
+      sb.auth.signOut({ scope: 'local' }).then(function () {
         compteCourant = null;
         dernierDepot = null;
         sortieACorriger = null;
