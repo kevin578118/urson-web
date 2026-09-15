@@ -152,7 +152,7 @@
     <div class="enveloppe">
       <h1>Confidentialité</h1>
       <p class="chapeau">Urson est une application en cours de développement, faite par un parent de Bourges. Cette page dit exactement ce que l'app enregistre, où, et ce qu'elle n'enregistre pas.</p>
-      <p class="date-maj">Dernière mise à jour : 12 septembre 2026</p>
+      <p class="date-maj">Dernière mise à jour : 15 septembre 2026</p>
 
       <section class="carte" id="connexion">
         <h2 class="titre-emoji"><span class="emoji" aria-hidden="true">🔑</span> Comment tu te connectes</h2>
@@ -183,7 +183,7 @@
 
       <section class="carte" id="notifications">
         <h2 class="titre-emoji"><span class="emoji" aria-hidden="true">🔔</span> Les notifications</h2>
-        <p>Tous les rappels sont programmés par ton téléphone, en local. Aucun identifiant d'appareil n'est enregistré et rien n'est envoyé depuis un serveur.</p>
+        <p>Les rappels (suggestion du week-end, nouveautés) sont programmés par ton téléphone, en local. Une seule notification part de nos serveurs : quand un ami ou un groupe t'invite à une sortie. Pour te la faire parvenir, un identifiant de notification propre à ton téléphone est enregistré avec ton compte ; il est retiré quand tu te déconnectes et supprimé avec ton compte. La notification (prénom de l'ami, sortie, date) passe par Expo, puis par Apple ou Google selon ton téléphone. Tu peux la couper dans Paramètres.</p>
       </section>
 
       <section class="carte" id="hebergement">
@@ -194,7 +194,7 @@
 
       <section class="carte" id="services">
         <h2 class="titre-emoji"><span class="emoji" aria-hidden="true">🤝</span> Les services utilisés</h2>
-        <ul><li>Supabase — base de données et fichiers, à Paris.</li><li>Resend — envoi des emails de connexion, et l'alerte quand quelqu'un signale un contenu.</li><li>Expo — distribution des mises à jour de l'app.</li><li>OpenStreetMap — nom de commune à partir d'une position ponctuelle, ou position à partir d'une adresse que tu tapes ; et, pour le fond de carte qui affiche le choix d'adresse quand une association ou une entreprise dépose une sortie sur ursonapp.fr/pro (jamais depuis l'app), l'adresse IP du navigateur et la zone de carte regardée.</li><li>Open-Meteo — météo à partir d'une position ponctuelle.</li><li>Photon (Komoot) — suggestions de lieux à partir du texte que tu tapes dans un champ d'adresse.</li><li>API Adresse (BAN, service public français) — suggestions d'adresse à partir du texte que tu tapes, ou adresse retrouvée à partir du point choisi sur la carte, quand une association ou une entreprise dépose une sortie sur ursonapp.fr/pro, jamais depuis l'app.</li><li>Google Maps et Google Places — fond de carte et photos des lieux.</li><li>Un service d'intelligence artificielle — le contenu des affiches et des PDF que tu déposes, lu par un modérateur avec son aide pour en extraire les informations d'une sortie. Le prestataire peut changer ; son nom du moment t'est donné sur demande, à <a href="mailto:bonjour@ursonapp.fr">bonjour@ursonapp.fr</a>.</li></ul>
+        <ul><li>Supabase — base de données et fichiers, à Paris.</li><li>Resend — envoi des emails de connexion, et l'alerte quand quelqu'un signale un contenu.</li><li>Expo — distribution des mises à jour de l'app et acheminement des notifications d'invitation.</li><li>Google (Firebase Cloud Messaging) — remise des notifications sur Android.</li><li>Apple (Apple Push Notification service) — remise des notifications sur iPhone.</li><li>OpenStreetMap — nom de commune à partir d'une position ponctuelle, ou position à partir d'une adresse que tu tapes ; et, pour le fond de carte qui affiche le choix d'adresse quand une association ou une entreprise dépose une sortie sur ursonapp.fr/pro (jamais depuis l'app), l'adresse IP du navigateur et la zone de carte regardée.</li><li>Open-Meteo — météo à partir d'une position ponctuelle.</li><li>Photon (Komoot) — suggestions de lieux à partir du texte que tu tapes dans un champ d'adresse.</li><li>API Adresse (BAN, service public français) — suggestions d'adresse à partir du texte que tu tapes, ou adresse retrouvée à partir du point choisi sur la carte, quand une association ou une entreprise dépose une sortie sur ursonapp.fr/pro, jamais depuis l'app.</li><li>Google Maps et Google Places — fond de carte et photos des lieux.</li><li>Un service d'intelligence artificielle — le contenu des affiches et des PDF que tu déposes, lu par un modérateur avec son aide pour en extraire les informations d'une sortie. Le prestataire peut changer ; son nom du moment t'est donné sur demande, à <a href="mailto:bonjour@ursonapp.fr">bonjour@ursonapp.fr</a>.</li></ul>
       </section>
 
       <section class="carte" id="conservation">
@@ -224,7 +224,7 @@
       <section class="carte" id="suppression-compte">
         <h2 class="titre-emoji"><span class="emoji" aria-hidden="true">🗑️</span> Supprimer ton compte</h2>
         <p>Tu peux supprimer ton compte toi-même, sans nous écrire, de deux façons : depuis l'app (Profil → Supprimer mon compte), ou depuis un navigateur, sans avoir l'app installée, sur <a href="https://ursonapp.fr/suppression-de-compte/">https://ursonapp.fr/suppression-de-compte/</a></p>
-        <p>Ce qui part : ton profil, tes enfants, tes favoris, tes amis, tes groupes, tes sorties et ton agenda.</p>
+        <p>Ce qui part : ton profil, tes enfants, tes favoris, tes amis, tes groupes, tes sorties, ton agenda et ton identifiant de notification.</p>
         <p>Ce qui reste : les fiches et les photos que tu as fait publier au catalogue restent en ligne mais perdent leur auteur ; si tu partages ton foyer avec un autre parent, le foyer lui reste, avec les enfants et l'agenda.</p>
       </section>
 
