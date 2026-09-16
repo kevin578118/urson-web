@@ -25,6 +25,10 @@ suppression de compte, de relecture organisateur et de signalement :
   de signaler une fiche : information fausse, contenu déplacé, doublon, ou une image
   ou un texte dont il détient les droits. Les conditions d'utilisation la citent
   nommément.
+- `ami/` — la cible du lien envoyé dans un message d'invitation entre amis : affiche
+  le code et propose d'ouvrir l'application.
+- `foyer/` — la cible du lien envoyé dans un message d'invitation à un foyer : affiche
+  le code et propose d'ouvrir l'application.
 - `404.html` — servie par GitHub Pages sur toute adresse inconnue.
 
 `CNAME` porte le domaine et **ne doit jamais être supprimé** : sans lui, GitHub
