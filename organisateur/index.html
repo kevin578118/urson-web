@@ -311,9 +311,15 @@
           return base ? base + ', ' + location.city : location.city;
         }
       
+        // Transposition de lib/priceTiers.ts#formatAmount, verrou de parité :
+        // formatAmountParity.test.ts (arrondi au centime, entier sans décimale,
+        // sinon deux chiffres, virgule).
         function formateEuro(n) {
-          if (Number.isInteger(n)) return String(n);
-          return String(n).replace('.', ',');
+          var cents = Math.round(n * 100);
+          if (cents % 100 === 0) return String(cents / 100);
+          var euros = Math.floor(cents / 100);
+          var reste = cents % 100;
+          return euros + ',' + (reste < 10 ? '0' : '') + reste;
         }
       
         function texteTarif(price) {
