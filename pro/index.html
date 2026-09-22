@@ -537,6 +537,27 @@
     }
     .pro-e-liens { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-top: 6px; }
 
+    .pro-mdp-ligne { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+    .pro-mdp-champ { position: relative; }
+    .pro-mdp-champ .pro-input { padding-right: 92px; }
+    .pro-mdp-voir {
+      position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
+      min-height: 44px; padding: 0 10px; border: none; background: none;
+      color: var(--fg-2); font-family: inherit; font-size: 13px; font-weight: 600;
+      cursor: pointer; border-radius: 10px;
+    }
+    .pro-mdp-voir:focus-visible { outline: 2px solid var(--coral-deep); outline-offset: 1px; }
+    .pro-mdp-ou {
+      display: flex; align-items: center; gap: 12px; margin: 18px 0;
+      font-size: 13px; color: var(--fg-2);
+    }
+    .pro-mdp-ou::before, .pro-mdp-ou::after { content: ""; flex: 1; height: 1px; background: var(--line-medium); }
+    .pro-mdp-jauge { display: flex; gap: 6px; margin: 8px 0 6px; }
+    .pro-mdp-jauge span { flex: 1; height: 6px; border-radius: 3px; background: var(--line-medium); border: 1px solid rgba(0,0,0,.08); box-sizing: border-box; }
+    .pro-mdp-jauge span.pro-mdp-plein { background: var(--success); }
+    /* Un retour d'état ACTIF ne se lit pas en --fg-3 (2,5:1 sur blanc). */
+    .pro-mdp-aide { font-size: 13px; color: var(--fg-2); margin: 0; }
+
   </style>
 </head>
 <body>
@@ -931,49 +952,155 @@
     );
   }
 
-  // ── Connexion (OTP) ──────────────────────────────────────────────────
+  // ── Connexion ────────────────────────────────────────────────────────
+  // Mot de passe par défaut, code à 8 chiffres en secours, et l'écran où l'on
+  // choisit son mot de passe : ./pro-motdepasse.mjs.
+
+  // ── Connexion : mot de passe par défaut, code en secours ─────────────
+
+  // Même plancher que le serveur (_shared/organizerPassword.ts), qui reste seul juge.
+  var LONGUEUR_MIN_MDP = 12;
+  // Posé par « Mot de passe oublié » : la connexion par code qui suit ouvre
+  // l'écran de choix même si un mot de passe existe déjà.
+  var veutChoisirMotDePasse = false;
 
   function afficheConnexion(opts) {
     // Écran hors-route : on normalise le fragment, sinon l'URL continue
     // d'afficher #/depot alors qu'on rend la connexion — elle mentirait,
     // durablement.
     quitteRoutes();
+    opts = opts || {};
+    // Juste après une activation, aucun mot de passe n'existe encore : on
+    // ouvre directement sur le code.
+    var mode = opts.mode || (opts.apresActivation ? 'code' : 'motdepasse');
+    if (mode === 'code') { afficheConnexionCode(opts); return; }
+    afficheConnexionMotDePasse(opts);
+  }
+
+  function afficheConnexionMotDePasse(opts) {
+    app.innerHTML =
+      '<p class="pro-eyebrow">Espace pro / asso</p>' +
+      '<h1>Connexion</h1>' +
+      '<p>' + "L'adresse e-mail de votre espace et votre mot de passe." + '</p>' +
+      '<form class="pro-carte" id="pro-form-mdp" novalidate>' +
+        '<div class="pro-champ">' +
+          '<label class="pro-label" for="pro-connexion-email">E-mail</label>' +
+          '<input class="pro-input" type="email" id="pro-connexion-email" maxlength="254" autocomplete="username" value="' + ech(opts.email || '') + '" />' +
+        '</div>' +
+        '<div class="pro-champ">' +
+          '<div class="pro-mdp-ligne">' +
+            '<label class="pro-label" for="pro-connexion-mdp">Mot de passe</label>' +
+            '<button type="button" class="pro-lien-retour" id="pro-lien-oubli" style="font-size:13px">Mot de passe oublié ?</button>' +
+          '</div>' +
+          '<div class="pro-mdp-champ">' +
+            '<input class="pro-input" type="password" id="pro-connexion-mdp" maxlength="200" autocomplete="current-password" />' +
+            '<button type="button" class="pro-mdp-voir" id="pro-mdp-voir" aria-pressed="false">Afficher</button>' +
+          '</div>' +
+        '</div>' +
+        '<button type="submit" class="pro-bouton-primaire" id="pro-bouton-connexion-mdp">Se connecter</button>' +
+        '<p class="pro-message" id="pro-message-connexion" role="status" aria-live="polite"></p>' +
+        '<div class="pro-mdp-ou">ou</div>' +
+        '<button type="button" class="pro-bouton-secondaire" id="pro-bouton-vers-code">Recevoir un code par e-mail</button>' +
+        '<p class="pro-note" style="margin:12px 0 0">' + "Le code à 8 chiffres sert aussi si vous n'avez pas encore choisi de mot de passe." + '</p>' +
+      '</form>' +
+      '<p><button type="button" class="pro-lien-retour" id="pro-lien-demande">' + "Pas encore d'espace ? Faire une demande" + '</button></p>';
+
+    cableBoutonVoir('pro-mdp-voir', ['pro-connexion-mdp']);
+    document.getElementById('pro-form-mdp').addEventListener('submit', function (e) {
+      e.preventDefault();
+      onConnexionMotDePasse();
+    });
+    document.getElementById('pro-lien-oubli').addEventListener('click', function () {
+      afficheConnexion({ mode: 'code', oubli: true, email: document.getElementById('pro-connexion-email').value.trim() });
+    });
+    document.getElementById('pro-bouton-vers-code').addEventListener('click', function () {
+      afficheConnexion({ mode: 'code', email: document.getElementById('pro-connexion-email').value.trim() });
+    });
+    document.getElementById('pro-lien-demande').addEventListener('click', function () { afficheDemande(); });
+  }
+
+  function onConnexionMotDePasse() {
+    var email = document.getElementById('pro-connexion-email').value.trim();
+    var motDePasse = document.getElementById('pro-connexion-mdp').value;
+    var messageEl = document.getElementById('pro-message-connexion');
+    var bouton = document.getElementById('pro-bouton-connexion-mdp');
+    if (!email || !motDePasse) {
+      definirMessage(messageEl, 'Saisissez votre adresse et votre mot de passe.', true);
+      return;
+    }
+    bouton.disabled = true;
+    definirMessage(messageEl, 'Connexion…', false);
+    // UN SEUL message d'échec, quelle qu'en soit la cause : adresse inconnue,
+    // mot de passe faux, compte sans mot de passe. Le détail rendu par
+    // Supabase n'est jamais affiché — cette page publique ne doit pas dire si
+    // une adresse a un compte.
+    var ECHEC = 'Adresse ou mot de passe incorrect. Vous pouvez aussi recevoir un code par e-mail.';
+    sb.auth.signInWithPassword({ email: email, password: motDePasse }).then(function (resultat) {
+      bouton.disabled = false;
+      if (resultat.error || !resultat.data || !resultat.data.session) {
+        definirMessage(messageEl, ECHEC, true);
+        return;
+      }
+      veutChoisirMotDePasse = false;
+      chargeCompte();
+    }).catch(function () {
+      bouton.disabled = false;
+      definirMessage(messageEl, ECHEC, true);
+    });
+  }
+
+  // ── Connexion par code (OTP) ─────────────────────────────────────────
+
+  function afficheConnexionCode(opts) {
+    veutChoisirMotDePasse = !!opts.oubli;
     var noteHaut = opts.apresActivation
-      ? 'Votre espace est prêt. Connectez-vous avec le code que nous allons vous envoyer par e-mail.'
-      : 'Connectez-vous avec le code que nous vous envoyons par e-mail.';
+      ? 'Votre espace est prêt. Recevez un code par e-mail pour y entrer, puis choisissez votre mot de passe.'
+      : (opts.oubli
+          ? 'Recevez un code par e-mail : une fois connecté, vous choisirez un nouveau mot de passe.'
+          : 'Connectez-vous avec le code que nous vous envoyons par e-mail.');
     // Pré-remplissage après activation par jeton (fix parcours « mauvaise
     // adresse saisie ») : l'adresse vient de la réponse serveur d'activate,
     // jamais devinée côté client. Champ modifiable, jamais verrouillé — un
     // espace peut être rattaché à un alias ou une adresse de structure
     // différente de la boîte où le mail est arrivé.
-    var noteAdresse = opts.email
+    var noteAdresse = opts.apresActivation && opts.email
       ? (opts.structureName
           ? "L'espace de " + opts.structureName + ' est rattaché à cette adresse — vous pouvez la modifier si besoin.'
           : 'Cette adresse est celle qui a reçu le lien — vous pouvez la modifier si besoin.')
       : '';
     app.innerHTML =
       '<p class="pro-eyebrow">Espace pro / asso</p>' +
-      '<h1>Connexion</h1>' +
+      '<h1>' + (opts.oubli ? 'Mot de passe oublié' : 'Connexion') + '</h1>' +
       '<p>' + ech(noteHaut) + '</p>' +
       (noteAdresse ? '<p>' + ech(noteAdresse) + '</p>' : '') +
       '<div class="pro-carte">' +
         '<div class="pro-champ">' +
           '<label class="pro-label" for="pro-connexion-email">E-mail</label>' +
-          '<input class="pro-input" type="email" id="pro-connexion-email" maxlength="254" value="' + ech(opts.email || '') + '" />' +
+          '<input class="pro-input" type="email" id="pro-connexion-email" maxlength="254" autocomplete="username" value="' + ech(opts.email || '') + '" />' +
         '</div>' +
         '<button type="button" class="pro-bouton-primaire" id="pro-bouton-envoyer-code">Envoyer un code</button>' +
         '<div class="pro-champ" id="pro-bloc-code" style="display:none; margin-top:16px">' +
           '<label class="pro-label" for="pro-code">Code reçu par e-mail</label>' +
-          '<input class="pro-input" type="text" id="pro-code" inputmode="numeric" maxlength="8" />' +
+          '<input class="pro-input" type="text" id="pro-code" inputmode="numeric" maxlength="8" autocomplete="one-time-code" />' +
           '<button type="button" class="pro-bouton-primaire" id="pro-bouton-valider-code" style="margin-top:12px">Se connecter</button>' +
         '</div>' +
-        '<p class="pro-message" id="pro-message-connexion"></p>' +
+        '<p class="pro-message" id="pro-message-connexion" role="status" aria-live="polite"></p>' +
       '</div>' +
+      (opts.apresActivation
+        ? ''
+        : '<p><button type="button" class="pro-lien-retour" id="pro-lien-vers-mdp">Se connecter avec un mot de passe</button></p>') +
       '<p><button type="button" class="pro-lien-retour" id="pro-lien-demande">' + "Pas encore d'espace ? Faire une demande" + '</button></p>';
 
     document.getElementById('pro-bouton-envoyer-code').addEventListener('click', onEnvoyerCode);
     document.getElementById('pro-bouton-valider-code').addEventListener('click', onValiderCode);
     document.getElementById('pro-lien-demande').addEventListener('click', function () { afficheDemande(); });
+    var versMdp = document.getElementById('pro-lien-vers-mdp');
+    if (versMdp) {
+      versMdp.addEventListener('click', function () {
+        veutChoisirMotDePasse = false;
+        afficheConnexion({ mode: 'motdepasse', email: document.getElementById('pro-connexion-email').value.trim() });
+      });
+    }
   }
 
   function onEnvoyerCode() {
@@ -1035,6 +1162,171 @@
     }).catch(function () {
       bouton.disabled = false;
       definirMessage(messageEl, 'Code incorrect ou expiré, réessayez.', true);
+    });
+  }
+
+  // ── Après la connexion : choisir un mot de passe, ou entrer ──────────
+
+  /** Seul point d'entrée vers l'espace APRÈS UNE CONNEXION, une fois le compte
+   *  vérifié et la clause confirmée. Les retours internes (« Plus tard »,
+   *  « Mon espace ») appellent afficheDashboard directement, et c'est voulu :
+   *  repasser ici rouvrirait l'écran de choix qu'on vient de quitter. Un false EXPLICITE déclenche l'écran de choix — un champ
+   *  absent (serveur pas encore redéployé) n'en déclenche aucun. */
+  function entreDansEspace(compte) {
+    if (compte.hasPassword === false || veutChoisirMotDePasse) {
+      afficheChoixMotDePasse(compte, { depuisEspace: false });
+      return;
+    }
+    afficheDashboard(compte);
+  }
+
+  function niveauMotDePasse(valeur) {
+    var n = valeur.length;
+    if (n === 0) return { crans: 0, texte: 'Au moins ' + LONGUEUR_MIN_MDP + ' caractères. Une phrase que vous seul connaissez fait très bien l\u2019affaire.' };
+    if (n < LONGUEUR_MIN_MDP) return { crans: 1, texte: 'Encore ' + (LONGUEUR_MIN_MDP - n) + ' caractère' + (LONGUEUR_MIN_MDP - n > 1 ? 's' : '') + '.' };
+    if (n < 16) return { crans: 3, texte: 'Correct.' };
+    return { crans: 4, texte: 'Solide.' };
+  }
+
+  function afficheChoixMotDePasse(compte, opts) {
+    quitteRoutes();
+    var dejaUn = compte.hasPassword === true;
+    var titre = dejaUn ? 'Choisissez un nouveau mot de passe' : 'Choisissez votre mot de passe';
+    var intro = dejaUn
+      ? 'Il remplace l\u2019ancien dès l\u2019enregistrement.'
+      : 'Il vous servira à vous connecter. Le code par e-mail reste possible, en secours.';
+    // Un organisateur peut avoir un compte de parent à la même adresse : c'est
+    // alors le MÊME compte d'authentification, donc le même mot de passe. On le
+    // dit ici plutôt que de le laisser découvrir dans l'app.
+    var noteApp = 'Si vous utilisez aussi l\u2019application Urson avec cette adresse, ce mot de passe vaudra pour les deux.';
+    app.innerHTML =
+      '<p class="pro-eyebrow">Espace pro / asso</p>' +
+      '<h1>' + titre + '</h1>' +
+      '<p>' + intro + '</p>' +
+      '<p class="pro-mdp-aide" style="margin-bottom:16px">' + noteApp + '</p>' +
+      '<form class="pro-carte" id="pro-form-choix-mdp" novalidate>' +
+        // Champ d'identifiant lisible par les gestionnaires de mots de passe :
+        // sans lui, ils enregistrent le mot de passe sans savoir pour qui.
+        '<div class="pro-champ">' +
+          '<label class="pro-label" for="pro-choix-email">E-mail de l\u2019espace</label>' +
+          '<input class="pro-input" type="email" id="pro-choix-email" autocomplete="username" readonly value="' + ech(compte.email || '') + '" />' +
+        '</div>' +
+        '<div class="pro-champ">' +
+          '<label class="pro-label" for="pro-choix-mdp">Mot de passe</label>' +
+          '<div class="pro-mdp-champ">' +
+            '<input class="pro-input" type="password" id="pro-choix-mdp" maxlength="200" autocomplete="new-password" aria-describedby="pro-choix-aide" />' +
+            '<button type="button" class="pro-mdp-voir" id="pro-choix-voir" aria-pressed="false">Afficher</button>' +
+          '</div>' +
+          '<div class="pro-mdp-jauge" id="pro-choix-jauge" aria-hidden="true"><span></span><span></span><span></span><span></span></div>' +
+          '<p class="pro-mdp-aide" id="pro-choix-aide"></p>' +
+        '</div>' +
+        '<div class="pro-champ">' +
+          '<label class="pro-label" for="pro-choix-mdp2">Confirmer le mot de passe</label>' +
+          '<input class="pro-input" type="password" id="pro-choix-mdp2" maxlength="200" autocomplete="new-password" />' +
+        '</div>' +
+        '<button type="submit" class="pro-bouton-primaire" id="pro-bouton-choix-mdp">Enregistrer</button>' +
+        '<p class="pro-message" id="pro-message-choix-mdp" role="status" aria-live="polite"></p>' +
+      '</form>' +
+      '<p><button type="button" class="pro-lien-retour" id="pro-lien-choix-plus-tard">' +
+        (opts.depuisEspace ? '\u2190 Mon espace' : 'Plus tard') +
+      '</button></p>';
+
+    var champ = document.getElementById('pro-choix-mdp');
+    var aide = document.getElementById('pro-choix-aide');
+    var jauge = document.getElementById('pro-choix-jauge').children;
+    function rendJauge() {
+      var niveau = niveauMotDePasse(champ.value);
+      for (var i = 0; i < jauge.length; i++) {
+        jauge[i].className = i < niveau.crans ? 'pro-mdp-plein' : '';
+      }
+      aide.textContent = niveau.texte;
+    }
+    rendJauge();
+    champ.addEventListener('input', rendJauge);
+    cableBoutonVoir('pro-choix-voir', ['pro-choix-mdp', 'pro-choix-mdp2']);
+
+    document.getElementById('pro-form-choix-mdp').addEventListener('submit', function (e) {
+      e.preventDefault();
+      onEnregistrerMotDePasse(compte);
+    });
+    document.getElementById('pro-lien-choix-plus-tard').addEventListener('click', function () {
+      veutChoisirMotDePasse = false;
+      afficheDashboard(compte);
+    });
+  }
+
+  function onEnregistrerMotDePasse(compte) {
+    var valeur = document.getElementById('pro-choix-mdp').value;
+    var confirmation = document.getElementById('pro-choix-mdp2').value;
+    var messageEl = document.getElementById('pro-message-choix-mdp');
+    var bouton = document.getElementById('pro-bouton-choix-mdp');
+    if (valeur.length < LONGUEUR_MIN_MDP) {
+      definirMessage(messageEl, 'Le mot de passe doit compter au moins ' + LONGUEUR_MIN_MDP + ' caractères.', true);
+      return;
+    }
+    if (valeur !== confirmation) {
+      definirMessage(messageEl, 'Les deux saisies ne sont pas identiques.', true);
+      return;
+    }
+    bouton.disabled = true;
+    definirMessage(messageEl, 'Enregistrement…', false);
+    appelApi('set_password', { password: valeur }, true).then(function (resultat) {
+      bouton.disabled = false;
+      if (resultat.ok) {
+        veutChoisirMotDePasse = false;
+        compte.hasPassword = true;
+        afficheDashboard(compte);
+        return;
+      }
+      var code = resultat.data && resultat.data.error;
+      if (resultat.status === 401) {
+        sb.auth.signOut({ scope: 'local' }).then(function () { afficheConnexion({}); });
+        return;
+      }
+      if (code === 'reauth_required') { afficheReconnexionRequise(compte); return; }
+      if (code === 'weak_password') {
+        definirMessage(messageEl, 'Choisissez au moins ' + LONGUEUR_MIN_MDP + ' caractères, sans reprendre votre adresse ni le nom de votre structure.', true);
+        return;
+      }
+      if (code === 'rate_limited') {
+        definirMessage(messageEl, 'Trop de tentatives. Réessayez dans une heure.', true);
+        return;
+      }
+      definirMessage(messageEl, 'L\u2019enregistrement n\u2019a pas abouti, réessayez.', true);
+    }).catch(function () {
+      bouton.disabled = false;
+      definirMessage(messageEl, 'L\u2019enregistrement n\u2019a pas abouti, réessayez.', true);
+    });
+  }
+
+  /** Le serveur n'accepte un changement de mot de passe que dans le quart
+   *  d'heure qui suit une connexion. Au-delà : un code, puis on y revient. */
+  function afficheReconnexionRequise(compte) {
+    afficheEtatSimple(
+      'Une vérification d\u2019abord',
+      ['Pour changer un mot de passe, il faut s\u2019être connecté il y a moins de quinze minutes. Recevez un code par e-mail, puis choisissez votre mot de passe.'],
+      [
+        { libelle: 'Recevoir un code', onClick: function () {
+            sb.auth.signOut({ scope: 'local' }).then(function () {
+              compteCourant = null;
+              afficheConnexion({ mode: 'code', oubli: true, email: compte.email || '' });
+            });
+          } },
+        { libelle: 'Retour à mon espace', onClick: function () { afficheDashboard(compte); } }
+      ]
+    );
+  }
+
+  /** Bascule afficher / masquer, sur un ou plusieurs champs à la fois. */
+  function cableBoutonVoir(idBouton, idsChamps) {
+    var bouton = document.getElementById(idBouton);
+    bouton.addEventListener('click', function () {
+      var visible = bouton.getAttribute('aria-pressed') === 'true';
+      for (var i = 0; i < idsChamps.length; i++) {
+        document.getElementById(idsChamps[i]).type = visible ? 'password' : 'text';
+      }
+      bouton.setAttribute('aria-pressed', visible ? 'false' : 'true');
+      bouton.textContent = visible ? 'Afficher' : 'Masquer';
     });
   }
 
@@ -1101,7 +1393,7 @@
       }
       // status === 'verified'
       if (compte.needsClauseConfirmation) { afficheClauseGate(clause); return; }
-      afficheDashboard(compte);
+      entreDansEspace(compte);
     }).catch(function () { afficheErreurReseau(); });
   }
 
@@ -1141,7 +1433,7 @@
           definirMessage(messageEl, "La confirmation n'a pas abouti, réessayez.", true);
           return;
         }
-        afficheDashboard(resultat.data.account);
+        entreDansEspace(resultat.data.account);
       }).catch(function () {
         bouton.disabled = false;
         definirMessage(messageEl, "La confirmation n'a pas abouti, réessayez.", true);
@@ -2781,7 +3073,16 @@
       '<div class="pro-e-actions">' +
         '<button type="button" class="pro-bouton-primaire" id="pro-e-vers-depot">Déposer une activité</button>' +
       '</div>' +
-      '<p style="margin-top:22px"><button type="button" class="pro-lien-retour" id="pro-lien-deconnexion">Se déconnecter</button></p>';
+      '<div class="pro-e-liens" style="margin-top:22px">' +
+        '<button type="button" class="pro-lien-retour" id="pro-lien-mot-de-passe">' +
+          (compteCourant.hasPassword === true ? 'Changer le mot de passe' : 'Choisir un mot de passe') +
+        '</button>' +
+        '<button type="button" class="pro-lien-retour" id="pro-lien-deconnexion">Se déconnecter</button>' +
+      '</div>';
+
+    document.getElementById('pro-lien-mot-de-passe').addEventListener('click', function () {
+      afficheChoixMotDePasse(compteCourant, { depuisEspace: true });
+    });
 
     document.getElementById('pro-e-vers-depot').addEventListener('click', function () {
       sortieACorriger = null;
