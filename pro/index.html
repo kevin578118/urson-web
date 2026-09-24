@@ -280,6 +280,7 @@
     }
     .pro-ligne-resultat:last-child { border-bottom: none; }
     .pro-ligne-resultat span { flex: 1; min-width: 0; }
+    .pro-ligne-resultat .pro-ligne-boutons { flex: 0 0 auto; display: flex; gap: 8px; }
     @media (max-width: 480px) {
       .pro-ligne-deux { flex-direction: column; gap: 16px; }
       .pro-question { padding: 20px 18px 22px; }
@@ -558,6 +559,56 @@
     /* Un retour d'état ACTIF ne se lit pas en --fg-3 (2,5:1 sur blanc). */
     .pro-mdp-aide { font-size: 13px; color: var(--fg-2); margin: 0; }
 
+    /* Texte d'aide en --fg-2 (retour @design-keeper du lot 1). */
+    .pro-a-aide { margin: 0 0 16px; font-size: 13px; color: var(--fg-2); line-height: 1.5; }
+    .pro-a-actions { display: flex; gap: 12px; flex-wrap: wrap; margin: 0 0 16px; }
+    .pro-a-actions .pro-bouton-secondaire { width: auto; padding: 0 18px; min-height: 44px; height: 44px; }
+    .pro-a-danger { color: var(--coral-deep); }
+    .pro-a-panneau { background: var(--bg-soft); border-radius: 14px; padding: 16px; margin: 0 0 16px; }
+    .pro-a-panneau p { margin: 0 0 10px; }
+    /* fg-1 sur bg-soft : fg-2 y tombe à 4,38:1, sous AA (rapport @design-keeper, lot 2 v2). */
+    .pro-a-panneau .pro-a-aide { color: var(--fg-1); }
+    .pro-a-panneau .pro-a-actions { margin: 0; }
+    /* Vignette : 64 px sur une ligne, 120 px dans le formulaire. */
+    .pro-a-vignette {
+      flex: 0 0 64px; width: 64px; height: 64px; border-radius: 12px; overflow: hidden;
+      background: var(--bg-soft); display: flex; align-items: center; justify-content: center;
+      text-align: center; font-size: 11px; font-weight: 600; color: var(--fg-1); line-height: 1.3; padding: 4px;
+    }
+    .pro-a-vignette img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    /* « .pro-ligne-resultat span { flex: 1 } » (pro.mjs) est plus spécifique qu'une classe
+       seule : sans ce sélecteur à deux classes, la vignette de ligne grandit avec le
+       titre au lieu de rester un carré de 64 px (retour @code-reviewer, v2). */
+    .pro-ligne-resultat .pro-a-vignette { flex: 0 0 64px; }
+    .pro-a-vignette--grande { flex-basis: 120px; width: 120px; height: 120px; font-size: 13px; }
+    .pro-a-actuelle { display: flex; gap: 14px; align-items: flex-start; margin: 0 0 16px; }
+    .pro-a-actuelle > div { flex: 1; min-width: 0; }
+    .pro-a-actuelle .pro-a-aide { margin-bottom: 10px; }
+    .pro-a-sous-ligne { flex-basis: 100%; }
+    .pro-a-sous-ligne:empty { display: none; }
+    /* Carte de confirmation franche : fond soft, coche dans un rond coral. */
+    .pro-a-confirm {
+      display: flex; gap: 14px; align-items: flex-start; background: var(--bg-soft);
+      border-radius: 14px; padding: 16px; margin: 0 0 16px; outline: none;
+    }
+    .pro-a-confirm:focus-visible { outline: 2px solid var(--coral-deep); outline-offset: 1px; }
+    .pro-a-confirm-coche {
+      flex: 0 0 36px; width: 36px; height: 36px; border-radius: 999px; background: var(--coral);
+      display: flex; align-items: center; justify-content: center; color: var(--bg-surface);
+    }
+    .pro-a-confirm strong { display: block; font-size: 16px; margin: 6px 0 4px; color: var(--fg-1); }
+    .pro-a-confirm p { margin: 0 0 8px; font-size: 14px; color: var(--fg-1); line-height: 1.5; }
+    .pro-a-confirm .pro-lien-retour { font-size: 14px; min-height: 44px; }
+    @media (max-width: 640px) {
+      .pro-ligne-resultat.pro-a-ligne { flex-wrap: wrap; }
+      .pro-ligne-resultat.pro-a-ligne .pro-a-vignette { flex-basis: 100%; width: 100%; height: 120px; }
+      .pro-ligne-resultat.pro-a-ligne .pro-a-vignette img { object-fit: contain; }
+      /* Formulaire « Modifier » : l'affiche actuelle passe au-dessus de son texte. */
+      .pro-a-actuelle { flex-wrap: wrap; }
+      .pro-a-actuelle .pro-a-vignette--grande { flex-basis: 100%; width: 100%; height: 160px; }
+      .pro-a-actuelle .pro-a-vignette--grande img { object-fit: contain; }
+    }
+
   </style>
 </head>
 <body>
@@ -639,6 +690,9 @@
   var coordonneesRetenues = null;
   var categorieChoisie = '';
   var routageCable = false;
+  // Les sorties rattachées, par id, telles que le tableau de bord les a
+  // chargées (« Modifier », vignettes et retraits d'affiche de la liste).
+  var sortiesConnues = {};
   var suggestionsEnCours = null;
   var suggestionsTimer = null;
 
@@ -1489,7 +1543,7 @@
           // occurrences de la fiche. Repli sur startsAt : une réponse d'un
           // serveur plus ancien ne doit pas vider la colonne.
           var quand = a.dateLabel || (a.startsAt ? formateDateFr(a.startsAt) + ' à ' + formateHeureFr(a.startsAt) : '');
-          html += '<li class="pro-item-sortie pro-ligne-resultat"><span><strong>' + ech(a.title) + '</strong> — ' + ech(libelleKind(a.kind));
+          html += '<li class="pro-item-sortie pro-ligne-resultat pro-a-ligne">' + vignetteAfficheHtml(a, false) + '<span><strong>' + ech(a.title) + '</strong> — ' + ech(libelleKind(a.kind));
           if (quand) html += ' — ' + ech(quand);
           if (a.city) html += ' — ' + ech(a.city);
           html += '</span>';
@@ -1497,10 +1551,14 @@
           // de correction organisateur — update_event le refuse côté serveur
           // (409 activity_not_event) : le bouton n'apparaît donc que sur un
           // événement, jamais sur un lieu.
+          html += '<span class="pro-ligne-boutons">';
           if (a.kind === 'event') {
-            html += '<button type="button" class="pro-bouton-secondaire pro-bouton-modifier" data-id="' + ech(a.id) + '" style="width:auto; padding:0 16px; height:36px">Modifier</button>';
+            html += '<button type="button" class="pro-bouton-secondaire pro-bouton-modifier" data-id="' + ech(a.id) + '" style="width:auto; padding:0 16px; height:44px">Modifier</button>';
           }
-          html += '</li>';
+          // « Retirer l'affiche » (lot 2 « affiche gérable », v2) : seulement
+          // quand une affiche est en ligne ; le panneau s'ouvre SOUS la ligne.
+          html += boutonRetraitAfficheHtml(a);
+          html += '</span><div class="pro-a-sous-ligne"></div></li>';
         }
         html += '</ul>';
       }
@@ -1514,15 +1572,17 @@
       }
       zone.innerHTML = html;
 
-      var index = {};
-      for (var k = 0; k < activites.length; k++) { index[activites[k].id] = activites[k]; }
+      sortiesConnues = {};
+      for (var k = 0; k < activites.length; k++) { sortiesConnues[activites[k].id] = activites[k]; }
       var boutons = zone.querySelectorAll('.pro-bouton-modifier');
       for (var m = 0; m < boutons.length; m++) {
         boutons[m].addEventListener('click', function (event) {
           var id = event.currentTarget.getAttribute('data-id');
-          ouvreCorrection(index[id]);
+          ouvreCorrection(sortiesConnues[id]);
         });
       }
+      poseVignettes(zone, sortiesConnues);
+      cableRetraitsListe(zone, sortiesConnues);
     }).catch(function () {
       zone.innerHTML = '<p class="pro-note">Impossible de charger vos sorties pour le moment.</p>';
     });
@@ -3159,11 +3219,15 @@
           : 'Un relecteur Urson vérifie la fiche sous un à deux jours. Vous recevrez un e-mail dans les deux cas.') +
       '</p>' +
       '<p class="pro-e-resume">' + ech(resumeDepot(d)) + '</p>' +
+      // Photo jointe : une carte franche (v2 « affiche gérable », retour de
+      // Kevin : « il faut bien lire pour comprendre que l'envoi est effectué »).
+      (d.photo ? carteConfirmationHtml('pro-e-affiche-confirm', 'Affiche reçue', 'Nous la relisons avant de l’afficher sur votre fiche. Vous serez prévenu par e-mail.', null, '') : '') +
       '<div class="pro-e-liens">' +
         '<button type="button" class="pro-lien-retour" id="pro-e-encore">Déposer une autre activité</button>' +
         '<button type="button" class="pro-lien-retour" id="pro-e-espace">Retour à mon espace</button>' +
       '</div>';
 
+    if (d.photo) focaliseConfirmation('pro-e-affiche-confirm');
     document.getElementById('pro-e-encore').addEventListener('click', function () {
       dernierDepot = null;
       sortieACorriger = null;
@@ -3197,6 +3261,253 @@
     if (ou.length) bouts.push(ou.join(', '));
     if (d.photo) bouts.push('photo jointe, relue avant publication');
     return bouts.join(' \u00b7 ') + '.';
+  }
+
+
+  // ── Photo jointe (dépôt de sortie ET remplacement d'affiche) ────────
+  // Facultative au dépôt, requise au remplacement : la case de droits est
+  // DÉCOCHÉE et n'apparaît qu'une fois un fichier choisi — cocher une clause
+  // avant d'avoir quoi que ce soit à déclarer n'aurait aucun sens, et le
+  // serveur refuse de toute façon un fichier sans elle.
+  //
+  // Le texte de la clause vient de clauseVisuelCourante, jamais d'ici. Sans
+  // lui (fonction plus ancienne côté serveur), tout le bloc disparaît : mieux
+  // vaut pas de champ photo qu'un champ photo sans sa clause.
+
+  var PHOTO_MAX_OCTETS = 10 * 1024 * 1024;
+  var PHOTO_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+  var ICONE_COCHE = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+  function blocPhotoHtml(libelle) {
+    if (!clauseVisuelCourante || !clauseVisuelCourante.text) return '';
+    return '' +
+      '<div class="pro-champ" id="pro-depot-photo-champ">' +
+        '<label class="pro-label" for="pro-depot-photo" id="pro-depot-photo-libelle">' + (libelle || 'Photo ou affiche (facultatif)') + '</label>' +
+        '<input class="pro-fichier" type="file" id="pro-depot-photo" accept="image/jpeg,image/png,image/webp" />' +
+        '<p class="pro-note-champ">JPEG, PNG ou WebP, 10 Mo maximum. Elle est relue avant d’être publiée.</p>' +
+        '<div id="pro-depot-photo-zone" hidden>' +
+          '<img class="pro-apercu" id="pro-depot-photo-apercu" alt="Aperçu de la photo choisie" />' +
+          '<label class="pro-case">' +
+            '<input type="checkbox" id="pro-depot-photo-clause" />' +
+            '<span>' + ech(clauseVisuelCourante.text) + '</span>' +
+          '</label>' +
+        '</div>' +
+        '<p class="pro-message" id="pro-depot-photo-message" role="status" aria-live="polite"></p>' +
+      '</div>';
+  }
+
+  function cablePhoto() {
+    var champ = document.getElementById('pro-depot-photo');
+    if (!champ) return;
+    var zone = document.getElementById('pro-depot-photo-zone');
+    var apercu = document.getElementById('pro-depot-photo-apercu');
+    var messageEl = document.getElementById('pro-depot-photo-message');
+
+    champ.addEventListener('change', function () {
+      var fichier = champ.files && champ.files[0] ? champ.files[0] : null;
+      definirMessage(messageEl, '', false);
+      if (apercu.src) { URL.revokeObjectURL(apercu.src); apercu.removeAttribute('src'); }
+      if (!fichier) { zone.hidden = true; return; }
+
+      // Refus côté client : un aller-retour évité, jamais une garantie. Le
+      // serveur renifle les octets et reste seul juge (une extension ne prouve
+      // rien du contenu).
+      if (PHOTO_TYPES.indexOf(fichier.type) === -1) {
+        champ.value = '';
+        zone.hidden = true;
+        definirMessage(messageEl, 'Formats acceptés : JPEG, PNG ou WebP.', true);
+        return;
+      }
+      if (fichier.size > PHOTO_MAX_OCTETS) {
+        champ.value = '';
+        zone.hidden = true;
+        definirMessage(messageEl, 'Cette image dépasse 10 Mo.', true);
+        return;
+      }
+      apercu.src = URL.createObjectURL(fichier);
+      zone.hidden = false;
+    });
+  }
+
+  // ── Carte de confirmation franche ────────────────────────────────────
+  // Remplace le bloc de saisie après un envoi ou un retrait ; reçoit le
+  // focus et défile au centre. Le lien secondaire rouvre le bloc de saisie.
+  function carteConfirmationHtml(id, titre, texte, lienId, lienLibelle) {
+    return '<div class="pro-a-confirm" id="' + id + '" role="status" tabindex="-1">' +
+      '<span class="pro-a-confirm-coche">' + ICONE_COCHE + '</span>' +
+      '<div>' +
+        '<strong>' + titre + '</strong>' +
+        '<p>' + texte + '</p>' +
+        (lienId ? '<button type="button" class="pro-lien-retour" id="' + lienId + '">' + lienLibelle + '</button>' : '') +
+      '</div>' +
+    '</div>';
+  }
+
+  function focaliseConfirmation(id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.focus({ preventScroll: true });
+    if (el.scrollIntoView) el.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  }
+
+  // ── Vignette et état d'une sortie ────────────────────────────────────
+  function afficheEnLigne(a) {
+    return !!a && a.visual === 'approved' && !!a.poster_url;
+  }
+
+  function legendeAffiche(a) {
+    if (a.visual_submission === 'pending') return 'En relecture';
+    if (a.visual_submission === 'refused') return 'Refusée';
+    return 'Sans affiche';
+  }
+
+  // L'image est posée SANS src ; poseVignettes() ajoute l'URL par setAttribute.
+  function vignetteAfficheHtml(a, grande) {
+    var classe = 'pro-a-vignette' + (grande ? ' pro-a-vignette--grande' : '');
+    if (afficheEnLigne(a)) {
+      return '<span class="' + classe + '" data-vignette="' + ech(a.id) + '"><img alt="Affiche de la sortie" /></span>';
+    }
+    return '<span class="' + classe + '" data-vignette="' + ech(a.id) + '">' + legendeAffiche(a) + '</span>';
+  }
+
+  function poseVignettes(racine, index) {
+    var vignettes = racine.querySelectorAll('[data-vignette]');
+    for (var i = 0; i < vignettes.length; i++) {
+      var a = index[vignettes[i].getAttribute('data-vignette')];
+      var img = vignettes[i].querySelector('img');
+      if (a && img && afficheEnLigne(a)) img.setAttribute('src', a.poster_url);
+    }
+  }
+
+  function messageErreurAffiche(code) {
+    var messages = {
+      not_verified: "Votre espace n'est plus vérifié.",
+      not_granted: "Cette sortie n'est plus rattachée à votre espace.",
+      activity_not_found: "Cette sortie n'est plus rattachée à votre espace.",
+      rate_limited: 'Trop d’envois, réessayez plus tard.',
+      no_owner_visual: 'Il n’y a plus d’affiche à retirer. Rechargez la page.',
+      archived: 'Cette sortie a été retirée.'
+    };
+    return messages[code] || "Le retrait n'a pas abouti, réessayez.";
+  }
+
+  // ── Retrait inline (liste ET formulaire) ─────────────────────────────
+  // conteneur : l'élément sous la ligne ou sous l'affiche actuelle ;
+  // apres(a) : appelé au succès, une fois l'état local mis à jour.
+  function afficheRetraitAffiche(conteneur, a, boutons, apres) {
+    if (boutons) boutons.hidden = true;
+    conteneur.innerHTML =
+      '<div class="pro-a-panneau">' +
+        '<p><strong>Retirer l’affiche\u00a0?</strong></p>' +
+        '<p class="pro-a-aide">La fiche «\u00a0' + ech(a.title) + '\u00a0» reste publiée, sans visuel. L’affiche est supprimée de nos serveurs sous 24\u00a0h. Vous pourrez en déposer une autre.</p>' +
+        '<div class="pro-a-actions">' +
+          '<button type="button" class="pro-bouton-secondaire" id="pro-a-retrait-annuler">Annuler</button>' +
+          '<button type="button" class="pro-bouton-secondaire pro-a-danger" id="pro-a-retrait-confirmer">Confirmer le retrait</button>' +
+        '</div>' +
+        '<p class="pro-message" id="pro-a-message-retrait" role="status" aria-live="polite"></p>' +
+      '</div>';
+    document.getElementById('pro-a-retrait-annuler').addEventListener('click', function () {
+      conteneur.innerHTML = '';
+      if (boutons) boutons.hidden = false;
+    });
+    document.getElementById('pro-a-retrait-confirmer').addEventListener('click', function () {
+      onConfirmeRetraitAffiche(conteneur, a, apres);
+    });
+  }
+
+  function onConfirmeRetraitAffiche(conteneur, a, apres) {
+    var bouton = document.getElementById('pro-a-retrait-confirmer');
+    var messageEl = document.getElementById('pro-a-message-retrait');
+    bouton.disabled = true;
+    definirMessage(messageEl, 'Retrait en cours…', false);
+    appelApi('remove_visual', { activity_id: a.id }, true).then(function (resultat) {
+      if (resultat.ok && resultat.data && resultat.data.ok) {
+        // La fiche reste publiée, sans visuel ; la soumission est 'withdrawn'
+        // côté serveur — même valeur qu'un rechargement rendra.
+        a.visual = 'none';
+        a.poster_url = null;
+        a.poster_submitted_at = null;
+        a.visual_submission = 'withdrawn';
+        a.visual_refusal_reason = null;
+        apres(a);
+      } else {
+        bouton.disabled = false;
+        definirMessage(messageEl, messageErreurAffiche(resultat.data && resultat.data.error), true);
+      }
+    }).catch(function () {
+      bouton.disabled = false;
+      definirMessage(messageEl, "Le retrait n'a pas abouti, réessayez.", true);
+    });
+  }
+
+  // ── Tableau de bord : bouton et panneau sous chaque ligne ────────────
+  function boutonRetraitAfficheHtml(a) {
+    if (!afficheEnLigne(a)) return '';
+    return '<button type="button" class="pro-bouton-secondaire pro-a-danger pro-bouton-retirer-affiche" data-id="' + ech(a.id) + '" style="width:auto; padding:0 16px; height:44px">Retirer l’affiche</button>';
+  }
+
+  function cableRetraitsListe(zone, index) {
+    var boutons = zone.querySelectorAll('.pro-bouton-retirer-affiche');
+    for (var i = 0; i < boutons.length; i++) {
+      boutons[i].addEventListener('click', function (event) {
+        var id = event.currentTarget.getAttribute('data-id');
+        var a = index[id];
+        var ligne = event.currentTarget.closest('li');
+        if (!a || !ligne) return;
+        var sousLigne = ligne.querySelector('.pro-a-sous-ligne');
+        var groupe = ligne.querySelector('.pro-ligne-boutons');
+        afficheRetraitAffiche(sousLigne, a, groupe, function (maj) {
+          var vignette = ligne.querySelector('[data-vignette]');
+          if (vignette) vignette.outerHTML = vignetteAfficheHtml(maj, false);
+          var b = ligne.querySelector('.pro-bouton-retirer-affiche');
+          if (b) b.parentNode.removeChild(b);
+          if (groupe) groupe.hidden = false;
+          sousLigne.innerHTML = carteConfirmationHtml(
+            'pro-a-confirm-' + maj.id, 'Affiche retirée', 'La fiche reste publiée, sans visuel.',
+            maj.kind === 'event' ? 'pro-a-encore-' + maj.id : null, 'Déposer une autre affiche'
+          );
+          var encore = document.getElementById('pro-a-encore-' + maj.id);
+          if (encore) encore.addEventListener('click', function () { ouvreCorrection(maj); });
+          focaliseConfirmation('pro-a-confirm-' + maj.id);
+        });
+      });
+    }
+  }
+
+  // ── Formulaire « Modifier » : l'affiche actuelle en tête de la question photo ──
+  function blocAfficheActuelleHtml(a) {
+    if (!afficheEnLigne(a)) return '';
+    var deposee = a.poster_submitted_at ? 'Déposée le ' + formateDateFr(a.poster_submitted_at) + '. ' : '';
+    return '<div id="pro-a-actuelle">' +
+      '<div class="pro-a-actuelle">' +
+        vignetteAfficheHtml(a, true) +
+        '<div>' +
+          '<p class="pro-a-aide">' + ech(deposee) + 'Elle sert de couverture à la fiche et dans les résultats. Vous pouvez la remplacer ci-dessous ou la retirer\u00a0: la fiche reste en ligne sans image.</p>' +
+          '<div class="pro-a-actions" id="pro-a-actuelle-actions">' +
+            '<button type="button" class="pro-bouton-secondaire pro-a-danger" id="pro-a-actuelle-retirer">Retirer l’affiche</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="pro-a-sous-ligne" id="pro-a-actuelle-panneau"></div>' +
+    '</div>';
+  }
+
+  function cableAfficheActuelle(a) {
+    var bloc = document.getElementById('pro-a-actuelle');
+    if (!bloc || !a) return;
+    var index = {};
+    index[a.id] = a;
+    poseVignettes(bloc, index);
+    document.getElementById('pro-a-actuelle-retirer').addEventListener('click', function () {
+      var panneau = document.getElementById('pro-a-actuelle-panneau');
+      var actions = document.getElementById('pro-a-actuelle-actions');
+      afficheRetraitAffiche(panneau, a, actions, function () {
+        bloc.innerHTML = carteConfirmationHtml('pro-a-confirm-actuelle', 'Affiche retirée', 'La fiche reste publiée, sans visuel. Vous pouvez en joindre une nouvelle ci-dessous.', null, '');
+        var libelle = document.getElementById('pro-depot-photo-libelle');
+        if (libelle) libelle.textContent = 'Photo ou affiche (facultatif)';
+        focaliseConfirmation('pro-a-confirm-actuelle');
+      });
+    });
   }
 
 
@@ -3321,7 +3632,8 @@
             '<p class="pro-note-champ" style="margin:0 0 8px">Un lien vers votre page, si vous en avez une.</p>' +
             '<input class="pro-input" type="text" id="pro-depot-lien" maxlength="300" placeholder="https://" value="' + ech(val(estEdition ? activite.registrationUrl : '')) + '" />' +
           '</div>' +
-          blocPhotoHtml() +
+          (estEdition ? blocAfficheActuelleHtml(activite) : '') +
+          blocPhotoHtml(estEdition && afficheEnLigne(activite) ? 'Remplacer l’affiche' : '') +
         '</div>' +
 
         '<div class="pro-question">' +
@@ -3336,6 +3648,7 @@
     coordonneesRetenues = null;
     cableAutocompletionAdresse();
     cablePhoto();
+    if (estEdition) cableAfficheActuelle(activite);
     cableCategories();
 
     // Les dates viennent des occurrences RÉELLES de la fiche (dashboard), pas
@@ -3395,68 +3708,8 @@
   }
 
   // ── Photo jointe ─────────────────────────────────────────────────────
-  // Facultative : un dépôt sans visuel reste exactement ce qu'il était. La case
-  // de droits est DÉCOCHÉE et n'apparaît qu'une fois un fichier choisi — cocher
-  // une clause avant d'avoir quoi que ce soit à déclarer n'aurait aucun sens, et
-  // le serveur refuse de toute façon un fichier sans elle.
-  //
-  // Le texte de la clause vient de clauseVisuelCourante, jamais d'ici. Sans
-  // lui (fonction plus ancienne côté serveur), tout le bloc disparaît : mieux
-  // vaut pas de champ photo qu'un champ photo sans sa clause.
-
-  var PHOTO_MAX_OCTETS = 10 * 1024 * 1024;
-  var PHOTO_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
-
-  function blocPhotoHtml() {
-    if (!clauseVisuelCourante || !clauseVisuelCourante.text) return '';
-    return '' +
-      '<div class="pro-champ">' +
-        '<label class="pro-label" for="pro-depot-photo">Photo ou affiche (facultatif)</label>' +
-        '<input class="pro-fichier" type="file" id="pro-depot-photo" accept="image/jpeg,image/png,image/webp" />' +
-        '<p class="pro-note-champ">JPEG, PNG ou WebP, 10 Mo maximum. Elle est relue avant d’être publiée.</p>' +
-        '<div id="pro-depot-photo-zone" hidden>' +
-          '<img class="pro-apercu" id="pro-depot-photo-apercu" alt="Aperçu de la photo choisie" />' +
-          '<label class="pro-case">' +
-            '<input type="checkbox" id="pro-depot-photo-clause" />' +
-            '<span>' + ech(clauseVisuelCourante.text) + '</span>' +
-          '</label>' +
-        '</div>' +
-        '<p class="pro-message" id="pro-depot-photo-message"></p>' +
-      '</div>';
-  }
-
-  function cablePhoto() {
-    var champ = document.getElementById('pro-depot-photo');
-    if (!champ) return;
-    var zone = document.getElementById('pro-depot-photo-zone');
-    var apercu = document.getElementById('pro-depot-photo-apercu');
-    var messageEl = document.getElementById('pro-depot-photo-message');
-
-    champ.addEventListener('change', function () {
-      var fichier = champ.files && champ.files[0] ? champ.files[0] : null;
-      definirMessage(messageEl, '', false);
-      if (apercu.src) { URL.revokeObjectURL(apercu.src); apercu.removeAttribute('src'); }
-      if (!fichier) { zone.hidden = true; return; }
-
-      // Refus côté client : un aller-retour évité, jamais une garantie. Le
-      // serveur renifle les octets et reste seul juge (une extension ne prouve
-      // rien du contenu).
-      if (PHOTO_TYPES.indexOf(fichier.type) === -1) {
-        champ.value = '';
-        zone.hidden = true;
-        definirMessage(messageEl, 'Formats acceptés : JPEG, PNG ou WebP.', true);
-        return;
-      }
-      if (fichier.size > PHOTO_MAX_OCTETS) {
-        champ.value = '';
-        zone.hidden = true;
-        definirMessage(messageEl, 'Cette image dépasse 10 Mo.', true);
-        return;
-      }
-      apercu.src = URL.createObjectURL(fichier);
-      zone.hidden = false;
-    });
-  }
+  // blocPhotoHtml / cablePhoto vivent dans ./pro-affiche.mjs depuis le lot 2
+  // « affiche gérable » : l'écran Affiche réutilise le même dispositif.
 
   // ── Autocomplétion d'adresse ─────────────────────────────────────────
 

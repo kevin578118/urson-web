@@ -147,6 +147,10 @@
     .org-pastille--approved { background: rgba(127, 176, 105, 0.16); color: var(--fg-1); }
     /* fg-2 sur line-soft : 4,39:1 — même défaut que le piège #530, fg-1 le remplace. */
     .org-pastille--none { background: var(--line-soft); color: var(--fg-1); }
+    /* rgba(232, 77, 77, .12) = --coral-deep (#E84D4D) à 12 % — même teinte que la
+       pastille « Refusée » de l'espace pro (pro-affiche.mjs), pour qu'un même refus
+       se lise pareil par les deux portes (rapport @design-keeper, lot 2). */
+    .org-pastille--refused { background: rgba(232, 77, 77, 0.12); color: var(--fg-1); }
     .org-grille { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
     @media (max-width: 720px) { .org-grille { grid-template-columns: 1fr; } }
     .org-carte {
@@ -168,6 +172,9 @@
       font-size: 15px; padding: 0 14px; background: var(--bg-surface); font-family: inherit; color: var(--fg-1);
     }
     textarea.org-input { height: auto; padding: 12px 14px; resize: vertical; line-height: 1.5; }
+    /* Retour navigateur de Kevin (2026-09-23) : une description entière se lit
+       sans défiler — les organisateurs y mettront « pas mal de texte ». */
+    .org-input--description { min-height: 280px; }
     .org-input:disabled { color: var(--fg-3); background: var(--bg-app); }
     .org-aide { font-size: 13px; color: var(--fg-3); margin: -8px 0 16px; }
     .org-bouton-secondaire {
@@ -221,6 +228,41 @@
     .org-etat { color: var(--fg-2); }
     @media (max-width: 480px) {
       .org-ligne-deux { flex-direction: column; gap: 16px; }
+    }
+    .org-affiche-aide { font-size: 13px; color: var(--fg-2); margin: 0 0 16px; line-height: 1.5; }
+    .org-affiche-actions { margin-bottom: 16px; }
+    .org-bouton-danger {
+      width: 100%; height: 48px; border-radius: 999px; background: var(--bg-surface);
+      border: 1px solid var(--line-medium); color: var(--coral-deep); font-size: 15px;
+      font-weight: 600; cursor: pointer; font-family: inherit;
+    }
+    .org-bouton-primaire:focus-visible, .org-bouton-secondaire:focus-visible,
+    .org-bouton-danger:focus-visible, .org-bouton-lien:focus-visible {
+      outline: 2px solid var(--coral-deep); outline-offset: 1px;
+    }
+    .org-affiche-panneau { background: var(--bg-soft); border-radius: 14px; padding: 16px; margin-bottom: 16px; }
+    .org-affiche-panneau p { margin: 0 0 10px; }
+    .org-affiche-panneau .org-case:last-of-type { margin-bottom: 12px; }
+    .org-encart--espace { margin-top: 16px; border: 1px solid var(--peach-pale); background: var(--bg-surface); }
+    .org-encart--espace strong { display: block; font-size: 16px; margin-bottom: 4px; }
+    /* Carte de confirmation franche (v2) : fond soft, coche dans un rond coral. */
+    .org-confirm {
+      display: flex; gap: 14px; align-items: flex-start; background: var(--bg-soft);
+      border-radius: 14px; padding: 16px; margin: 0 0 16px; outline: none;
+    }
+    .org-confirm:focus-visible { outline: 2px solid var(--coral-deep); outline-offset: 1px; }
+    .org-confirm-coche {
+      flex: 0 0 36px; width: 36px; height: 36px; border-radius: 999px; background: var(--coral);
+      display: flex; align-items: center; justify-content: center; color: var(--bg-surface);
+    }
+    .org-confirm strong { display: block; font-size: 16px; margin: 6px 0 4px; color: var(--fg-1); }
+    .org-confirm p { margin: 0 0 8px; font-size: 14px; color: var(--fg-1); line-height: 1.5; }
+    .org-confirm .org-lien-fort { min-height: 44px; }
+    .org-bouton-lien {
+      display: inline-flex; align-items: center; justify-content: center; min-height: 44px;
+      padding: 0 20px; border-radius: 999px; background: var(--coral); color: var(--bg-surface);
+      font-size: 15px; font-weight: 700; text-decoration: none;
+      box-shadow: 0 2px 8px rgba(255, 107, 107, 0.12);
     }
   </style>
 </head>
@@ -362,39 +404,12 @@
         function pastilleHtml(visuel, soumission) {
           if (visuel === 'approved') return '<span class="org-pastille org-pastille--approved">Visuel validé</span>';
           if (soumission === 'pending') return '<span class="org-pastille org-pastille--pending">Reçue, en cours de relecture</span>';
-          if (soumission === 'refused') return '<span class="org-pastille org-pastille--none">Affiche refusée</span>';
+          if (soumission === 'refused') return '<span class="org-pastille org-pastille--refused">Affiche refusée</span>';
+          if (soumission === 'withdrawn') return '<span class="org-pastille org-pastille--pending">Publiée sans visuel</span>';
           if (visuel === 'pending') return '<span class="org-pastille org-pastille--pending">Publiée sans visuel</span>';
           return '<span class="org-pastille org-pastille--none">Sans visuel</span>';
         }
       
-        // L'URL de l'affiche (fiche.poster_url) n'est JAMAIS concaténée dans du
-        // innerHTML : l'image est posée sans src, puis setAttribute() l'ajoute
-        // après coup — seul point d'entrée d'une valeur serveur dans un attribut
-        // DOM sur cette page.
-        function metAJourAfficheEnLigne() {
-          var conteneur = document.getElementById('org-affiche-en-ligne-conteneur');
-          if (!conteneur) return;
-          if (!fiche.poster_url) {
-            conteneur.innerHTML = '';
-            return;
-          }
-          // `poster_is_pending` (2026-09-07) : `poster_url` porte désormais AUSSI
-          // l'aperçu d'un visuel qui n'est PAS publié — un lien signé de quelques
-          // minutes, que seul le porteur du jeton reçoit. Écrire « telle qu'elle est
-          // en ligne » dans ce cas serait faux : elle n'est en ligne nulle part, et
-          // c'est précisément l'accord qu'on demande. La légende et le texte
-          // alternatif suivent donc l'état, ils ne l'affirment plus.
-          var legende = fiche.poster_is_pending
-            ? 'Voici l' + String.fromCharCode(39) + 'affiche que nous voudrions publier sur votre fiche. Personne d' + String.fromCharCode(39) + 'autre ne la voit tant que vous ne nous avez pas donné votre accord.'
-            : 'Votre affiche telle qu' + String.fromCharCode(39) + 'elle est en ligne.';
-          conteneur.innerHTML =
-            '<img class="org-affiche-en-ligne" id="org-affiche-en-ligne" alt="" />' +
-            '<p class="org-aide" id="org-affiche-en-ligne-legende" style="margin: 8px 0 16px"></p>';
-          var img = document.getElementById('org-affiche-en-ligne');
-          img.setAttribute('src', fiche.poster_url);
-          img.setAttribute('alt', fiche.poster_is_pending ? 'Affiche en attente de votre accord' : 'Affiche en ligne');
-          document.getElementById('org-affiche-en-ligne-legende').textContent = legende;
-        }
       
         // ── États de page ──────────────────────────────────────────────────
       
@@ -430,46 +445,12 @@
           var aideDate = fiche.date_editable
             ? ''
             : '<p class="org-aide">Plusieurs dates : écrivez-nous pour les corriger.</p>';
-          var noteVisuel = '';
-          if (fiche.visual === 'approved') {
-            noteVisuel = '<p class="org-aide">Votre visuel est en ligne. Vous pouvez le remplacer ci-dessous.</p>';
-          } else if (fiche.visual_submission === 'refused') {
-            var motifRefus = fiche.visual_refusal_reason;
-            noteVisuel = '<p class="org-aide">Affiche refusée' + (motifRefus ? ' : ' + ech(motifRefus) : '.') + ' Vous pouvez en déposer une autre.</p>';
-          }
           var dateInit = dateParis(fiche.starts_at);
           var heureInit = heureParis(fiche.starts_at);
           var lieuInit = texteLieu(fiche.location);
           var tarifInit = texteTarif(fiche.price);
           var ageInit = fiche.age_min == null ? '' : String(fiche.age_min);
       
-          // Le libellé de la case du dépôt d'affiche est mot pour mot la clause
-          // reçue du serveur (décision de Kevin, 2026-09-06) — jamais un texte en
-          // dur ici. Sans elle, le dépôt reste bloqué : c'est la seule source du
-          // texte ET de la version envoyée au POST multipart.
-          var clauseDroits = fiche.rights_clause || null;
-          versionClause = clauseDroits ? clauseDroits.version : null;
-          var blocAffiche = clauseDroits
-            ? (
-                '<div class="org-zone-depot" id="org-zone-depot">' +
-                  '<div class="org-zone-contenu" id="org-zone-contenu">' +
-                    '<div class="org-zone-pastille">' + ICONE_DEPOT + '</div>' +
-                    '<p>Glissez votre affiche ici</p>' +
-                    '<p class="org-aide" style="margin: 0">ou choisissez un fichier · JPG, PNG, WebP ou PDF, 10 Mo max</p>' +
-                  '</div>' +
-                  '<input type="file" id="org-fichier-input" accept="image/jpeg,image/png,image/webp,application/pdf" />' +
-                '</div>' +
-                '<label class="org-case">' +
-                  '<input type="checkbox" id="org-droits-case" />' +
-                  '<span id="org-droits-texte"></span>' +
-                '</label>' +
-                '<button type="button" class="org-bouton-primaire" id="org-bouton-affiche" disabled>Envoyer l' + String.fromCharCode(39) + 'affiche</button>' +
-                '<p class="org-aide" style="margin: 8px 0 0">Nous la relisons avant de l' + String.fromCharCode(39) + 'afficher sur votre fiche.</p>'
-              )
-            : (
-                '<p class="org-aide" style="margin: 0 0 16px">La déclaration de droits n' + String.fromCharCode(39) + 'a pas pu être chargée, rechargez la page.</p>' +
-                '<button type="button" class="org-bouton-primaire" id="org-bouton-affiche" disabled>Envoyer l' + String.fromCharCode(39) + 'affiche</button>'
-              );
       
           valeursInitiales = {
             title: fiche.title, place: lieuInit, description: fiche.description,
@@ -506,7 +487,7 @@
                   '</div>' +
                   '<div class="org-champ">' +
                     '<label class="org-label" for="org-description-input">Description</label>' +
-                    '<textarea class="org-input" id="org-description-input" rows="4">' + ech(fiche.description) + '</textarea>' +
+                    '<textarea class="org-input org-input--description" id="org-description-input" rows="12">' + ech(fiche.description) + '</textarea>' +
                   '</div>' +
                   '<div class="org-champ org-ligne-deux">' +
                     '<div>' +
@@ -522,181 +503,21 @@
                   '<p class="org-message" id="org-message-corrections"></p>' +
                 '</form>' +
               '</div>' +
-              '<div class="org-carte">' +
-                '<h2>Déposer votre affiche</h2>' +
-                '<div id="org-affiche-en-ligne-conteneur"></div>' +
-                noteVisuel +
-                blocAffiche +
-                '<p class="org-message" id="org-message-affiche"></p>' +
-              '</div>' +
+              '<div class="org-carte" id="org-carte-affiche"></div>' +
             '</div>' +
             '<div class="org-encart">' +
               ICONE_ENCART +
               '<div id="org-retrait-contenu">' +
                 '<p>Vous ne souhaitez pas figurer dans Urson ? <button type="button" class="org-lien-fort" id="org-bouton-retrait">Retirer la fiche</button> la dépublie sans délai.</p>' +
               '</div>' +
-            '</div>';
+            '</div>' +
+            encartEspaceHtml();
       
           document.getElementById('org-form-corrections').addEventListener('submit', onEnvoiCorrections);
           initEncartRetrait();
-          metAJourAfficheEnLigne();
-          if (clauseDroits) {
-            document.getElementById('org-droits-texte').textContent = clauseDroits.text;
-            initZoneDepot();
-          }
+          rendCarteAffiche();
         }
       
-        // ── Dépôt de fichier ───────────────────────────────────────────────
-      
-        function initZoneDepot() {
-          var zone = document.getElementById('org-zone-depot');
-          var entree = document.getElementById('org-fichier-input');
-          var case_ = document.getElementById('org-droits-case');
-          var bouton = document.getElementById('org-bouton-affiche');
-          var messageEl = document.getElementById('org-message-affiche');
-      
-          function metAJourBouton() {
-            bouton.disabled = !(fichierChoisi && case_.checked);
-          }
-      
-          function posePreviewFichier(file) {
-            fichierChoisi = file;
-            var contenu = document.getElementById('org-zone-contenu');
-            var url = URL.createObjectURL(file);
-            contenu.innerHTML = '<img src="' + url + '" alt="Aperçu de l' + String.fromCharCode(39) + 'affiche" />';
-            metAJourBouton();
-          }
-      
-          // Import chargé seulement au premier PDF déposé — jamais au chargement
-          // de la page. Bibliothèque vendorée (aucun CDN, `web/assets/pdfjs/`),
-          // servie par le site lui-même.
-          function convertitPdfEnImage(file) {
-            return file.arrayBuffer().then(function (buffer) {
-              return import('/assets/pdfjs/pdf.min.mjs').then(function (pdfjs) {
-                pdfjs.GlobalWorkerOptions.workerSrc = '/assets/pdfjs/pdf.worker.min.mjs';
-                return pdfjs.getDocument({ data: buffer }).promise;
-              });
-            }).then(function (doc) {
-              return doc.getPage(1);
-            }).then(function (page) {
-              var brute = page.getViewport({ scale: 1 });
-              var echelle = 1600 / brute.width;
-              if (brute.height * echelle > 2400) echelle = 2400 / brute.height;
-              var viewport = page.getViewport({ scale: echelle });
-              var canevas = document.createElement('canvas');
-              canevas.width = Math.round(viewport.width);
-              canevas.height = Math.round(viewport.height);
-              var contexte = canevas.getContext('2d');
-              return page.render({ canvasContext: contexte, viewport: viewport }).promise.then(function () {
-                return new Promise(function (resolve, reject) {
-                  canevas.toBlob(function (blob) {
-                    if (!blob) { reject(new Error('conversion_vide')); return; }
-                    if (blob.size > 10 * 1024 * 1024) { reject(new Error('conversion_trop_lourde')); return; }
-                    var nom = String(file.name || 'affiche').replace(/\.pdf$/i, '') + '.jpg';
-                    resolve(new File([blob], nom, { type: 'image/jpeg' }));
-                  }, 'image/jpeg', 0.9);
-                });
-              });
-            });
-          }
-      
-          function traiteFichier(file) {
-            definirMessage(messageEl, '', false);
-            if (!file) return;
-            var estPdf = file.type === 'application/pdf' || /\.pdf$/i.test(file.name || '');
-            if (estPdf) {
-              if (file.size > 10 * 1024 * 1024) {
-                definirMessage(messageEl, 'Le fichier dépasse 10 Mo.', true);
-                return;
-              }
-              definirMessage(messageEl, 'Conversion du PDF…', false);
-              convertitPdfEnImage(file).then(function (converti) {
-                definirMessage(messageEl, 'PDF converti : seule la première page est gardée.', false);
-                posePreviewFichier(converti);
-              }).catch(function () {
-                definirMessage(messageEl, "Le PDF n'a pas pu être converti. Exportez l'affiche en JPG ou PNG.", true);
-              });
-              return;
-            }
-            if (['image/jpeg', 'image/png', 'image/webp'].indexOf(file.type) === -1) {
-              definirMessage(messageEl, 'Format non reconnu : JPG, PNG ou WebP.', true);
-              return;
-            }
-            if (file.size > 10 * 1024 * 1024) {
-              definirMessage(messageEl, 'Le fichier dépasse 10 Mo.', true);
-              return;
-            }
-            posePreviewFichier(file);
-          }
-      
-          entree.addEventListener('change', function () {
-            traiteFichier(entree.files && entree.files[0]);
-          });
-          zone.addEventListener('dragover', function (event) { event.preventDefault(); });
-          zone.addEventListener('drop', function (event) {
-            event.preventDefault();
-            var file = event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files[0];
-            traiteFichier(file);
-          });
-          case_.addEventListener('change', metAJourBouton);
-          bouton.addEventListener('click', onEnvoiAffiche);
-        }
-      
-        function messageErreurAffiche(motif) {
-          var messages = {
-            rights_required: 'Cochez la case des droits pour continuer.',
-            rights_version_mismatch: 'La déclaration a été mise à jour, rechargez la page avant de déposer.',
-            too_large: 'Le fichier dépasse 10 Mo.',
-            pdf_not_supported: "Le fichier est arrivé en PDF : réessayez, la conversion n'a pas eu lieu.",
-            unsupported_type: 'Format non reconnu : JPG, PNG ou WebP.',
-            archived: 'Cette fiche a été retirée.'
-          };
-          return messages[motif] || "L'envoi n'a pas abouti, réessayez dans un instant.";
-        }
-      
-        function onEnvoiAffiche() {
-          var messageEl = document.getElementById('org-message-affiche');
-          var bouton = document.getElementById('org-bouton-affiche');
-          if (!fichierChoisi) return;
-      
-          bouton.disabled = true;
-          definirMessage(messageEl, 'Envoi en cours…', false);
-      
-          var form = new FormData();
-          form.append('t', jeton);
-          form.append('rights', 'yes');
-          form.append('rights_version', versionClause);
-          form.append('file', fichierChoisi);
-      
-          var borneAffiche = borneDeTemps();
-          fetch(API_URL, { method: 'POST', headers: { apikey: ANON_KEY }, body: form, signal: borneAffiche.signal })
-            .then(function (reponse) {
-              borneAffiche.fini();
-              return reponse.json().catch(function () { return null; }).then(function (data) {
-                return { ok: reponse.ok, data: data };
-              });
-            })
-            .then(function (resultat) {
-              // Le dépôt ne publie plus rien (lot 5, retour de Kevin du 2026-09-06) :
-              // pas de fiche.visual = 'approved' ici, seul l'état du DÉPÔT change.
-              // Message ET pastille reprennent le même libellé.
-              bouton.disabled = false;
-              if (resultat.ok && resultat.data && resultat.data.ok) {
-                fiche.visual_submission = 'pending';
-                fiche.visual_refusal_reason = null;
-                definirMessage(messageEl, 'Reçue, en cours de relecture.', false);
-                var ligne = document.getElementById('org-titre-ligne');
-                if (ligne) ligne.innerHTML = '<h2>' + ech(fiche.title) + '</h2>' + pastilleHtml(fiche.visual, fiche.visual_submission);
-              } else {
-                definirMessage(messageEl, messageErreurAffiche(resultat.data && resultat.data.error), true);
-              }
-            })
-            .catch(function () {
-              borneAffiche.fini();
-              bouton.disabled = false;
-              definirMessage(messageEl, "L'envoi n'a pas abouti, réessayez dans un instant.", true);
-            });
-        }
       
         // ── Corrections ────────────────────────────────────────────────────
       
@@ -841,6 +662,472 @@
               bouton.disabled = false;
               definirMessage(messageEl, "Le retrait n'a pas abouti, réessayez dans un instant.", true);
             });
+        }
+        // ── Affiche — carte, dépôt, retrait, reprise (organisateur-affiche.mjs) ──
+        var APO = String.fromCharCode(39);
+        var ICONE_COCHE = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+        var ICONE_ESPACE = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" style="color: var(--coral-deep); flex-shrink: 0;"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      
+        function dateCourteFr(iso) {
+          if (!iso) return '';
+          var d = new Date(iso);
+          if (isNaN(d.getTime())) return '';
+          return new Intl.DateTimeFormat('fr-FR', { timeZone: 'Europe/Paris', day: 'numeric', month: 'short', year: 'numeric' }).format(d);
+        }
+      
+        function metAJourPastilleTitre() {
+          var ligne = document.getElementById('org-titre-ligne');
+          if (ligne) ligne.innerHTML = '<h2>' + ech(fiche.title) + '</h2>' + pastilleHtml(fiche.visual, fiche.visual_submission);
+        }
+      
+        // L'URL de l'affiche (fiche.poster_url) n'est JAMAIS concaténée dans du
+        // innerHTML : l'image est posée sans src, puis setAttribute() l'ajoute
+        // après coup — seul point d'entrée d'une valeur serveur dans un attribut
+        // DOM sur cette page.
+        function metAJourAfficheEnLigne() {
+          var conteneur = document.getElementById('org-affiche-en-ligne-conteneur');
+          if (!conteneur) return;
+          if (!fiche.poster_url) {
+            conteneur.innerHTML = '';
+            return;
+          }
+          // poster_is_pending (2026-09-07) : l'aperçu d'un visuel NON publié — un
+          // lien signé de quelques minutes, que seul le porteur du jeton reçoit.
+          // La légende suit l'état, elle ne l'affirme pas.
+          var legende;
+          if (fiche.poster_is_pending) {
+            legende = 'Voici l' + APO + 'affiche que nous voudrions publier sur votre fiche. Personne d' + APO + 'autre ne la voit tant que vous ne nous avez pas donné votre accord.';
+          } else {
+            var deposee = dateCourteFr(fiche.poster_submitted_at);
+            legende = (deposee ? 'Déposée le ' + deposee + '. ' : '') + 'C' + APO + 'est cette image que voient les parents en couverture de la fiche et dans les résultats.';
+          }
+          conteneur.innerHTML =
+            '<img class="org-affiche-en-ligne" id="org-affiche-en-ligne" alt="" />' +
+            '<p class="org-affiche-aide" id="org-affiche-en-ligne-legende"></p>';
+          var img = document.getElementById('org-affiche-en-ligne');
+          img.setAttribute('src', fiche.poster_url);
+          img.setAttribute('alt', fiche.poster_is_pending ? 'Affiche en attente de votre accord' : 'Affiche en ligne');
+          document.getElementById('org-affiche-en-ligne-legende').textContent = legende;
+        }
+      
+        // Le bloc de dépôt : zone de fichier, clause (texte serveur, posé en
+        // textContent par rendCarteAffiche), bouton. `cache` = replié derrière
+        // « Remplacer l'affiche » quand une affiche est en ligne.
+        function blocDepotHtml(clauseDroits, cache) {
+          var ouverture = '<div id="org-bloc-depot"' + (cache ? ' hidden' : '') + '>';
+          if (!clauseDroits) {
+            return ouverture +
+              '<p class="org-affiche-aide">La déclaration de droits n' + APO + 'a pas pu être chargée, rechargez la page.</p>' +
+              '<button type="button" class="org-bouton-primaire" id="org-bouton-affiche" disabled>Envoyer l' + APO + 'affiche</button>' +
+            '</div>';
+          }
+          return ouverture +
+            '<div class="org-zone-depot" id="org-zone-depot">' +
+              '<div class="org-zone-contenu" id="org-zone-contenu">' +
+                '<div class="org-zone-pastille">' + ICONE_DEPOT + '</div>' +
+                '<p>Glissez votre affiche ici</p>' +
+                '<p class="org-affiche-aide" style="margin: 0">ou choisissez un fichier · JPG, PNG, WebP ou PDF, 10 Mo max</p>' +
+              '</div>' +
+              '<input type="file" id="org-fichier-input" accept="image/jpeg,image/png,image/webp,application/pdf" aria-label="Choisir un fichier d' + APO + 'affiche" />' +
+            '</div>' +
+            '<label class="org-case">' +
+              '<input type="checkbox" id="org-droits-case" />' +
+              '<span id="org-droits-texte"></span>' +
+            '</label>' +
+            '<button type="button" class="org-bouton-primaire" id="org-bouton-affiche" disabled>Envoyer l' + APO + 'affiche</button>' +
+            '<p class="org-affiche-aide" style="margin: 8px 0 0">Nous la relisons avant de l' + APO + 'afficher sur votre fiche.' + (cache ? ' Un remplacement vous redemande la déclaration de droits, mot pour mot.' : '') + '</p>' +
+          '</div>';
+        }
+      
+        // Reprise du visuel conservé : deux cases distinctes, décochées (l'accord
+        // ET la déclaration de droits), bouton actif quand les deux sont cochées.
+        function blocRepriseHtml(clauseDroits) {
+          if (!clauseDroits) return '';
+          return '<div class="org-affiche-panneau" id="org-reprise">' +
+            '<label class="org-case"><input type="checkbox" id="org-reprise-case" /><span>Reprendre le visuel déjà reçu</span></label>' +
+            '<label class="org-case"><input type="checkbox" id="org-reprise-droits-case" /><span id="org-reprise-droits-texte"></span></label>' +
+            '<button type="button" class="org-bouton-primaire" id="org-bouton-reprendre" disabled>Reprendre ce visuel</button>' +
+            '<p class="org-affiche-aide" style="margin: 8px 0 0">Ou déposez un autre fichier ci-dessous.</p>' +
+          '</div>';
+        }
+      
+        function noteSoumissionHtml() {
+          if (fiche.visual_submission === 'pending') {
+            return '<p class="org-affiche-aide">Une affiche est en cours de relecture pour cette fiche.</p>';
+          }
+          if (fiche.visual_submission === 'refused') {
+            var motifRefus = fiche.visual_refusal_reason;
+            return '<p class="org-affiche-aide">Affiche refusée' + (motifRefus ? ' : ' + ech(motifRefus) : '.') + ' Vous pouvez en déposer une autre.</p>';
+          }
+          return '';
+        }
+      
+        // ── Carte de confirmation franche (v2) ─────────────────────────────
+        // Remplace le bloc de saisie après un envoi, une reprise ou un retrait ;
+        // reçoit le focus et défile au centre. Le lien rouvre un bloc vide.
+        function montreConfirmation(cibleId, titre, texte, lienLibelle, onLien) {
+          var cible = document.getElementById(cibleId);
+          if (!cible) return;
+          cible.hidden = false;
+          cible.innerHTML =
+            '<div class="org-confirm" id="org-confirm" role="status" tabindex="-1">' +
+              '<span class="org-confirm-coche">' + ICONE_COCHE + '</span>' +
+              '<div><strong>' + titre + '</strong><p>' + texte + '</p>' +
+                (lienLibelle ? '<button type="button" class="org-lien-fort" id="org-confirm-lien">' + lienLibelle + '</button>' : '') +
+              '</div>' +
+            '</div>';
+          var lien = document.getElementById('org-confirm-lien');
+          if (lien && onLien) lien.addEventListener('click', onLien);
+          var carte = document.getElementById('org-confirm');
+          carte.focus({ preventScroll: true });
+          if (carte.scrollIntoView) carte.scrollIntoView({ block: 'center', behavior: 'smooth' });
+        }
+      
+        function rouvreDepotVide() {
+          rendCarteAffiche();
+          deplieBlocDepot();
+        }
+      
+        // LE point de rendu de la carte (id org-carte-affiche, posée par
+        // afficheFiche). Rejoué après un retrait — jamais toute la fiche, pour ne
+        // pas perdre des corrections en cours de saisie.
+        function rendCarteAffiche() {
+          var carte = document.getElementById('org-carte-affiche');
+          if (!carte) return;
+          var clauseDroits = fiche.rights_clause || null;
+          versionClause = clauseDroits ? clauseDroits.version : null;
+          fichierChoisi = null;
+          var enLigne = fiche.visual === 'approved' && !!fiche.poster_url && !fiche.poster_is_pending;
+          var html;
+          if (enLigne) {
+            html =
+              '<h2>Votre affiche</h2>' +
+              '<div id="org-affiche-en-ligne-conteneur"></div>' +
+              '<p class="org-affiche-aide">Vous en restez l' + APO + 'auteur. Vous pouvez la remplacer ou la retirer à tout moment : la fiche reste alors publiée, sans image, et l' + APO + 'affiche est supprimée de nos serveurs sous 24 h.</p>' +
+              noteSoumissionHtml() +
+              '<div class="org-ligne-deux org-affiche-actions" id="org-affiche-actions">' +
+                '<button type="button" class="org-bouton-secondaire" id="org-bouton-remplacer">Remplacer l' + APO + 'affiche</button>' +
+                '<button type="button" class="org-bouton-danger" id="org-bouton-retirer">Retirer l' + APO + 'affiche</button>' +
+              '</div>' +
+              '<div id="org-affiche-retrait"></div>' +
+              blocDepotHtml(clauseDroits, true);
+          } else {
+            html =
+              '<h2>Déposer votre affiche</h2>' +
+              '<div id="org-affiche-en-ligne-conteneur"></div>' +
+              noteSoumissionHtml() +
+              (fiche.poster_is_pending && fiche.visual_submission !== 'pending' ? blocRepriseHtml(clauseDroits) : '') +
+              blocDepotHtml(clauseDroits, false);
+          }
+          html += '<p class="org-message" id="org-message-affiche" role="status" aria-live="polite"></p>';
+          carte.innerHTML = html;
+      
+          metAJourAfficheEnLigne();
+          if (clauseDroits) {
+            document.getElementById('org-droits-texte').textContent = clauseDroits.text;
+            var texteReprise = document.getElementById('org-reprise-droits-texte');
+            if (texteReprise) texteReprise.textContent = clauseDroits.text;
+            initZoneDepot();
+            initReprise();
+          }
+          if (enLigne) {
+            document.getElementById('org-bouton-remplacer').addEventListener('click', deplieBlocDepot);
+            document.getElementById('org-bouton-retirer').addEventListener('click', afficheRetraitAffiche);
+          }
+        }
+      
+        function deplieBlocDepot() {
+          var bloc = document.getElementById('org-bloc-depot');
+          if (!bloc) return;
+          bloc.hidden = false;
+          var entree = document.getElementById('org-fichier-input');
+          if (entree) entree.focus();
+        }
+      
+        // ── Dépôt de fichier ───────────────────────────────────────────────
+      
+        function initZoneDepot() {
+          var zone = document.getElementById('org-zone-depot');
+          var entree = document.getElementById('org-fichier-input');
+          var case_ = document.getElementById('org-droits-case');
+          var bouton = document.getElementById('org-bouton-affiche');
+          var messageEl = document.getElementById('org-message-affiche');
+          if (!zone || !entree || !case_ || !bouton) return;
+      
+          function metAJourBouton() {
+            bouton.disabled = !(fichierChoisi && case_.checked);
+          }
+      
+          function posePreviewFichier(file) {
+            fichierChoisi = file;
+            var contenu = document.getElementById('org-zone-contenu');
+            var url = URL.createObjectURL(file);
+            contenu.innerHTML = '<img src="' + url + '" alt="Aperçu de l' + APO + 'affiche" />';
+            metAJourBouton();
+          }
+      
+          // Import chargé seulement au premier PDF déposé — jamais au chargement
+          // de la page. Bibliothèque vendorée (aucun CDN, `web/assets/pdfjs/`),
+          // servie par le site lui-même.
+          function convertitPdfEnImage(file) {
+            return file.arrayBuffer().then(function (buffer) {
+              return import('/assets/pdfjs/pdf.min.mjs').then(function (pdfjs) {
+                pdfjs.GlobalWorkerOptions.workerSrc = '/assets/pdfjs/pdf.worker.min.mjs';
+                return pdfjs.getDocument({ data: buffer }).promise;
+              });
+            }).then(function (doc) {
+              return doc.getPage(1);
+            }).then(function (page) {
+              var brute = page.getViewport({ scale: 1 });
+              var echelle = 1600 / brute.width;
+              if (brute.height * echelle > 2400) echelle = 2400 / brute.height;
+              var viewport = page.getViewport({ scale: echelle });
+              var canevas = document.createElement('canvas');
+              canevas.width = Math.round(viewport.width);
+              canevas.height = Math.round(viewport.height);
+              var contexte = canevas.getContext('2d');
+              return page.render({ canvasContext: contexte, viewport: viewport }).promise.then(function () {
+                return new Promise(function (resolve, reject) {
+                  canevas.toBlob(function (blob) {
+                    if (!blob) { reject(new Error('conversion_vide')); return; }
+                    if (blob.size > 10 * 1024 * 1024) { reject(new Error('conversion_trop_lourde')); return; }
+                    var nom = String(file.name || 'affiche').replace(/\.pdf$/i, '') + '.jpg';
+                    resolve(new File([blob], nom, { type: 'image/jpeg' }));
+                  }, 'image/jpeg', 0.9);
+                });
+              });
+            });
+          }
+      
+          function traiteFichier(file) {
+            definirMessage(messageEl, '', false);
+            if (!file) return;
+            var estPdf = file.type === 'application/pdf' || /\.pdf$/i.test(file.name || '');
+            if (estPdf) {
+              if (file.size > 10 * 1024 * 1024) {
+                definirMessage(messageEl, 'Le fichier dépasse 10 Mo.', true);
+                return;
+              }
+              definirMessage(messageEl, 'Conversion du PDF…', false);
+              convertitPdfEnImage(file).then(function (converti) {
+                definirMessage(messageEl, 'PDF converti : seule la première page est gardée.', false);
+                posePreviewFichier(converti);
+              }).catch(function () {
+                definirMessage(messageEl, "Le PDF n'a pas pu être converti. Exportez l'affiche en JPG ou PNG.", true);
+              });
+              return;
+            }
+            if (['image/jpeg', 'image/png', 'image/webp'].indexOf(file.type) === -1) {
+              definirMessage(messageEl, 'Format non reconnu : JPG, PNG ou WebP.', true);
+              return;
+            }
+            if (file.size > 10 * 1024 * 1024) {
+              definirMessage(messageEl, 'Le fichier dépasse 10 Mo.', true);
+              return;
+            }
+            posePreviewFichier(file);
+          }
+      
+          entree.addEventListener('change', function () {
+            traiteFichier(entree.files && entree.files[0]);
+          });
+          zone.addEventListener('dragover', function (event) { event.preventDefault(); });
+          zone.addEventListener('drop', function (event) {
+            event.preventDefault();
+            var file = event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files[0];
+            traiteFichier(file);
+          });
+          case_.addEventListener('change', metAJourBouton);
+          bouton.addEventListener('click', onEnvoiAffiche);
+        }
+      
+        function messageErreurAffiche(motif) {
+          var messages = {
+            rights_required: 'Cochez la case des droits pour continuer.',
+            rights_version_mismatch: 'La déclaration a été mise à jour, rechargez la page avant de déposer.',
+            too_large: 'Le fichier dépasse 10 Mo.',
+            pdf_not_supported: "Le fichier est arrivé en PDF : réessayez, la conversion n'a pas eu lieu.",
+            unsupported_type: 'Format non reconnu : JPG, PNG ou WebP.',
+            already_pending: 'Une affiche est déjà en cours de relecture pour cette fiche.',
+            no_held_visual: 'Nous ne tenons plus de visuel pour cette fiche : déposez un fichier.',
+            no_owner_visual: 'Il n' + APO + 'y a plus d' + APO + 'affiche à retirer. Rechargez la page.',
+            archived: 'Cette fiche a été retirée.'
+          };
+          return messages[motif] || "L'envoi n'a pas abouti, réessayez dans un instant.";
+        }
+      
+        function litReponse(reponse) {
+          return reponse.json().catch(function () { return null; }).then(function (data) {
+            return { ok: reponse.ok, data: data };
+          });
+        }
+      
+        function onEnvoiAffiche() {
+          var messageEl = document.getElementById('org-message-affiche');
+          var bouton = document.getElementById('org-bouton-affiche');
+          if (!fichierChoisi) return;
+      
+          bouton.disabled = true;
+          definirMessage(messageEl, 'Envoi en cours…', false);
+      
+          var form = new FormData();
+          form.append('t', jeton);
+          form.append('rights', 'yes');
+          form.append('rights_version', versionClause);
+          form.append('file', fichierChoisi);
+      
+          var borneAffiche = borneDeTemps();
+          fetch(API_URL, { method: 'POST', headers: { apikey: ANON_KEY }, body: form, signal: borneAffiche.signal })
+            .then(litReponse)
+            .then(function (resultat) {
+              borneAffiche.fini();
+              // Le dépôt ne publie rien (lot 5, retour de Kevin du 2026-09-06) :
+              // seul l'état du DÉPÔT change. L'affiche en ligne, elle, reste
+              // affichée jusqu'à l'approbation du remplacement.
+              bouton.disabled = false;
+              if (resultat.ok && resultat.data && resultat.data.ok) {
+                fiche.visual_submission = 'pending';
+                fiche.visual_refusal_reason = null;
+                fichierChoisi = null;
+                var reprise = document.getElementById('org-reprise');
+                if (reprise) reprise.hidden = true;
+                metAJourPastilleTitre();
+                montreConfirmation('org-bloc-depot', 'Affiche reçue', 'Nous la relisons avant de l' + APO + 'afficher sur votre fiche. Vous serez prévenu par e-mail.', 'Déposer une autre affiche', rouvreDepotVide);
+              } else {
+                definirMessage(messageEl, messageErreurAffiche(resultat.data && resultat.data.error), true);
+              }
+            })
+            .catch(function () {
+              borneAffiche.fini();
+              bouton.disabled = false;
+              definirMessage(messageEl, "L'envoi n'a pas abouti, réessayez dans un instant.", true);
+            });
+        }
+      
+        // ── Reprise du visuel conservé ─────────────────────────────────────
+      
+        function initReprise() {
+          var caseReprise = document.getElementById('org-reprise-case');
+          var caseDroits = document.getElementById('org-reprise-droits-case');
+          var bouton = document.getElementById('org-bouton-reprendre');
+          if (!caseReprise || !caseDroits || !bouton) return;
+          function metAJourBouton() { bouton.disabled = !(caseReprise.checked && caseDroits.checked); }
+          caseReprise.addEventListener('change', metAJourBouton);
+          caseDroits.addEventListener('change', metAJourBouton);
+          bouton.addEventListener('click', onReprendreVisuel);
+        }
+      
+        function onReprendreVisuel() {
+          var messageEl = document.getElementById('org-message-affiche');
+          var bouton = document.getElementById('org-bouton-reprendre');
+          bouton.disabled = true;
+          definirMessage(messageEl, 'Envoi en cours…', false);
+      
+          var borneReprise = borneDeTemps();
+          fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', apikey: ANON_KEY },
+            body: JSON.stringify({ action: 'adopt_held_visual', t: jeton, rights: 'yes', rights_version: versionClause }),
+            signal: borneReprise.signal
+          })
+            .then(litReponse)
+            .then(function (resultat) {
+              borneReprise.fini();
+              if (resultat.ok && resultat.data && resultat.data.ok) {
+                fiche.visual_submission = 'pending';
+                fiche.visual_refusal_reason = null;
+                var depot = document.getElementById('org-bloc-depot');
+                if (depot) depot.hidden = true;
+                metAJourPastilleTitre();
+                montreConfirmation('org-reprise', 'Affiche reçue', 'Nous la relisons avant de l' + APO + 'afficher sur votre fiche. Vous serez prévenu par e-mail.', 'Déposer une autre affiche', rouvreDepotVide);
+              } else {
+                bouton.disabled = false;
+                definirMessage(messageEl, messageErreurAffiche(resultat.data && resultat.data.error), true);
+              }
+            })
+            .catch(function () {
+              borneReprise.fini();
+              bouton.disabled = false;
+              definirMessage(messageEl, "L'envoi n'a pas abouti, réessayez dans un instant.", true);
+            });
+        }
+      
+        // ── Retrait de l'affiche ───────────────────────────────────────────
+        // Panneau inline, jamais window.confirm (patron du retrait de fiche).
+      
+        function afficheRetraitAffiche() {
+          var zone = document.getElementById('org-affiche-retrait');
+          var actions = document.getElementById('org-affiche-actions');
+          if (!zone) return;
+          if (actions) actions.hidden = true;
+          zone.innerHTML =
+            '<div class="org-affiche-panneau">' +
+              '<p><strong>Retirer l' + APO + 'affiche ?</strong></p>' +
+              '<p class="org-affiche-aide">La fiche « ' + ech(fiche.title) + ' » reste publiée, sans visuel. L' + APO + 'affiche est supprimée de nos serveurs sous 24 h. Vous pourrez en déposer une autre.</p>' +
+              '<div class="org-ligne-deux">' +
+                '<button type="button" class="org-bouton-secondaire" id="org-bouton-retrait-affiche-annuler">Annuler</button>' +
+                '<button type="button" class="org-bouton-primaire" id="org-bouton-retrait-affiche-confirmer">Confirmer le retrait</button>' +
+              '</div>' +
+              '<p class="org-message" id="org-message-retrait-affiche" role="status" aria-live="polite"></p>' +
+            '</div>';
+          document.getElementById('org-bouton-retrait-affiche-annuler').addEventListener('click', function () {
+            zone.innerHTML = '';
+            if (actions) actions.hidden = false;
+          });
+          document.getElementById('org-bouton-retrait-affiche-confirmer').addEventListener('click', onConfirmeRetraitAffiche);
+        }
+      
+        function onConfirmeRetraitAffiche() {
+          var bouton = document.getElementById('org-bouton-retrait-affiche-confirmer');
+          var messageEl = document.getElementById('org-message-retrait-affiche');
+          bouton.disabled = true;
+          definirMessage(messageEl, 'Retrait en cours…', false);
+      
+          var borneRetraitAffiche = borneDeTemps();
+          fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', apikey: ANON_KEY },
+            body: JSON.stringify({ action: 'remove_visual', t: jeton }),
+            signal: borneRetraitAffiche.signal
+          })
+            .then(litReponse)
+            .then(function (resultat) {
+              borneRetraitAffiche.fini();
+              if (resultat.ok && resultat.data && resultat.data.ok) {
+                // La fiche reste publiée, sans visuel ; la soumission est
+                // 'withdrawn' côté serveur — même valeur qu'un rechargement rendra.
+                fiche.visual = 'none';
+                fiche.poster_url = null;
+                fiche.poster_is_pending = false;
+                fiche.poster_submitted_at = null;
+                fiche.visual_submission = 'withdrawn';
+                fiche.visual_refusal_reason = null;
+                rendCarteAffiche();
+                metAJourPastilleTitre();
+                montreConfirmation('org-bloc-depot', 'Affiche retirée', 'La fiche reste publiée, sans visuel.', 'Déposer une autre affiche', rouvreDepotVide);
+              } else {
+                bouton.disabled = false;
+                definirMessage(messageEl, messageErreurAffiche(resultat.data && resultat.data.error), true);
+              }
+            })
+            .catch(function () {
+              borneRetraitAffiche.fini();
+              bouton.disabled = false;
+              definirMessage(messageEl, "Le retrait n'a pas abouti, réessayez dans un instant.", true);
+            });
+        }
+      
+        // ── Encart « espace pro / asso » (fin de page) ─────────────────────
+        // Lien relatif : la page vit sur le même site que /pro/.
+        function encartEspaceHtml() {
+          return '<div class="org-encart org-encart--espace">' +
+            ICONE_ESPACE +
+            '<div>' +
+              '<strong>Vous organisez régulièrement ? Ouvrez un espace pro / asso.</strong>' +
+              '<p class="org-affiche-aide" style="margin-bottom: 12px">Toutes vos sorties au même endroit, leurs statistiques, vos affiches, et un mot de passe plutôt qu' + APO + 'un lien par événement. Gratuit.</p>' +
+              '<a class="org-bouton-lien" href="/pro/">Demander un espace</a>' +
+            '</div>' +
+          '</div>';
         }
       
         // ── Point d'entrée ─────────────────────────────────────────────────
