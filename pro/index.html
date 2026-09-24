@@ -770,12 +770,26 @@
   var ADRESSE_BIAIS = { lat: '47.081', lon: '2.398' };
   var ADRESSE_DEBOUNCE_MS = 300;
   var ADRESSE_MIN_CARACTERES = 3;
+  // Aucun appel ne pend indéfiniment (docs/dette-technique.md
+  // N-pages-web-fetch-sans-borne) — un réseau qui ne répond pas laissait la
+  // recherche d'adresse muette pour toujours. La panne reste SILENCIEUSE
+  // (voir ci-dessus) : l'abandon au bout de 10 s rejoint simplement le même
+  // repli vide que toute autre panne, rien de plus.
+  var ADRESSE_DELAI_MAX_MS = 10000;
+
+  function borneDeTempsAdresses() {
+    var controleur = new AbortController();
+    var minuteur = setTimeout(function () { controleur.abort(); }, ADRESSE_DELAI_MAX_MS);
+    return { signal: controleur.signal, fini: function () { clearTimeout(minuteur); } };
+  }
 
   function chercheAdresses(texte) {
     var url = ADRESSE_API_URL +
       '?q=' + encodeURIComponent(texte) +
       '&limit=5&lat=' + ADRESSE_BIAIS.lat + '&lon=' + ADRESSE_BIAIS.lon;
-    return fetch(url, { method: 'GET' }).then(function (reponse) {
+    var borne = borneDeTempsAdresses();
+    return fetch(url, { method: 'GET', signal: borne.signal }).then(function (reponse) {
+      borne.fini();
       if (!reponse.ok) return [];
       return reponse.json();
     }).then(function (data) {
@@ -807,7 +821,10 @@
         sorties.push({ adresse: adresse, ville: ville, label: p.label || '', lat: lat, lon: lon });
       }
       return sorties;
-    }).catch(function () { return []; });
+    }).catch(function () {
+      borne.fini();
+      return [];
+    });
   }
 
   // ── États génériques ─────────────────────────────────────────────────

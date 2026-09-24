@@ -258,6 +258,20 @@
         var ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN2eWNvZXpvaW1yYmdwYnh6cmV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1NTg2ODIsImV4cCI6MjA5MzEzNDY4Mn0.hq5fGRpHi6xe07BxXdAYBN6o3m6LZbqPzCCxfLwWWyo';
         var CONTACT = "bonjour@ursonapp.fr";
       
+        // Aucun appel ne pend indéfiniment (docs/dette-technique.md
+        // N-pages-web-fetch-sans-borne) — sans borne, un réseau qui ne répond
+        // pas laisse le bouton désactivé et la page muette. Patron
+        // scripts/web-pages/signalement.mjs.
+        var DELAI_MAX_MS = 10000;
+      
+        // Rend { signal, fini } — appeler fini() dans tous les cas, sinon le
+        // minuteur survit à la réponse.
+        function borneDeTemps() {
+          var controleur = new AbortController();
+          var minuteur = setTimeout(function () { controleur.abort(); }, DELAI_MAX_MS);
+          return { signal: controleur.signal, fini: function () { clearTimeout(minuteur); } };
+        }
+      
         var ICONE_DEPOT = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" style="color: var(--coral-deep)"><path d="M12 16V4m0 0L7 9m5-5l5 5M5 20h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
         var ICONE_ENCART = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" style="color: var(--coral-deep); flex-shrink: 0;"><path d="M12 3l7 3v6c0 4.5-3 8-7 9-4-1-7-4.5-7-9V6l7-3z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
       
@@ -654,8 +668,10 @@
           form.append('rights_version', versionClause);
           form.append('file', fichierChoisi);
       
-          fetch(API_URL, { method: 'POST', headers: { apikey: ANON_KEY }, body: form })
+          var borneAffiche = borneDeTemps();
+          fetch(API_URL, { method: 'POST', headers: { apikey: ANON_KEY }, body: form, signal: borneAffiche.signal })
             .then(function (reponse) {
+              borneAffiche.fini();
               return reponse.json().catch(function () { return null; }).then(function (data) {
                 return { ok: reponse.ok, data: data };
               });
@@ -676,6 +692,7 @@
               }
             })
             .catch(function () {
+              borneAffiche.fini();
               bouton.disabled = false;
               definirMessage(messageEl, "L'envoi n'a pas abouti, réessayez dans un instant.", true);
             });
@@ -711,12 +728,15 @@
       
           definirMessage(messageEl, 'Envoi en cours…', false);
       
+          var borneCorrections = borneDeTemps();
           fetch(API_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', apikey: ANON_KEY },
-            body: JSON.stringify({ action: 'corrections', t: jeton, fields: champs })
+            body: JSON.stringify({ action: 'corrections', t: jeton, fields: champs }),
+            signal: borneCorrections.signal
           })
             .then(function (reponse) {
+              borneCorrections.fini();
               return reponse.json().catch(function () { return null; }).then(function (data) {
                 return { ok: reponse.ok, data: data };
               });
@@ -744,6 +764,7 @@
               }
             })
             .catch(function () {
+              borneCorrections.fini();
               definirMessage(messageEl, "L'envoi n'a pas abouti, réessayez dans un instant.", true);
             });
         }
@@ -794,12 +815,15 @@
           bouton.disabled = true;
           definirMessage(messageEl, 'Retrait en cours…', false);
       
+          var borneRetrait = borneDeTemps();
           fetch(API_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', apikey: ANON_KEY },
-            body: JSON.stringify({ action: 'withdraw', t: jeton, reason: motif === '' ? null : motif })
+            body: JSON.stringify({ action: 'withdraw', t: jeton, reason: motif === '' ? null : motif }),
+            signal: borneRetrait.signal
           })
             .then(function (reponse) {
+              borneRetrait.fini();
               return reponse.json().catch(function () { return null; }).then(function (data) {
                 return { ok: reponse.ok, data: data };
               });
@@ -813,6 +837,7 @@
               }
             })
             .catch(function () {
+              borneRetrait.fini();
               bouton.disabled = false;
               definirMessage(messageEl, "Le retrait n'a pas abouti, réessayez dans un instant.", true);
             });
@@ -824,8 +849,10 @@
           afficheIntrouvable();
         } else {
           afficheChargement();
-          fetch(API_URL + '?t=' + encodeURIComponent(jeton), { headers: { apikey: ANON_KEY } })
+          var borneChargement = borneDeTemps();
+          fetch(API_URL + '?t=' + encodeURIComponent(jeton), { headers: { apikey: ANON_KEY }, signal: borneChargement.signal })
             .then(function (reponse) {
+              borneChargement.fini();
               return reponse.json().catch(function () { return null; }).then(function (data) {
                 return { ok: reponse.ok, status: reponse.status, data: data };
               });
@@ -837,7 +864,7 @@
               if (fiche.archived) { afficheRetiree(); return; }
               afficheFiche();
             })
-            .catch(function () { afficheErreurReseau(); });
+            .catch(function () { borneChargement.fini(); afficheErreurReseau(); });
         }
       })();
       </script>
