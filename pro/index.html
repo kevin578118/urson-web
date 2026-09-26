@@ -523,20 +523,11 @@
       outline: 2px solid var(--coral-deep); outline-offset: 1px;
     }
 
-    .pro-e-entete { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
-    .pro-e-titre-ligne { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
-    /* « Vos chiffres » n'est PAS une carte : ni un inventaire vide (qui
-       disparaitrait), ni un flux vide (qui se dirait), mais une fonctionnalite
-       pas encore construite. Lui donner le fond blanc et l'ombre d'une vraie
-       carte la ferait rivaliser avec « Mes sorties », qui porte du contenu
-       reel. Titre de section au patron deja en place, une phrase, rien de plus. */
-    .pro-e-chiffres { margin: 4px 0 26px; }
-    .pro-e-chiffres p { margin: 0; font-size: 15px; color: var(--fg-2); }
-    .pro-e-actions { margin-top: 22px; }
     .pro-e-resume {
       margin: 0 0 20px; font-size: 16px; line-height: 1.6; color: var(--fg-1);
     }
     .pro-e-liens { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-top: 6px; }
+    .pro-e-note { font-size: 14px; color: var(--fg-2); }
 
     .pro-mdp-ligne { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
     .pro-mdp-champ { position: relative; }
@@ -608,6 +599,201 @@
       .pro-a-actuelle .pro-a-vignette--grande { flex-basis: 100%; width: 100%; height: 160px; }
       .pro-a-actuelle .pro-a-vignette--grande img { object-fit: contain; }
     }
+
+
+    body.pro-coque-actif .enveloppe { max-width: 1180px; }
+    .pro-coque-barre {
+      display: flex; align-items: center; gap: 16px; margin-bottom: 20px;
+      padding-bottom: 16px; border-bottom: 1px solid var(--line-soft);
+    }
+    .pro-coque-marque { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
+    .pro-coque-marque img { width: 28px; height: 28px; border-radius: 8px; }
+    .pro-coque-titre { font-size: 15px; font-weight: 700; color: var(--fg-1); }
+    .pro-coque-barre .pro-bouton-primaire {
+      width: auto; padding: 0 18px; height: 44px; white-space: nowrap;
+    }
+    .pro-coque-pastille {
+      width: 40px; height: 40px; border-radius: 999px; background: var(--bg-soft);
+      color: var(--coral-deep); font-size: 14px; font-weight: 800;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .pro-coque-corps { display: flex; gap: 28px; align-items: flex-start; }
+    .pro-coque-nav { flex: 0 0 176px; display: flex; flex-direction: column; gap: 2px; }
+    .pro-coque-lien {
+      display: block; padding: 11px 14px; border-radius: 12px; font-size: 15px;
+      font-weight: 600; color: var(--fg-2); text-decoration: none; min-height: 44px;
+      box-sizing: border-box;
+    }
+    /* Texte --fg-1 sur --bg-soft (coral-deep y tombe sous AA) ; le repère coral est le filet. */
+    .pro-coque-lien[aria-current="page"] { background: var(--bg-soft); color: var(--fg-1); box-shadow: inset 3px 0 0 var(--coral); }
+    .pro-coque-nav-sep { height: 1px; background: var(--line-soft); margin: 8px 6px; }
+    .pro-coque-lien:focus-visible { outline: 2px solid var(--coral-deep); outline-offset: 1px; }
+    .pro-coque-contenu { flex: 1; min-width: 0; }
+    .pro-coque-tabs { display: none; }
+    .pro-coque-carte-avenir { text-align: center; padding: 48px 24px; }
+    .pro-coque-carte-avenir .pro-pastille-etat { margin: 14px auto 0; }
+    .pro-pastille-etat {
+      display: inline-block; padding: 4px 12px; border-radius: 999px; font-size: 12px;
+      font-weight: 700; background: var(--bg-soft); color: var(--fg-1);
+    }
+    @media (max-width: 720px) {
+      .pro-coque-nav { display: none; }
+      .pro-coque-corps { display: block; }
+      .pro-coque-barre .pro-coque-titre { display: none; }
+      body.pro-coque-actif main { padding-bottom: 76px; }
+      .pro-coque-tabs {
+        display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: 30;
+        background: var(--bg-surface); border-top: 1px solid var(--line-soft);
+        padding: 4px 4px calc(4px + env(safe-area-inset-bottom, 0px));
+      }
+      .pro-coque-tab {
+        flex: 1; text-align: center; padding: 8px 2px; border-radius: 10px;
+        font-size: 11px; font-weight: 700; color: var(--fg-2); text-decoration: none;
+        min-height: 44px; display: flex; flex-direction: column; align-items: center;
+        justify-content: center;
+      }
+      .pro-coque-tab[aria-current="page"] { color: var(--fg-1); box-shadow: inset 0 3px 0 var(--coral); }
+    }
+
+    .pro-t-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 16px; }
+    .pro-t-tuiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 0 0 18px; }
+    .pro-t-tuile {
+      background: var(--bg-surface); border: 1px solid var(--line-soft); border-radius: 16px;
+      padding: 16px; min-width: 0;
+    }
+    .pro-t-tuile-libelle { margin: 0; font-size: 13px; font-weight: 600; color: var(--fg-2); }
+    .pro-t-tuile-valeur { margin: 6px 0 2px; font-size: 28px; font-weight: 800; color: var(--fg-1); letter-spacing: -0.5px; }
+    .pro-t-tuile-note { margin: 0; font-size: 12px; color: var(--fg-2); }
+    .pro-t-alerte {
+      display: flex; gap: 12px; align-items: center; flex-wrap: wrap; background: var(--bg-soft);
+      border-radius: 14px; padding: 14px 16px; margin: 0 0 18px;
+    }
+    .pro-t-alerte p { margin: 0; flex: 1; min-width: 200px; font-size: 14px; color: var(--fg-1); }
+    .pro-t-grille { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+    .pro-t-entete-carte { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+    .pro-t-ligne {
+      display: flex; gap: 12px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--line-soft);
+    }
+    .pro-t-ligne:last-child { border-bottom: none; }
+    .pro-t-ligne .pro-a-vignette { flex: 0 0 56px; width: 56px; height: 56px; }
+    .pro-t-ligne-texte { flex: 1; min-width: 0; }
+    .pro-t-ligne-texte p { margin: 2px 0 0; font-size: 13px; color: var(--fg-2); }
+    .pro-t-vues { font-size: 13px; color: var(--fg-2); white-space: nowrap; }
+    .pro-t-traiter { display: flex; gap: 12px; align-items: baseline; padding: 10px 0; border-bottom: 1px solid var(--line-soft); }
+    .pro-t-traiter:last-child { border-bottom: none; }
+    .pro-t-traiter strong { font-size: 22px; min-width: 28px; }
+    .pro-t-traiter p { margin: 2px 0 0; font-size: 13px; color: var(--fg-2); }
+    .pro-t-recap { background: var(--bg-soft); }
+    .pro-t-recap p { color: var(--fg-1); }
+    @media (max-width: 720px) {
+      .pro-t-tuiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .pro-t-grille { grid-template-columns: minmax(0, 1fr); }
+      .pro-t-tuile-valeur { font-size: 24px; }
+    }
+
+    .pro-s-entete { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; }
+    .pro-s-entete .pro-bouton-primaire { width: auto; padding: 0 20px; }
+    .pro-s-onglets { display: flex; gap: 6px; flex-wrap: wrap; margin: 6px 0 14px; border-bottom: 1px solid var(--line-soft); }
+    .pro-s-onglet {
+      min-height: 44px; padding: 0 14px; border: none; background: none; font-family: inherit;
+      font-size: 15px; font-weight: 600; color: var(--fg-2); cursor: pointer; border-bottom: 2px solid transparent;
+    }
+    .pro-s-onglet[aria-selected="true"] { color: var(--coral-deep); border-bottom-color: var(--coral); }
+    .pro-s-onglet:focus-visible, .pro-s-menu-bouton:focus-visible, .pro-s-menu button:focus-visible {
+      outline: 2px solid var(--coral-deep); outline-offset: 1px;
+    }
+    .pro-s-outils { display: flex; gap: 10px; margin: 0 0 12px; }
+    .pro-s-outils .pro-input { max-width: 320px; }
+    .pro-s-outils select.pro-input { max-width: 200px; }
+    .pro-s-tete, .pro-s-ligne {
+      display: grid; grid-template-columns: 64px minmax(0, 2.4fr) minmax(0, 1.1fr) minmax(0, 1.3fr) 64px 64px 64px 48px;
+      gap: 12px; align-items: center;
+    }
+    .pro-s-tete { font-size: 12px; font-weight: 700; color: var(--fg-2); padding: 0 0 8px; border-bottom: 1px solid var(--line-soft); }
+    .pro-s-ligne { padding: 12px 0; border-bottom: 1px solid var(--line-soft); font-size: 14px; position: relative; }
+    .pro-s-ligne > span { min-width: 0; }
+    .pro-s-meta { display: block; margin-top: 2px; font-size: 13px; color: var(--fg-2); }
+    .pro-s-chiffre { text-align: right; font-variant-numeric: tabular-nums; }
+    .pro-s-pastilles { display: flex; flex-wrap: wrap; gap: 4px; }
+    .pro-s-pastille {
+      display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 700;
+      background: var(--bg-soft); color: var(--fg-1);
+    }
+    .pro-s-pastille--ok { background: var(--bg-soft); color: var(--fg-1); }
+    /* rgba = --coral-deep (#E84D4D) à 12 %, texte --fg-1 : coral-deep y tombe sous AA
+       (recette de organisateur.mjs, retour @design-keeper du lot 3). */
+    .pro-s-pastille--alerte { background: rgba(232, 77, 77, 0.12); color: var(--fg-1); }
+    .pro-s-pastille--neutre { background: var(--line-soft); color: var(--fg-2); }
+    .pro-s-menu-bouton {
+      width: 44px; height: 44px; border-radius: 12px; border: 1px solid var(--line-medium);
+      background: var(--bg-surface); font-size: 18px; font-weight: 800; color: var(--fg-1); cursor: pointer;
+    }
+    .pro-s-menu {
+      position: absolute; right: 0; top: 56px; z-index: 25; min-width: 200px; padding: 6px;
+      background: var(--bg-surface); border: 1px solid var(--line-medium); border-radius: 14px;
+      box-shadow: 0 8px 24px rgba(68, 44, 46, 0.12);
+    }
+    .pro-s-menu[hidden] { display: none; }
+    .pro-s-menu button {
+      display: block; width: 100%; min-height: 44px; text-align: left; padding: 0 12px; border: none;
+      background: none; border-radius: 10px; font-family: inherit; font-size: 14px; color: var(--fg-1); cursor: pointer;
+    }
+    .pro-s-menu button:hover { background: var(--bg-app); }
+    .pro-s-menu .pro-a-danger { color: var(--coral-deep); }
+    .pro-s-sous-ligne { grid-column: 1 / -1; }
+    .pro-s-sous-ligne:empty { display: none; }
+    .pro-s-motif { display: block; margin-top: 4px; font-size: 13px; color: var(--fg-1); }
+    .pro-s-libelle-mobile { display: none; }
+    @media (max-width: 720px) {
+      .pro-s-tete { display: none; }
+      .pro-s-ligne { grid-template-columns: 56px minmax(0, 1fr) 44px; }
+      .pro-s-ligne .pro-s-col-quand, .pro-s-ligne .pro-s-col-etat { grid-column: 2 / 3; }
+      .pro-s-ligne .pro-s-chiffre { display: none; }
+      .pro-s-ligne .pro-s-col-menu { grid-column: 3; grid-row: 1; }
+      .pro-s-libelle-mobile { display: inline; }
+      .pro-s-outils { flex-direction: column; }
+      .pro-s-outils .pro-input, .pro-s-outils select.pro-input { max-width: none; }
+    }
+
+    .pro-f-grille { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+    .pro-f-actions-haut { display: flex; gap: 10px; flex-wrap: wrap; margin: 0 0 14px; }
+    .pro-f-actions-haut .pro-bouton-secondaire, .pro-f-colonne .pro-bouton-secondaire { width: auto; padding: 0 18px; min-height: 44px; }
+    .pro-f-fiche { margin: 0; }
+    .pro-f-fiche dt { font-size: 12px; font-weight: 700; color: var(--fg-2); margin: 12px 0 2px; }
+    .pro-f-fiche dd { margin: 0; font-size: 15px; color: var(--fg-1); line-height: 1.5; white-space: pre-line; overflow-wrap: anywhere; }
+    .pro-f-histo { list-style: none; margin: 0; padding: 0; }
+    .pro-f-histo li { padding: 10px 0; border-bottom: 1px solid var(--line-soft); }
+    .pro-f-histo li:last-child { border-bottom: none; }
+    .pro-f-histo p { margin: 2px 0 0; font-size: 13px; color: var(--fg-2); }
+    .pro-f-chiffres { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .pro-f-chiffres strong { display: block; font-size: 24px; font-weight: 800; }
+    .pro-f-chiffres span { font-size: 13px; color: var(--fg-2); }
+    .pro-f-colonne .pro-bouton-secondaire { display: block; width: 100%; margin: 0 0 10px; }
+    .pro-f-bandeau { background: var(--bg-soft); border-radius: 14px; padding: 12px 16px; margin: 0 0 14px; color: var(--fg-1); font-size: 14px; }
+    @media (max-width: 720px) {
+      .pro-f-grille { grid-template-columns: minmax(0, 1fr); }
+    }
+
+    .pro-p-logo { display: flex; gap: 16px; align-items: center; margin: 0 0 16px; flex-wrap: wrap; }
+    .pro-p-logo-cadre {
+      width: 88px; height: 88px; border-radius: 18px; background: var(--bg-soft); overflow: hidden; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; color: var(--coral-deep); font-weight: 800; font-size: 24px;
+    }
+    .pro-p-logo-cadre img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .pro-p-bandeau { background: var(--bg-soft); border-radius: 14px; padding: 14px 16px; margin: 0 0 16px; }
+    .pro-p-bandeau p { margin: 0 0 6px; font-size: 14px; color: var(--fg-1); line-height: 1.5; }
+    .pro-p-bandeau p:last-child { margin: 0; }
+    .pro-p-ligne { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line-soft); flex-wrap: wrap; }
+    .pro-p-ligne:last-child { border-bottom: none; }
+    .pro-p-ligne > div { flex: 1; min-width: 200px; }
+    .pro-p-ligne p { margin: 2px 0 0; font-size: 13px; color: var(--fg-2); }
+    .pro-p-ligne .pro-bouton-secondaire { width: auto; padding: 0 16px; min-height: 44px; }
+    .pro-p-case { display: flex; gap: 10px; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid var(--line-soft); cursor: pointer; }
+    .pro-p-case:last-of-type { border-bottom: none; }
+    .pro-p-case input { width: 22px; height: 22px; margin: 2px 0 0; flex-shrink: 0; accent-color: var(--coral); }
+    .pro-p-case input:focus-visible { outline: 2px solid var(--coral-deep); outline-offset: 1px; }
+    .pro-p-case span { font-size: 15px; font-weight: 600; color: var(--fg-1); }
+    .pro-p-case small { display: block; font-size: 13px; font-weight: 400; color: var(--fg-2); margin-top: 2px; }
 
   </style>
 </head>
@@ -1453,6 +1639,14 @@
         );
         return;
       }
+      if (compte.status === 'closed') {
+        afficheEtatSimple(
+          'Espace fermé',
+          ['Votre espace pro a été fermé. Pour le rouvrir, écrivez à <a href="mailto:' + ech(CONTACT) + '">' + ech(CONTACT) + '</a>.'],
+          null
+        );
+        return;
+      }
       if (compte.status === 'refused') {
         var motif = compte.refusalReason && compte.refusalReason.trim() ? compte.refusalReason : 'Motif non précisé.';
         afficheEtatSimple(
@@ -1514,78 +1708,14 @@
 
   // ── Tableau de bord (vérifié) ────────────────────────────────────────
 
-  // L'écran d'accueil, la page de dépôt et l'écran de réussite vivent dans
-  // ./pro-ecrans.mjs. Ici, on pose seulement le compte en mémoire, on câble le
-  // routage une fois, et on rend.
+  // Les écrans de la coque vivent dans ./pro-ecrans.mjs et ses voisins (lot 3).
+  // Ici, on pose le compte en mémoire, on vide les données (un mot de passe
+  // vient peut-être d'être défini), on câble le routage une fois, et on rend.
   function afficheDashboard(compte) {
     compteCourant = compte;
+    oublieDonnees();
     if (!routageCable) { cableRoutage(); routageCable = true; }
     rendEcran();
-  }
-
-  function chargeMesSorties() {
-    var zone = document.getElementById('pro-liste-sorties');
-    appelApi('dashboard', {}, true).then(function (resultat) {
-      if (!resultat.ok || !resultat.data) {
-        zone.innerHTML = '<p class="pro-note">Impossible de charger vos sorties pour le moment.</p>';
-        return;
-      }
-      var activites = resultat.data.activities || [];
-      var enAttente = resultat.data.pending_submissions || [];
-      var html = '';
-      if (activites.length === 0) {
-        html += '<p class="pro-note">Aucune sortie rattachée à votre espace pour le moment.</p>';
-      } else {
-        html += '<ul class="pro-liste-sorties">';
-        for (var i = 0; i < activites.length; i++) {
-          var a = activites[i];
-          // dateLabel est rendu par le serveur, qui seul connaît toutes les
-          // occurrences de la fiche. Repli sur startsAt : une réponse d'un
-          // serveur plus ancien ne doit pas vider la colonne.
-          var quand = a.dateLabel || (a.startsAt ? formateDateFr(a.startsAt) + ' à ' + formateHeureFr(a.startsAt) : '');
-          html += '<li class="pro-item-sortie pro-ligne-resultat pro-a-ligne">' + vignetteAfficheHtml(a, false) + '<span><strong>' + ech(a.title) + '</strong> — ' + ech(libelleKind(a.kind));
-          if (quand) html += ' — ' + ech(quand);
-          if (a.city) html += ' — ' + ech(a.city);
-          html += '</span>';
-          // Un lieu (kind='place') rattaché par un admin n'a pas de formulaire
-          // de correction organisateur — update_event le refuse côté serveur
-          // (409 activity_not_event) : le bouton n'apparaît donc que sur un
-          // événement, jamais sur un lieu.
-          html += '<span class="pro-ligne-boutons">';
-          if (a.kind === 'event') {
-            html += '<button type="button" class="pro-bouton-secondaire pro-bouton-modifier" data-id="' + ech(a.id) + '" style="width:auto; padding:0 16px; height:44px">Modifier</button>';
-          }
-          // « Retirer l'affiche » (lot 2 « affiche gérable », v2) : seulement
-          // quand une affiche est en ligne ; le panneau s'ouvre SOUS la ligne.
-          html += boutonRetraitAfficheHtml(a);
-          html += '</span><div class="pro-a-sous-ligne"></div></li>';
-        }
-        html += '</ul>';
-      }
-      if (enAttente.length > 0) {
-        html += '<p class="pro-souscarte-titre">En attente de relecture</p><ul class="pro-liste-sorties">';
-        for (var j = 0; j < enAttente.length; j++) {
-          var e = enAttente[j];
-          html += '<li class="pro-item-sortie">' + ech(e.title) + ' — déposée le ' + ech(formateDateFr(e.createdAt)) + '</li>';
-        }
-        html += '</ul>';
-      }
-      zone.innerHTML = html;
-
-      sortiesConnues = {};
-      for (var k = 0; k < activites.length; k++) { sortiesConnues[activites[k].id] = activites[k]; }
-      var boutons = zone.querySelectorAll('.pro-bouton-modifier');
-      for (var m = 0; m < boutons.length; m++) {
-        boutons[m].addEventListener('click', function (event) {
-          var id = event.currentTarget.getAttribute('data-id');
-          ouvreCorrection(sortiesConnues[id]);
-        });
-      }
-      poseVignettes(zone, sortiesConnues);
-      cableRetraitsListe(zone, sortiesConnues);
-    }).catch(function () {
-      zone.innerHTML = '<p class="pro-note">Impossible de charger vos sorties pour le moment.</p>';
-    });
   }
 
 
@@ -3064,26 +3194,60 @@
 
   // ── Écrans et routage ────────────────────────────────────────────────
   var ROUTE_ACCUEIL = '#/';
+  var ROUTE_SORTIES = '#/sorties';
   var ROUTE_DEPOT = '#/depot';
   var ROUTE_DEPOSE = '#/depose';
+  var ROUTE_LIEU = '#/lieu';
+  var ROUTE_STATS = '#/stats';
+  var ROUTE_MISE_EN_AVANT = '#/mise-en-avant';
+  var ROUTE_PARAMETRES = '#/parametres';
+  var PREFIXE_SORTIE = '#/sortie/';
+  var PREFIXE_MODIFIER = '#/modifier/';
 
   // Compte vérifié en mémoire. Sans lui, aucune route ne rend d'écran privé.
   var compteCourant = null;
-  // La sortie en cours de correction, et ce qui vient d'être déposé. Un
-  // fragment ne les transporte pas : vidés, la route retombe sur l'accueil.
+  // La sortie en cours de correction, ce qui vient d'être déposé, et le modèle
+  // d'un dépôt « Dupliquer ». Un fragment ne les transporte pas.
   var sortieACorriger = null;
   var dernierDepot = null;
+  var brouillonDepot = null;
+  // Réponse de 'dashboard' partagée par les écrans ; vidée après toute écriture.
+  var tableauDeBordCache = null;
+  var statsCache = {};
+  var jetonEcran = 0;
+
+  // Id de fiche lu dans le fragment : borné et restreint, jamais injecté brut.
+  function idDepuisFragment(brut) {
+    var id = '';
+    try { id = decodeURIComponent(brut || ''); } catch (e) { id = ''; }
+    return /^[A-Za-z0-9_.:-]{1,200}$/.test(id) ? id : null;
+  }
 
   function routeCourante() {
     var h = window.location.hash || '';
-    if (h === ROUTE_DEPOT) return ROUTE_DEPOT;
-    if (h === ROUTE_DEPOSE) return ROUTE_DEPOSE;
-    return ROUTE_ACCUEIL;
+    if (h === ROUTE_SORTIES) return { nom: 'sorties' };
+    if (h === ROUTE_DEPOT) return { nom: 'depot' };
+    if (h === ROUTE_DEPOSE) return { nom: 'depose' };
+    if (h === ROUTE_LIEU) return { nom: 'lieu' };
+    if (h === ROUTE_STATS) return { nom: 'stats' };
+    if (h === ROUTE_MISE_EN_AVANT) return { nom: 'avant' };
+    if (h === ROUTE_PARAMETRES) return { nom: 'parametres' };
+    if (h.indexOf(PREFIXE_SORTIE) === 0) {
+      var idS = idDepuisFragment(h.slice(PREFIXE_SORTIE.length));
+      return idS ? { nom: 'sortie', id: idS } : { nom: 'sorties' };
+    }
+    if (h.indexOf(PREFIXE_MODIFIER) === 0) {
+      var idM = idDepuisFragment(h.slice(PREFIXE_MODIFIER.length));
+      return idM ? { nom: 'modifier', id: idM } : { nom: 'sorties' };
+    }
+    return { nom: 'tableau' };
   }
 
+  function routeSortie(id) { return PREFIXE_SORTIE + encodeURIComponent(id); }
+  function routeModifier(id) { return PREFIXE_MODIFIER + encodeURIComponent(id); }
+
   /** Pose le fragment SANS déclencher le routeur — la navigation appelle
-   *  rendEcran() elle-même. Poser un fragment identique n'émettrait de toute
-   *  façon aucun hashchange : c'est exactement le bouton mort qu'on évite. */
+   *  rendEcran() elle-même. */
   function poseRoute(route) {
     if (window.location.hash !== route) {
       if (window.history && window.history.pushState) {
@@ -3099,9 +3263,10 @@
     rendEcran();
   }
 
-  /** Normalise le fragment quand on rend un écran hors-route (connexion,
-   *  clause, demande, états). Sans ça, l'URL continue d'afficher #/depot. */
+  /** Normalise le fragment et retire la coque quand on rend un écran hors
+   *  route (connexion, clause, demande, états). */
   function quitteRoutes() {
+    document.body.classList.remove('pro-coque-actif');
     if (window.location.hash && window.location.hash !== ROUTE_ACCUEIL) {
       if (window.history && window.history.replaceState) {
         window.history.replaceState(null, '', window.location.pathname + window.location.search);
@@ -3110,21 +3275,25 @@
   }
 
   /** LE point de rendu unique. Appelé par l'amorçage, par chaque geste de
-   *  navigation, et par hashchange. La garde vit ici et nulle part ailleurs. */
+   *  navigation, et par hashchange/popstate. La garde vit ici. */
   function rendEcran() {
     if (!compteCourant) { quitteRoutes(); return; }
+    jetonEcran += 1;
+    window.scrollTo(0, 0);
     var route = routeCourante();
 
-    if (route === ROUTE_DEPOSE) {
+    if (route.nom === 'depose') {
       if (!dernierDepot) { vaVers(ROUTE_ACCUEIL); return; }
       afficheReussite();
       return;
     }
-    if (route === ROUTE_DEPOT) {
-      afficheEcranDepot();
-      return;
-    }
-    afficheAccueilCompte();
+    if (route.nom === 'depot') { sortieACorriger = null; afficheEcranDepot(); return; }
+    if (route.nom === 'modifier') { ouvreModifier(route.id); return; }
+    if (route.nom === 'sortie') { afficheUneSortie(route.id); return; }
+    if (route.nom === 'sorties') { afficheMesSorties(); return; }
+    if (route.nom === 'lieu' || route.nom === 'stats' || route.nom === 'avant') { afficheAVenir(route.nom); return; }
+    if (route.nom === 'parametres') { afficheParametres(); return; }
+    afficheTableauDeBord();
   }
 
   function cableRoutage() {
@@ -3132,85 +3301,131 @@
     window.addEventListener('popstate', function () { rendEcran(); });
   }
 
-  // ── Accueil du compte ────────────────────────────────────────────────
-  function afficheAccueilCompte() {
-    sortieACorriger = null;
-    app.innerHTML =
-      '<p class="pro-eyebrow">Espace pro / asso</p>' +
-      '<h1>' + ech(compteCourant.structureName) + '</h1>' +
-      '<div class="pro-e-chiffres">' +
-        '<p class="pro-souscarte-titre" style="margin-top:14px">Vos chiffres</p>' +
-        '<p>Bientôt\u00a0: le nombre de vues et de familles intéressées.</p>' +
-      '</div>' +
-      '<div class="pro-carte">' +
-        '<h2>Mes sorties</h2>' +
-        '<p class="pro-sous-titre">Les sorties rattachées à votre espace. Un administrateur Urson les y rattache.</p>' +
-        '<div id="pro-liste-sorties"></div>' +
-      '</div>' +
-      '<div class="pro-e-actions">' +
-        '<button type="button" class="pro-bouton-primaire" id="pro-e-vers-depot">Déposer une activité</button>' +
-      '</div>' +
-      '<div class="pro-e-liens" style="margin-top:22px">' +
-        '<button type="button" class="pro-lien-retour" id="pro-lien-mot-de-passe">' +
-          (compteCourant.hasPassword === true ? 'Changer le mot de passe' : 'Choisir un mot de passe') +
-        '</button>' +
-        '<button type="button" class="pro-lien-retour" id="pro-lien-deconnexion">Se déconnecter</button>' +
-      '</div>';
+  /** Vrai tant que l'écran qui a lancé un chargement est encore affiché. */
+  function ecranCourant(jeton) { return jeton === jetonEcran; }
 
-    document.getElementById('pro-lien-mot-de-passe').addEventListener('click', function () {
-      afficheChoixMotDePasse(compteCourant, { depuisEspace: true });
-    });
-
-    document.getElementById('pro-e-vers-depot').addEventListener('click', function () {
-      sortieACorriger = null;
-      vaVers(ROUTE_DEPOT);
-    });
-    document.getElementById('pro-lien-deconnexion').addEventListener('click', function () {
-      // Portée locale : le défaut global de supabase-js déconnecterait aussi
-      // l'app mobile de l'organisateur (piège #550).
-      sb.auth.signOut({ scope: 'local' }).then(function () {
-        compteCourant = null;
-        dernierDepot = null;
-        sortieACorriger = null;
-        quitteRoutes();
-        afficheDemande();
+  /** Tout lien interne rendu avec data-route navigue par vaVers. */
+  function cableLiensRoute(racine) {
+    var liens = racine.querySelectorAll('[data-route]');
+    for (var i = 0; i < liens.length; i++) {
+      liens[i].addEventListener('click', function (event) {
+        event.preventDefault();
+        // Un lien peut aussi choisir l'onglet de « Mes sorties » (« À traiter »).
+        var onglet = event.currentTarget.getAttribute('data-onglet');
+        if (onglet && event.currentTarget.getAttribute('data-route') === ROUTE_SORTIES) ongletSorties = onglet;
+        vaVers(event.currentTarget.getAttribute('data-route'));
       });
-    });
-    chargeMesSorties();
+    }
   }
 
-  // ── Page de dépôt ────────────────────────────────────────────────────
+  function contenuCoque() { return document.getElementById('pro-coque-contenu'); }
+
+  // ── Données partagées ────────────────────────────────────────────────
+  function chargeTableauDeBord(force) {
+    if (tableauDeBordCache && !force) return Promise.resolve(tableauDeBordCache);
+    return appelApi('dashboard', {}, true).then(function (resultat) {
+      if (!resultat.ok || !resultat.data) return null;
+      tableauDeBordCache = resultat.data;
+      sortiesConnues = {};
+      var acts = resultat.data.activities || [];
+      for (var i = 0; i < acts.length; i++) { sortiesConnues[acts[i].id] = acts[i]; }
+      return tableauDeBordCache;
+    }).catch(function () { return null; });
+  }
+
+  function chargeStats(periode) {
+    if (statsCache[periode]) return Promise.resolve(statsCache[periode]);
+    return appelApi('stats', { period: periode }, true).then(function (resultat) {
+      if (!resultat.ok || !resultat.data) return null;
+      statsCache[periode] = resultat.data;
+      return resultat.data;
+    }).catch(function () { return null; });
+  }
+
+  /** Après toute écriture : le prochain écran relit le serveur. */
+  function oublieDonnees() {
+    tableauDeBordCache = null;
+    statsCache = {};
+  }
+
+  function statsParSortie(stats) {
+    var index = {};
+    var lignes = stats && stats.activities ? stats.activities : [];
+    for (var i = 0; i < lignes.length; i++) { index[lignes[i].activity_id] = lignes[i]; }
+    return index;
+  }
+
+  function erreurChargementHtml() {
+    return '<p class="pro-note">Impossible de charger votre espace pour le moment. Rechargez la page dans un instant.</p>';
+  }
+
+  // ── Écrans « à venir » ───────────────────────────────────────────────
+  var TEXTES_A_VENIR = {
+    lieu: ['Mon lieu', 'Bientôt, vous pourrez présenter votre lieu (adresse, horaires, photos) et y rattacher vos sorties.'],
+    stats: ['Statistiques', 'Bientôt, le détail des consultations, des favoris et des « j’y vais » de chaque sortie, semaine après semaine.'],
+    avant: ['Mise en avant', 'Bientôt, vous pourrez placer une sortie en tête de l’accueil ou des résultats pour une durée choisie.']
+  };
+
+  function afficheAVenir(section) {
+    var t = TEXTES_A_VENIR[section];
+    envelopeCoque(section, carteAVenirHtml(t[0], t[1]));
+  }
+
+  // ── Dépôt et correction ──────────────────────────────────────────────
   function afficheEcranDepot() {
     var estEdition = sortieACorriger !== null;
-    app.innerHTML =
-      '<p style="margin:0 0 14px"><button type="button" class="pro-lien-retour" id="pro-e-retour">\u2190 Mon espace</button></p>' +
+    var modele = estEdition ? null : brouillonDepot;
+    envelopeCoque(null,
+      '<p style="margin:0 0 14px"><button type="button" class="pro-lien-retour" id="pro-e-retour">\u2190 ' +
+        (estEdition ? 'Retour à la sortie' : 'Mes sorties') + '</button></p>' +
       '<p class="pro-eyebrow">Espace pro / asso</p>' +
       '<h1 id="pro-depot-titre-carte">' + (estEdition ? 'Modifier la sortie' : 'Déposer une activité') + '</h1>' +
-      '<p class="pro-sous-titre" id="pro-depot-soustitre">' +
-        (estEdition ? 'La correction est relue avant application.' : 'Cinq questions. Elle est relue avant publication.') +
-      '</p>' +
-      '<div id="pro-depot-zone"></div>';
+      '<p class="pro-sous-titre" id="pro-depot-soustitre"></p>' +
+      (modele ? '<p class="pro-e-note">Copie de « ' + ech(modele.title) + ' » : choisissez les nouvelles dates, le reste est déjà rempli.</p>' : '') +
+      '<div id="pro-depot-zone"></div>');
 
+    var retourId = estEdition ? sortieACorriger.id : null;
     document.getElementById('pro-e-retour').addEventListener('click', function () {
-      vaVers(ROUTE_ACCUEIL);
+      vaVers(retourId ? routeSortie(retourId) : ROUTE_SORTIES);
     });
-    afficheFormulaireEvenement(estEdition ? 'update' : 'create', sortieACorriger);
+    afficheFormulaireEvenement(estEdition ? 'update' : 'create', sortieACorriger, modele);
   }
 
-  /** Appelé par le bouton « Modifier » de la liste des sorties. */
+  /** « Modifier » : la ligne déjà chargée, sinon le dashboard relu par l'id. */
   function ouvreCorrection(activite) {
     sortieACorriger = activite;
+    vaVers(routeModifier(activite.id));
+  }
+
+  function ouvreModifier(id) {
+    if (sortieACorriger && sortieACorriger.id === id) { afficheEcranDepot(); return; }
+    var jeton = jetonEcran;
+    envelopeCoque(null, '<p class="pro-etat">Un instant…</p>');
+    chargeTableauDeBord(false).then(function (d) {
+      if (!ecranCourant(jeton)) return;
+      var a = d ? sortiesConnues[id] : null;
+      if (!a || a.kind !== 'event' || a.state === 'withdrawn') { vaVers(ROUTE_SORTIES); return; }
+      sortieACorriger = a;
+      afficheEcranDepot();
+    });
+  }
+
+  /** « Dupliquer » : tout sauf les dates (et l'affiche, qui se redépose). */
+  function dupliqueSortie(a) {
+    brouillonDepot = {
+      title: a.title, category: a.category, locationName: a.locationName, address: a.address,
+      city: a.city, description: a.description, ageMin: a.ageMin, ageMax: a.ageMax,
+      price: a.price, registrationUrl: a.registrationUrl
+    };
+    sortieACorriger = null;
     vaVers(ROUTE_DEPOT);
   }
 
   // ── Écran de réussite ────────────────────────────────────────────────
-  // Patron d'afficheEtatSimple, qui sert déjà « en attente », « refusé » et
-  // « suspendu » : eyebrow, titre, paragraphes, liens texte. Pas de carte de
-  // résumé, pas d'illustration, pas de gros boutons — la pilule pleine est
-  // réservée aux formulaires actifs sur cette page.
   function afficheReussite() {
     var d = dernierDepot;
-    app.innerHTML =
+    oublieDonnees();
+    envelopeCoque(null,
       '<p class="pro-eyebrow">Espace pro / asso</p>' +
       '<h1>' + (d.correction ? 'C\u2019est envoyé.' : 'C\u2019est déposé.') + '</h1>' +
       '<p class="chapeau">' +
@@ -3219,33 +3434,27 @@
           : 'Un relecteur Urson vérifie la fiche sous un à deux jours. Vous recevrez un e-mail dans les deux cas.') +
       '</p>' +
       '<p class="pro-e-resume">' + ech(resumeDepot(d)) + '</p>' +
-      // Photo jointe : une carte franche (v2 « affiche gérable », retour de
-      // Kevin : « il faut bien lire pour comprendre que l'envoi est effectué »).
-      (d.photo ? carteConfirmationHtml('pro-e-affiche-confirm', 'Affiche reçue', 'Nous la relisons avant de l’afficher sur votre fiche. Vous serez prévenu par e-mail.', null, '') : '') +
+      (d.photo ? carteConfirmationHtml('pro-e-affiche-confirm', 'Affiche reçue', 'Nous la relisons avant de l\u2019afficher sur votre fiche. Vous serez prévenu par e-mail.', null, '') : '') +
       '<div class="pro-e-liens">' +
         '<button type="button" class="pro-lien-retour" id="pro-e-encore">Déposer une autre activité</button>' +
-        '<button type="button" class="pro-lien-retour" id="pro-e-espace">Retour à mon espace</button>' +
-      '</div>';
+        '<button type="button" class="pro-lien-retour" id="pro-e-espace">Voir mes sorties</button>' +
+      '</div>');
 
     if (d.photo) focaliseConfirmation('pro-e-affiche-confirm');
     document.getElementById('pro-e-encore').addEventListener('click', function () {
       dernierDepot = null;
       sortieACorriger = null;
+      brouillonDepot = null;
       vaVers(ROUTE_DEPOT);
     });
     document.getElementById('pro-e-espace').addEventListener('click', function () {
       dernierDepot = null;
-      vaVers(ROUTE_ACCUEIL);
+      vaVers(ROUTE_SORTIES);
     });
   }
 
-  /** Le résumé tient dans UNE phrase, séparateurs au point médian. Empiler
-   *  titre, catégorie, dates, séances, lieu et photo sur six lignes ferait de
-   *  cet écran le plus dense de la page, quand tous ses voisins tiennent en
-   *  deux phrases.
-   *  La phrase de dates vient de phraseTexteDe (./pro-phrase.mjs), la même
-   *  source que la phrase du formulaire ; le nombre de séances vient du
-   *  SERVEUR, seul à avoir déplié la répétition. */
+  /** Le résumé tient dans UNE phrase ; la phrase de dates vient de
+   *  phraseTexteDe (./pro-phrase.mjs), le nombre de séances du SERVEUR. */
   function resumeDepot(d) {
     var bouts = [];
     if (d.titre) bouts.push(d.titre);
@@ -3262,6 +3471,50 @@
     if (d.photo) bouts.push('photo jointe, relue avant publication');
     return bouts.join(' \u00b7 ') + '.';
   }
+
+  // ── Petits formats partagés par les écrans de la coque ───────────────
+  var MOIS_COURTS = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
+  var JOURS_COURTS = ['dim.', 'lun.', 'mar.', 'mer.', 'jeu.', 'ven.', 'sam.'];
+
+  // Parties Europe/Paris d'un ISO — Date.parse puis un nombre, jamais
+  // new Date(chaîne).
+  function partiesParis(iso) {
+    var ms = iso ? Date.parse(iso) : NaN;
+    if (isNaN(ms)) return null;
+    var p = new Intl.DateTimeFormat('en-GB', {
+      timeZone: 'Europe/Paris', year: 'numeric', month: 'numeric', day: 'numeric',
+      weekday: 'short', hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
+    }).formatToParts(new Date(ms));
+    var o = {};
+    for (var i = 0; i < p.length; i++) { o[p[i].type] = p[i].value; }
+    var jours = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };
+    return { annee: Number(o.year), mois: Number(o.month), jour: Number(o.day), semaine: jours[o.weekday], heure: o.hour + ':' + o.minute };
+  }
+
+  /** « sam. 26 sept. » */
+  function jourCourtFr(iso) {
+    var p = partiesParis(iso);
+    return p ? JOURS_COURTS[p.semaine] + ' ' + p.jour + ' ' + MOIS_COURTS[p.mois - 1] : '';
+  }
+
+  /** « 12 sept. 2026 » */
+  function dateCourteFr(iso) {
+    var p = partiesParis(iso);
+    return p ? p.jour + ' ' + MOIS_COURTS[p.mois - 1] + ' ' + p.annee : '';
+  }
+
+  /** « 10:00 », vide pour une date sans heure (midi par convention, piège #590). */
+  function heureFr(iso) {
+    var p = partiesParis(iso);
+    return p && p.heure !== '12:00' && p.heure !== '00:00' ? p.heure : '';
+  }
+
+  function nombreFr(n) {
+    var s = String(typeof n === 'number' && isFinite(n) ? Math.round(n) : 0);
+    return s.replace(/\B(?=(\d{3})+(?!\d))/g, '\u202f');
+  }
+
+  function pluriel(n, un, plusieurs) { return nombreFr(n) + ' ' + (n > 1 ? plusieurs : un); }
 
 
   // ── Photo jointe (dépôt de sortie ET remplacement d'affiche) ────────
@@ -3440,39 +3693,9 @@
     });
   }
 
-  // ── Tableau de bord : bouton et panneau sous chaque ligne ────────────
-  function boutonRetraitAfficheHtml(a) {
-    if (!afficheEnLigne(a)) return '';
-    return '<button type="button" class="pro-bouton-secondaire pro-a-danger pro-bouton-retirer-affiche" data-id="' + ech(a.id) + '" style="width:auto; padding:0 16px; height:44px">Retirer l’affiche</button>';
-  }
-
-  function cableRetraitsListe(zone, index) {
-    var boutons = zone.querySelectorAll('.pro-bouton-retirer-affiche');
-    for (var i = 0; i < boutons.length; i++) {
-      boutons[i].addEventListener('click', function (event) {
-        var id = event.currentTarget.getAttribute('data-id');
-        var a = index[id];
-        var ligne = event.currentTarget.closest('li');
-        if (!a || !ligne) return;
-        var sousLigne = ligne.querySelector('.pro-a-sous-ligne');
-        var groupe = ligne.querySelector('.pro-ligne-boutons');
-        afficheRetraitAffiche(sousLigne, a, groupe, function (maj) {
-          var vignette = ligne.querySelector('[data-vignette]');
-          if (vignette) vignette.outerHTML = vignetteAfficheHtml(maj, false);
-          var b = ligne.querySelector('.pro-bouton-retirer-affiche');
-          if (b) b.parentNode.removeChild(b);
-          if (groupe) groupe.hidden = false;
-          sousLigne.innerHTML = carteConfirmationHtml(
-            'pro-a-confirm-' + maj.id, 'Affiche retirée', 'La fiche reste publiée, sans visuel.',
-            maj.kind === 'event' ? 'pro-a-encore-' + maj.id : null, 'Déposer une autre affiche'
-          );
-          var encore = document.getElementById('pro-a-encore-' + maj.id);
-          if (encore) encore.addEventListener('click', function () { ouvreCorrection(maj); });
-          focaliseConfirmation('pro-a-confirm-' + maj.id);
-        });
-      });
-    }
-  }
+  // Lot 3 « coque » : le retrait d'affiche depuis la ligne du tableau de bord
+  // (boutonRetraitAfficheHtml / cableRetraitsListe) a laissé la place à la fiche
+  // d'une sortie (./pro-sortie.mjs), qui réutilise afficheRetraitAffiche.
 
   // ── Formulaire « Modifier » : l'affiche actuelle en tête de la question photo ──
   function blocAfficheActuelleHtml(a) {
@@ -3511,18 +3734,1386 @@
   }
 
 
+  // ── Sections de la coque ──────────────────────────────────────────────
+  var SECTIONS_COQUE = [
+    ['tableau', ROUTE_ACCUEIL, 'Tableau de bord'],
+    ['sorties', ROUTE_SORTIES, 'Mes sorties'],
+    ['lieu', ROUTE_LIEU, 'Mon lieu'],
+    ['stats', ROUTE_STATS, 'Statistiques'],
+    ['avant', ROUTE_MISE_EN_AVANT, 'Mise en avant'],
+    ['parametres', ROUTE_PARAMETRES, 'Paramètres']
+  ];
+  var TABS_BAS_COQUE = [
+    ['tableau', ROUTE_ACCUEIL, 'Accueil'],
+    ['sorties', ROUTE_SORTIES, 'Sorties'],
+    ['stats', ROUTE_STATS, 'Stats'],
+    ['avant', ROUTE_MISE_EN_AVANT, 'Mise en avant'],
+    ['parametres', ROUTE_PARAMETRES, 'Plus']
+  ];
+
+  function initialesStructure(nom) {
+    var mots = (nom || '').trim().split(/\s+/).filter(function (m) { return m.length > 0; });
+    if (mots.length === 0) return '?';
+    if (mots.length === 1) return mots[0].slice(0, 2).toUpperCase();
+    return (mots[0].charAt(0) + mots[1].charAt(0)).toUpperCase();
+  }
+
+  function coqueLiensHtml(liste, classe, sectionActive) {
+    var html = '';
+    for (var i = 0; i < liste.length; i++) {
+      var actif = liste[i][0] === sectionActive;
+      html += '<a class="' + classe + '" href="' + liste[i][1] + '" data-route="' + liste[i][1] + '"' +
+        (actif ? ' aria-current="page"' : '') + '>' + ech(liste[i][2]) + '</a>';
+    }
+    return html;
+  }
+
+  function coqueBarreHtml() {
+    var nom = compteCourant && compteCourant.structureName ? compteCourant.structureName : '';
+    return '' +
+      '<header class="pro-coque-barre">' +
+        '<div class="pro-coque-marque">' +
+          '<img src="/assets/urson-icone.png" alt="" width="28" height="28" />' +
+          '<span class="pro-coque-titre">Espace pro / asso</span>' +
+        '</div>' +
+        '<button type="button" class="pro-bouton-primaire" id="pro-coque-deposer">Déposer une activité</button>' +
+        '<span class="pro-coque-pastille" aria-hidden="true">' + ech(initialesStructure(nom)) + '</span>' +
+      '</header>';
+  }
+
+  function coqueNavHtml(sectionActive) {
+    return '' +
+      '<nav class="pro-coque-nav" aria-label="Espace pro">' +
+        coqueLiensHtml(SECTIONS_COQUE, 'pro-coque-lien', sectionActive) +
+        '<div class="pro-coque-nav-sep" aria-hidden="true"></div>' +
+        '<a class="pro-coque-lien" href="/aide/">Aide</a>' +
+        '<button type="button" class="pro-coque-lien" id="pro-coque-deconnexion" style="text-align:left; border:none; background:none; font-family:inherit; cursor:pointer; width:100%">Se déconnecter</button>' +
+      '</nav>';
+  }
+
+  function coqueTabsHtml(sectionActive) {
+    return '<nav class="pro-coque-tabs" aria-label="Navigation">' + coqueLiensHtml(TABS_BAS_COQUE, 'pro-coque-tab', sectionActive) + '</nav>';
+  }
+
+  /** Point d'entrée unique des écrans vérifiés : pose la coque autour du
+   *  contenu déjà rendu, et câble sa navigation. sectionActive est l'une des
+   *  clés de SECTIONS_COQUE ('tableau', 'sorties', 'lieu', 'stats', 'avant',
+   *  'parametres'), ou null pour dépôt/modifier/une sortie (aucune section de
+   *  la nav ne les représente). */
+  function envelopeCoque(sectionActive, contenuHtml) {
+    document.body.classList.add('pro-coque-actif');
+    app.innerHTML =
+      coqueBarreHtml() +
+      '<div class="pro-coque-corps">' +
+        coqueNavHtml(sectionActive) +
+        '<div class="pro-coque-contenu" id="pro-coque-contenu">' + contenuHtml + '</div>' +
+      '</div>' +
+      coqueTabsHtml(sectionActive);
+    cableCoqueBarre();
+    cableLiensRoute(contenuCoque());
+  }
+
+  function cableCoqueBarre() {
+    var liens = document.querySelectorAll('.pro-coque-lien[data-route], .pro-coque-tab[data-route]');
+    for (var i = 0; i < liens.length; i++) {
+      liens[i].addEventListener('click', function (event) {
+        event.preventDefault();
+        vaVers(event.currentTarget.getAttribute('data-route'));
+      });
+    }
+    document.getElementById('pro-coque-deposer').addEventListener('click', function () {
+      sortieACorriger = null;
+      brouillonDepot = null;
+      vaVers(ROUTE_DEPOT);
+    });
+    document.getElementById('pro-coque-deconnexion').addEventListener('click', function () {
+      // Portée locale : le défaut global de supabase-js déconnecterait aussi
+      // l'app mobile de l'organisateur (piège #550).
+      sb.auth.signOut({ scope: 'local' }).then(function () {
+        compteCourant = null;
+        dernierDepot = null;
+        sortieACorriger = null;
+        brouillonDepot = null;
+        tableauDeBordCache = null;
+        statsCache = {};
+        sortiesConnues = {};
+        quitteRoutes();
+        afficheDemande();
+      });
+    });
+  }
+
+  /** Carte sobre pour les trois écrans « à venir » (Mon lieu, Statistiques,
+   *  Mise en avant) — titre, une phrase, pastille « À venir », rien de plus. */
+  function carteAVenirHtml(titre, phrase) {
+    return '<div class="pro-carte pro-coque-carte-avenir">' +
+      '<h1 style="margin:0 0 8px">' + ech(titre) + '</h1>' +
+      '<p class="pro-sous-titre" style="margin:0">' + ech(phrase) + '</p>' +
+      '<span class="pro-pastille-etat">À venir</span>' +
+    '</div>';
+  }
+
+
+  // ── Tableau de bord ──────────────────────────────────────────────────
+  var periodeTableau = '30d';
+  var PERIODES = [['7d', '7 jours'], ['30d', '30 jours'], ['all', 'Depuis le début']];
+  var PROCHAINES_MAX = 5;
+
+  function afficheTableauDeBord() {
+    var jeton = jetonEcran;
+    envelopeCoque('tableau', '<p class="pro-etat">Un instant…</p>');
+    chargeTableauDeBord(false).then(function (d) {
+      if (!ecranCourant(jeton)) return;
+      if (!d) { contenuCoque().innerHTML = erreurChargementHtml(); return; }
+      rendTableauDeBord(d, jeton);
+    });
+  }
+
+  function rendTableauDeBord(d, jeton) {
+    var c = d.account || {};
+    var acts = d.activities || [];
+    var counts = d.counts || {};
+    var aVenir = sortiesAVenirTriees(acts);
+    var sansAffiche = [];
+    for (var i = 0; i < aVenir.length; i++) {
+      if (aVenir[i].kind === 'event' && !afficheEnLigne(aVenir[i])) sansAffiche.push(aVenir[i]);
+    }
+
+    var html =
+      '<p class="pro-eyebrow">Tableau de bord</p>' +
+      '<h1>Bonjour, ' + ech(c.structure_name) + '.</h1>' +
+      '<p class="pro-sous-titre">' + ech(libelleTypeStructure(c.structure_kind)) +
+        (c.activated_at ? ' \u00b7 espace vérifié le ' + ech(dateCourteFr(c.activated_at)) : '') +
+        ' \u00b7 ' + ech(pluriel(counts.online || 0, 'sortie en ligne', 'sorties en ligne')) + '</p>' +
+      '<div class="pro-t-chips" role="group" aria-label="Période">' + chipsPeriodeHtml() + '</div>' +
+      '<div class="pro-t-tuiles" id="pro-t-tuiles" aria-live="polite">' + tuilesHtml(null, counts) + '</div>';
+
+    if (sansAffiche.length > 0) {
+      var s = sansAffiche[0];
+      html += '<div class="pro-t-alerte" role="status">' +
+        '<p><strong>« ' + ech(s.title) + ' » n’a pas d’affiche.</strong> Les sorties avec un visuel sont plus ouvertes.</p>' +
+        '<a class="pro-lien-retour" href="' + ech(routeSortie(s.id)) + '" data-route="' + ech(routeSortie(s.id)) + '">Ajouter une affiche</a>' +
+      '</div>';
+    }
+
+    html += '<div class="pro-t-grille"><div>' +
+      '<div class="pro-carte">' +
+        '<div class="pro-t-entete-carte"><h2>Prochaines sorties</h2>' +
+        '<a class="pro-lien-retour" href="' + ROUTE_SORTIES + '" data-route="' + ROUTE_SORTIES + '">Toutes mes sorties</a></div>' +
+        '<div id="pro-t-prochaines">' + prochainesHtml(aVenir, null) + '</div>' +
+      '</div></div><div>' +
+      aTraiterHtml(counts, sansAffiche) +
+      '<div class="pro-carte"><div class="pro-t-entete-carte"><h2>Mise en avant</h2><span class="pro-pastille-etat">À venir</span></div>' +
+        '<p class="pro-sous-titre" style="margin:6px 0 0">Bientôt, vous pourrez placer une sortie en tête de l’accueil ou des résultats pour une durée choisie.</p></div>' +
+      '<div class="pro-carte"><div class="pro-t-entete-carte"><h2>Mon lieu</h2><span class="pro-pastille-etat">À venir</span></div>' +
+        '<p class="pro-sous-titre" style="margin:6px 0 0">Présenter votre lieu et y rattacher vos sorties.</p></div>' +
+      '<div class="pro-carte pro-t-recap"><h2>Recevoir un récapitulatif chaque lundi</h2>' +
+        '<p style="margin:0 0 10px">Consultations, favoris et « j’y vais » de la semaine, par e-mail. Réglable dans les paramètres.</p>' +
+        '<a class="pro-lien-retour" href="' + ROUTE_PARAMETRES + '" data-route="' + ROUTE_PARAMETRES + '">' +
+          (c.preferences && c.preferences.weekly_recap ? 'Activé — modifier' : 'Activer') + '</a></div>' +
+      '</div></div>';
+
+    var zone = contenuCoque();
+    zone.innerHTML = html;
+    poseVignettes(zone, sortiesConnues);
+    cableLiensRoute(zone);
+    cableChipsPeriode(zone, counts, aVenir, jeton);
+    chargeTuiles(counts, aVenir, jeton);
+  }
+
+  function chipsPeriodeHtml() {
+    var html = '';
+    for (var i = 0; i < PERIODES.length; i++) {
+      html += '<button type="button" class="pro-pastille" data-periode="' + PERIODES[i][0] + '" aria-pressed="' +
+        (PERIODES[i][0] === periodeTableau ? 'true' : 'false') + '">' + PERIODES[i][1] + '</button>';
+    }
+    return html;
+  }
+
+  function cableChipsPeriode(zone, counts, aVenir, jeton) {
+    var chips = zone.querySelectorAll('[data-periode]');
+    for (var i = 0; i < chips.length; i++) {
+      chips[i].addEventListener('click', function (event) {
+        periodeTableau = event.currentTarget.getAttribute('data-periode');
+        for (var k = 0; k < chips.length; k++) {
+          chips[k].setAttribute('aria-pressed', chips[k].getAttribute('data-periode') === periodeTableau ? 'true' : 'false');
+        }
+        chargeTuiles(counts, aVenir, jeton);
+      });
+    }
+  }
+
+  function chargeTuiles(counts, aVenir, jeton) {
+    var periode = periodeTableau;
+    chargeStats(periode).then(function (stats) {
+      if (!ecranCourant(jeton) || periode !== periodeTableau) return;
+      var tuiles = document.getElementById('pro-t-tuiles');
+      if (tuiles) tuiles.innerHTML = tuilesHtml(stats, counts);
+      var prochaines = document.getElementById('pro-t-prochaines');
+      if (prochaines) {
+        prochaines.innerHTML = prochainesHtml(aVenir, stats);
+        poseVignettes(prochaines, sortiesConnues);
+        cableLiensRoute(prochaines);
+      }
+    });
+  }
+
+  function tuilesHtml(stats, counts) {
+    var t = stats && stats.total ? stats.total : null;
+    var v = function (n) { return t ? nombreFr(n) : '…'; };
+    return tuileHtml('Consultations', v(t && t.views), 'un foyer compté une fois par jour') +
+      tuileHtml('Ajouts en favoris', v(t && t.favorites), 'sur la période') +
+      tuileHtml('Familles « j’y vais »', v(t && t.attendances), 'sur ' + pluriel(counts.upcoming || 0, 'sortie à venir', 'sorties à venir')) +
+      tuileHtml('Clics vers votre site', '—', 'bientôt mesuré');
+  }
+
+  function tuileHtml(libelle, valeur, note) {
+    return '<div class="pro-t-tuile"><p class="pro-t-tuile-libelle">' + ech(libelle) + '</p>' +
+      '<p class="pro-t-tuile-valeur">' + ech(valeur) + '</p><p class="pro-t-tuile-note">' + ech(note) + '</p></div>';
+  }
+
+  function prochainesHtml(aVenir, stats) {
+    if (aVenir.length === 0) return '<p class="pro-note">Aucune sortie à venir. <a class="pro-lien-retour" href="' + ROUTE_DEPOT + '" data-route="' + ROUTE_DEPOT + '">Déposer une activité</a></p>';
+    var parSortie = statsParSortie(stats);
+    var html = '';
+    for (var i = 0; i < aVenir.length && i < PROCHAINES_MAX; i++) {
+      var a = aVenir[i];
+      var st = parSortie[a.id];
+      html += '<div class="pro-t-ligne">' + vignetteAfficheHtml(a, false) +
+        '<div class="pro-t-ligne-texte">' +
+          '<a class="pro-lien-retour" href="' + ech(routeSortie(a.id)) + '" data-route="' + ech(routeSortie(a.id)) + '">' + ech(a.title) + '</a>' +
+          '<p>' + ech(quandCourtSortie(a)) + (a.locationName ? ' \u00b7 ' + ech(a.locationName) : '') + '</p>' +
+          '<div style="margin-top:6px">' + pastillesEtatHtml(a) + '</div>' +
+        '</div>' +
+        '<span class="pro-t-vues">' + (stats ? ech(pluriel(st ? st.views : 0, 'vue', 'vues')) : '') + '</span>' +
+      '</div>';
+    }
+    return html;
+  }
+
+  function aTraiterHtml(counts, sansAffiche) {
+    var lignes = '';
+    if (counts.review > 0) {
+      lignes += '<div class="pro-t-traiter"><strong>' + nombreFr(counts.review) + '</strong><div>' +
+        '<a class="pro-lien-retour" href="' + ROUTE_SORTIES + '" data-route="' + ROUTE_SORTIES + '" data-onglet="review">' +
+        (counts.review > 1 ? 'Propositions en relecture' : 'Proposition en relecture') + '</a>' +
+        '<p>Réponse sous 1 à 2 jours.</p></div></div>';
+    }
+    if (sansAffiche.length > 0) {
+      lignes += '<div class="pro-t-traiter"><strong>' + nombreFr(sansAffiche.length) + '</strong><div>' +
+        '<a class="pro-lien-retour" href="' + ech(routeSortie(sansAffiche[0].id)) + '" data-route="' + ech(routeSortie(sansAffiche[0].id)) + '">' +
+        (sansAffiche.length > 1 ? 'Sorties sans affiche' : 'Sortie sans affiche') + '</a>' +
+        '<p>' + ech(sansAffiche[0].title) + (sansAffiche.length > 1 ? ' et ' + (sansAffiche.length - 1) + ' autre(s)' : '') + '</p></div></div>';
+    }
+    if (!lignes) lignes = '<p class="pro-note" style="margin:6px 0 0">Rien à traiter pour le moment.</p>';
+    return '<div class="pro-carte"><h2>À traiter</h2>' + lignes + '</div>';
+  }
+
+
+  // ── Aides partagées (tableau de bord, mes sorties, une sortie) ───────
+  var TYPES_STRUCTURE = { association: 'Association', entreprise: 'Entreprise', collectivite: 'Collectivité', autre: 'Autre' };
+
+  function libelleTypeStructure(kind) { return TYPES_STRUCTURE[kind] || 'Structure'; }
+
+  function libelleCategorie(cat) {
+    for (var i = 0; i < EVENT_CATEGORIES.length; i++) {
+      if (EVENT_CATEGORIES[i][0] === cat) return EVENT_CATEGORIES[i][1];
+    }
+    return '';
+  }
+
+  function sortiesAVenirTriees(acts) {
+    var liste = [];
+    for (var i = 0; i < acts.length; i++) { if (acts[i].state === 'upcoming') liste.push(acts[i]); }
+    liste.sort(function (a, b) {
+      var x = a.next_occurrence_at || '9999';
+      var y = b.next_occurrence_at || '9999';
+      return x < y ? -1 : x > y ? 1 : 0;
+    });
+    return liste;
+  }
+
+  /** Le jour de la prochaine occurrence (sinon de la dernière), et l'heure. */
+  function quandCourtSortie(a) {
+    var iso = a.next_occurrence_at || a.last_occurrence_at || a.startsAt;
+    if (a.dateLabel) return a.dateLabel;
+    if (!iso) return a.kind === 'place' ? 'Toute l’année' : '';
+    var h = heureFr(iso);
+    return jourCourtFr(iso) + (h ? ' \u00b7 ' + h : '');
+  }
+
+  function agesSortie(a) {
+    var min = typeof a.ageMin === 'number' ? a.ageMin : null;
+    var max = typeof a.ageMax === 'number' ? a.ageMax : null;
+    if (min === null && max === null) return '';
+    if (min !== null && max !== null) return min === max ? min + ' ans' : min + '-' + max + ' ans';
+    return min !== null ? 'dès ' + min + ' ans' : 'jusqu’à ' + max + ' ans';
+  }
+
+  /** Montant tel que stocké, virgule française — mise en forme, jamais un calcul. */
+  function montantFr(v) {
+    if (typeof v !== 'number' || !isFinite(v)) return '';
+    var centimes = Math.round(v * 100);
+    return centimes % 100 === 0 ? String(centimes / 100) : Math.floor(centimes / 100) + ',' + String(centimes % 100).padStart(2, '0');
+  }
+
+  /** La grille telle que le serveur la stocke, sinon sa fourchette. */
+  function libelleTarif(price) {
+    if (!price || typeof price !== 'object') return '';
+    var tiers = Array.isArray(price.tiers) ? price.tiers : [];
+    var bouts = [];
+    for (var i = 0; i < tiers.length; i++) {
+      var t = tiers[i];
+      if (!t || typeof t.amount !== 'number') continue;
+      bouts.push((t.label ? t.label + ' ' : '') + (t.amount === 0 ? 'gratuit' : montantFr(t.amount) + ' \u20ac'));
+    }
+    if (bouts.length === 0) {
+      var min = price.min, max = price.max;
+      if (min === 0 && (max === 0 || max === null || max === undefined)) bouts.push('gratuit');
+      else if (typeof min === 'number' && (max === null || max === undefined || max === min)) bouts.push(montantFr(min) + ' \u20ac');
+      else if (typeof min === 'number' && typeof max === 'number') bouts.push('de ' + montantFr(min) + ' à ' + montantFr(max) + ' \u20ac');
+    }
+    var texte = bouts.join(' \u00b7 ');
+    if (price.notes) texte += (texte ? ', ' : '') + price.notes;
+    return texte;
+  }
+
+  function metaSortie(a) {
+    var bouts = [];
+    var cat = libelleCategorie(a.category);
+    if (cat) bouts.push(cat);
+    var ages = agesSortie(a);
+    if (ages) bouts.push(ages);
+    var tarif = libelleTarif(a.price);
+    if (tarif) bouts.push(tarif);
+    if (a.locationName) bouts.push(a.locationName);
+    return bouts.join(' \u00b7 ');
+  }
+
+  /** Pastilles cumulables, dans l'ordre de la planche. */
+  function pastillesEtatHtml(a) {
+    var p = [];
+    if (a.state === 'withdrawn') p.push(['Retirée', 'neutre']);
+    else if (a.state === 'finished') p.push(['Terminée', 'neutre']);
+    else p.push(['Publiée', 'ok']);
+    if (a.pending_edit) p.push(['Correction en relecture', 'ok']);
+    if (a.state === 'upcoming' && a.kind === 'event' && !afficheEnLigne(a)) p.push(['Sans affiche', 'alerte']);
+    return pastillesHtml(p);
+  }
+
+  function pastillesHtml(liste) {
+    var html = '<span class="pro-s-pastilles">';
+    for (var i = 0; i < liste.length; i++) {
+      html += '<span class="pro-s-pastille pro-s-pastille--' + liste[i][1] + '">' + ech(liste[i][0]) + '</span>';
+    }
+    return html + '</span>';
+  }
+
+  // ── Retrait d'une sortie (espace) ────────────────────────────────────
+  function panneauRetraitSortieHtml(a) {
+    var n = a.attendee_households || 0;
+    return '<div class="pro-a-panneau">' +
+      '<p><strong>Retirer « ' + ech(a.title) + ' »\u00a0?</strong></p>' +
+      '<p class="pro-a-aide">Retirer dépublie la fiche sans délai' +
+        (n === 1 ? ' et prévient la famille inscrite' : n > 1 ? ' et prévient les ' + nombreFr(n) + ' familles inscrites' : '') +
+        '. Rien n’est effacé de votre côté\u00a0: elle reste dans «\u00a0Refusées et retirées\u00a0».</p>' +
+      '<div class="pro-champ"><label class="pro-label" for="pro-r-motif">Motif (facultatif)</label>' +
+        '<textarea class="pro-input" id="pro-r-motif" rows="2" maxlength="500"></textarea></div>' +
+      '<div class="pro-a-actions">' +
+        '<button type="button" class="pro-bouton-secondaire" id="pro-r-annuler">Annuler</button>' +
+        '<button type="button" class="pro-bouton-secondaire pro-a-danger" id="pro-r-confirmer">Retirer la sortie</button>' +
+      '</div>' +
+      '<p class="pro-message" id="pro-r-message" role="status" aria-live="polite"></p>' +
+    '</div>';
+  }
+
+  /** conteneur : où ouvrir le panneau ; apres(n) : succès, n familles prévenues. */
+  function ouvreRetraitSortie(conteneur, a, apres) {
+    conteneur.innerHTML = panneauRetraitSortieHtml(a);
+    document.getElementById('pro-r-annuler').addEventListener('click', function () { conteneur.innerHTML = ''; });
+    document.getElementById('pro-r-confirmer').addEventListener('click', function () {
+      onConfirmeRetraitSortie(conteneur, a, apres);
+    });
+    document.getElementById('pro-r-motif').focus();
+  }
+
+  function onConfirmeRetraitSortie(conteneur, a, apres) {
+    var bouton = document.getElementById('pro-r-confirmer');
+    var messageEl = document.getElementById('pro-r-message');
+    bouton.disabled = true;
+    definirMessage(messageEl, 'Retrait en cours…', false);
+    appelApi('withdraw_event', { activity_id: a.id, reason: document.getElementById('pro-r-motif').value }, true).then(function (resultat) {
+      var erreur = resultat.data && resultat.data.error;
+      if ((resultat.ok && resultat.data && resultat.data.ok) || erreur === 'already_withdrawn') {
+        oublieDonnees();
+        var n = resultat.data && typeof resultat.data.notified_households === 'number' ? resultat.data.notified_households : null;
+        conteneur.innerHTML = carteConfirmationHtml('pro-r-confirm', 'Sortie retirée',
+          (n ? ech(pluriel(n, 'famille inscrite a été prévenue.', 'familles inscrites ont été prévenues.')) + ' ' : '') +
+          'Elle reste dans «\u00a0Refusées et retirées\u00a0».', null, '');
+        focaliseConfirmation('pro-r-confirm');
+        if (apres) apres(n);
+        return;
+      }
+      bouton.disabled = false;
+      definirMessage(messageEl, erreur === 'activity_not_found'
+        ? 'Cette sortie n’est plus rattachée à votre espace.'
+        : 'Le retrait n’a pas abouti, réessayez.', true);
+    }).catch(function () {
+      bouton.disabled = false;
+      definirMessage(messageEl, 'Le retrait n’a pas abouti, réessayez.', true);
+    });
+  }
+
+  // ── Annuler une proposition en relecture (dépôt ou correction) ───────
+  function ouvreAnnulation(conteneur, editId, libelle, apres) {
+    conteneur.innerHTML = '<div class="pro-a-panneau">' +
+      '<p><strong>Annuler ' + ech(libelle) + '\u00a0?</strong></p>' +
+      '<p class="pro-a-aide">Elle ne sera pas relue. Vous pourrez en envoyer une autre.</p>' +
+      '<div class="pro-a-actions">' +
+        '<button type="button" class="pro-bouton-secondaire" id="pro-x-garder">Garder</button>' +
+        '<button type="button" class="pro-bouton-secondaire pro-a-danger" id="pro-x-confirmer">Annuler la proposition</button>' +
+      '</div>' +
+      '<p class="pro-message" id="pro-x-message" role="status" aria-live="polite"></p>' +
+    '</div>';
+    document.getElementById('pro-x-garder').addEventListener('click', function () { conteneur.innerHTML = ''; });
+    document.getElementById('pro-x-confirmer').addEventListener('click', function () {
+      onConfirmeAnnulation(conteneur, editId, apres);
+    });
+  }
+
+  function onConfirmeAnnulation(conteneur, editId, apres) {
+    var bouton = document.getElementById('pro-x-confirmer');
+    var messageEl = document.getElementById('pro-x-message');
+    bouton.disabled = true;
+    definirMessage(messageEl, 'Annulation en cours…', false);
+    appelApi('cancel_edit', { edit_id: editId }, true).then(function (resultat) {
+      var erreur = resultat.data && resultat.data.error;
+      if (resultat.ok && resultat.data && resultat.data.ok) {
+        oublieDonnees();
+        conteneur.innerHTML = carteConfirmationHtml('pro-x-confirm', 'Proposition annulée', 'Elle ne sera pas relue.', null, '');
+        focaliseConfirmation('pro-x-confirm');
+        if (apres) apres();
+        return;
+      }
+      bouton.disabled = false;
+      definirMessage(messageEl, erreur === 'not_pending'
+        ? 'Elle a déjà été relue\u00a0: rechargez la page.'
+        : 'L’annulation n’a pas abouti, réessayez.', true);
+    }).catch(function () {
+      bouton.disabled = false;
+      definirMessage(messageEl, 'L’annulation n’a pas abouti, réessayez.', true);
+    });
+  }
+
+  // ── Mes sorties ──────────────────────────────────────────────────────
+  var ongletSorties = 'upcoming';
+  var triSorties = 'date';
+  var rechercheSorties = '';
+  var ONGLETS_SORTIES = [
+    ['upcoming', 'À venir'], ['review', 'En relecture'], ['finished', 'Terminées'], ['refused', 'Refusées et retirées']
+  ];
+
+  function afficheMesSorties() {
+    var jeton = jetonEcran;
+    envelopeCoque('sorties', '<p class="pro-etat">Un instant…</p>');
+    Promise.all([chargeTableauDeBord(false), chargeStats('30d')]).then(function (r) {
+      if (!ecranCourant(jeton)) return;
+      if (!r[0]) { contenuCoque().innerHTML = erreurChargementHtml(); return; }
+      rendMesSorties(r[0], r[1]);
+    });
+  }
+
+  function rendMesSorties(d, stats) {
+    var counts = d.counts || {};
+    var total = (d.activities || []).length + (d.pending_submissions || []).length + (d.refused_submissions || []).length;
+    var zone = contenuCoque();
+    var onglets = '';
+    var nombres = { upcoming: counts.upcoming, review: counts.review, finished: counts.finished, refused: counts.refused_withdrawn };
+    for (var i = 0; i < ONGLETS_SORTIES.length; i++) {
+      var o = ONGLETS_SORTIES[i];
+      onglets += '<button type="button" role="tab" class="pro-s-onglet" data-onglet="' + o[0] + '" aria-selected="' +
+        (o[0] === ongletSorties ? 'true' : 'false') + '">' + o[1] + ' (' + nombreFr(nombres[o[0]] || 0) + ')</button>';
+    }
+    zone.innerHTML =
+      '<div class="pro-s-entete"><div>' +
+        '<p class="pro-eyebrow">Mes sorties</p>' +
+        '<h1>' + ech(pluriel(total, 'sortie', 'sorties')) + '</h1>' +
+        '<p class="pro-sous-titre">' +
+          ech(pluriel(counts.online || 0, 'en ligne', 'en ligne')) + ' \u00b7 ' +
+          ech(pluriel(counts.review || 0, 'proposition en relecture', 'propositions en relecture')) + ' \u00b7 ' +
+          ech(pluriel(counts.finished || 0, 'terminée', 'terminées')) + ' \u00b7 ' +
+          ech(pluriel(counts.refused_withdrawn || 0, 'refusée ou retirée', 'refusées ou retirées')) + '</p>' +
+      '</div><a class="pro-bouton-primaire" style="display:inline-flex;align-items:center;text-decoration:none" href="' + ROUTE_DEPOT + '" data-route="' + ROUTE_DEPOT + '">Déposer une activité</a></div>' +
+      '<div class="pro-s-onglets" role="tablist" aria-label="Classement des sorties">' + onglets + '</div>' +
+      '<div class="pro-s-outils">' +
+        '<input class="pro-input" type="search" id="pro-s-recherche" placeholder="Rechercher une sortie" aria-label="Rechercher une sortie par son titre" value="' + ech(rechercheSorties) + '" />' +
+        '<select class="pro-input" id="pro-s-tri" aria-label="Trier">' +
+          '<option value="date"' + (triSorties === 'date' ? ' selected' : '') + '>Par date</option>' +
+          '<option value="vues"' + (triSorties === 'vues' ? ' selected' : '') + '>Par consultations</option>' +
+        '</select>' +
+      '</div>' +
+      '<div class="pro-carte" id="pro-s-liste"></div>';
+
+    cableLiensRoute(zone);
+    var boutonsOnglets = zone.querySelectorAll('.pro-s-onglet');
+    for (var k = 0; k < boutonsOnglets.length; k++) {
+      boutonsOnglets[k].addEventListener('click', function (event) {
+        ongletSorties = event.currentTarget.getAttribute('data-onglet');
+        for (var m = 0; m < boutonsOnglets.length; m++) {
+          boutonsOnglets[m].setAttribute('aria-selected', boutonsOnglets[m] === event.currentTarget ? 'true' : 'false');
+        }
+        rendListeSorties(d, stats);
+      });
+    }
+    document.getElementById('pro-s-recherche').addEventListener('input', function (event) {
+      rechercheSorties = event.target.value;
+      rendListeSorties(d, stats);
+    });
+    document.getElementById('pro-s-tri').addEventListener('change', function (event) {
+      triSorties = event.target.value;
+      rendListeSorties(d, stats);
+    });
+    rendListeSorties(d, stats);
+  }
+
+  function normaliseTexte(t) {
+    return String(t || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  }
+
+  /** Lignes de l'onglet courant : sorties (fiches) et dépôts (sans fiche). */
+  function lignesOnglet(d) {
+    var acts = d.activities || [];
+    var lignes = [];
+    for (var i = 0; i < acts.length; i++) {
+      var a = acts[i];
+      if (ongletSorties === 'upcoming' && a.state === 'upcoming') lignes.push({ sortie: a });
+      if (ongletSorties === 'review' && a.pending_edit) lignes.push({ sortie: a });
+      if (ongletSorties === 'finished' && a.state === 'finished') lignes.push({ sortie: a });
+      if (ongletSorties === 'refused' && a.state === 'withdrawn') lignes.push({ sortie: a });
+    }
+    var depots = ongletSorties === 'review' ? d.pending_submissions || [] : ongletSorties === 'refused' ? d.refused_submissions || [] : [];
+    for (var j = 0; j < depots.length; j++) lignes.push({ depot: depots[j], refuse: ongletSorties === 'refused' });
+    return lignes;
+  }
+
+  function rendListeSorties(d, stats) {
+    var parSortie = statsParSortie(stats);
+    var q = normaliseTexte(rechercheSorties.trim());
+    var lignes = lignesOnglet(d).filter(function (l) {
+      return !q || normaliseTexte(l.sortie ? l.sortie.title : l.depot.title).indexOf(q) !== -1;
+    });
+    lignes.sort(function (x, y) {
+      if (triSorties === 'vues') {
+        var vx = x.sortie && parSortie[x.sortie.id] ? parSortie[x.sortie.id].views : -1;
+        var vy = y.sortie && parSortie[y.sortie.id] ? parSortie[y.sortie.id].views : -1;
+        return vy - vx;
+      }
+      var dx = x.sortie ? (x.sortie.next_occurrence_at || x.sortie.last_occurrence_at || '') : (x.depot.createdAt || '');
+      var dy = y.sortie ? (y.sortie.next_occurrence_at || y.sortie.last_occurrence_at || '') : (y.depot.createdAt || '');
+      var sens = ongletSorties === 'upcoming' ? 1 : -1;
+      return dx < dy ? -sens : dx > dy ? sens : 0;
+    });
+
+    var liste = document.getElementById('pro-s-liste');
+    if (lignes.length === 0) {
+      liste.innerHTML = '<p class="pro-note" style="margin:0">' + (q ? 'Aucune sortie ne correspond à cette recherche.' : 'Aucune sortie dans cet onglet.') + '</p>';
+      return;
+    }
+    var html = '<div class="pro-s-tete" aria-hidden="true"><span></span><span>Sortie</span><span>Quand</span><span>État</span>' +
+      '<span class="pro-s-chiffre">Vues 30\u00a0j</span><span class="pro-s-chiffre">Favoris</span><span class="pro-s-chiffre">J’y vais</span><span></span></div>';
+    for (var i = 0; i < lignes.length; i++) html += ligneSortieHtml(lignes[i], parSortie, i);
+    liste.innerHTML = html;
+    poseVignettes(liste, sortiesConnues);
+    cableLiensRoute(liste);
+    cableMenusSorties(liste, lignes);
+  }
+
+  function ligneSortieHtml(l, parSortie, i) {
+    if (l.depot) {
+      var e = l.depot;
+      return '<div class="pro-s-ligne" data-ligne="' + i + '">' +
+        '<span class="pro-a-vignette">' + (l.refuse ? 'Refusée' : 'En relecture') + '</span>' +
+        '<span><strong>' + ech(e.title) + '</strong><span class="pro-s-meta">Déposée le ' + ech(dateCourteFr(e.createdAt)) + '</span>' +
+          (l.refuse ? '<span class="pro-s-motif">Motif\u00a0: ' + ech(e.reason || 'non précisé') + '</span>' : '') + '</span>' +
+        '<span class="pro-s-col-quand">—</span>' +
+        '<span class="pro-s-col-etat">' + pastillesHtml([[l.refuse ? 'Refusée' : 'En relecture', l.refuse ? 'alerte' : 'ok']]) + '</span>' +
+        '<span class="pro-s-chiffre">—</span><span class="pro-s-chiffre">—</span><span class="pro-s-chiffre">—</span>' +
+        '<span class="pro-s-col-menu">' + (l.refuse ? '' : menuSortieHtml(i, [['annuler-depot', 'Annuler le dépôt', true]])) + '</span>' +
+        '<div class="pro-s-sous-ligne"></div>' +
+      '</div>';
+    }
+    var a = l.sortie;
+    var st = parSortie[a.id];
+    var chiffre = function (n) { return st ? nombreFr(n) : '—'; };
+    var entrees = [];
+    if (a.kind === 'event' && a.state === 'upcoming') entrees.push(['modifier', 'Modifier', false]);
+    entrees.push(['affiche', 'Affiche…', false]);
+    if (a.kind === 'event') entrees.push(['dupliquer', 'Dupliquer', false]);
+    entrees.push(['stats', 'Statistiques', false]);
+    if (a.state !== 'withdrawn') entrees.push(['retirer', 'Retirer la sortie', true]);
+    return '<div class="pro-s-ligne" data-ligne="' + i + '">' +
+      vignetteAfficheHtml(a, false) +
+      '<span><a class="pro-lien-retour" href="' + ech(routeSortie(a.id)) + '" data-route="' + ech(routeSortie(a.id)) + '">' + ech(a.title) + '</a>' +
+        '<span class="pro-s-meta">' + ech(metaSortie(a)) + '</span></span>' +
+      '<span class="pro-s-col-quand">' + ech(quandCourtSortie(a)) + '</span>' +
+      '<span class="pro-s-col-etat">' + pastillesEtatHtml(a) + '</span>' +
+      '<span class="pro-s-chiffre">' + chiffre(st && st.views) + '</span>' +
+      '<span class="pro-s-chiffre">' + chiffre(st && st.favorites) + '</span>' +
+      '<span class="pro-s-chiffre">' + chiffre(st && st.attendances) + '</span>' +
+      '<span class="pro-s-col-menu">' + menuSortieHtml(i, entrees) + '</span>' +
+      '<div class="pro-s-sous-ligne"></div>' +
+    '</div>';
+  }
+
+  function menuSortieHtml(i, entrees) {
+    var html = '<button type="button" class="pro-s-menu-bouton" aria-haspopup="true" aria-expanded="false" aria-controls="pro-s-menu-' + i + '" aria-label="Actions">\u00b7\u00b7\u00b7</button>' +
+      '<div class="pro-s-menu" id="pro-s-menu-' + i + '" hidden>';
+    for (var k = 0; k < entrees.length; k++) {
+      html += '<button type="button" data-action="' + entrees[k][0] + '"' + (entrees[k][2] ? ' class="pro-a-danger"' : '') + '>' + entrees[k][1] + '</button>';
+    }
+    return html + '</div>';
+  }
+
+  function fermeMenus(liste) {
+    var menus = liste.querySelectorAll('.pro-s-menu');
+    for (var i = 0; i < menus.length; i++) menus[i].hidden = true;
+    var boutons = liste.querySelectorAll('.pro-s-menu-bouton');
+    for (var j = 0; j < boutons.length; j++) boutons[j].setAttribute('aria-expanded', 'false');
+  }
+
+  function cableMenusSorties(liste, lignes) {
+    var boutons = liste.querySelectorAll('.pro-s-menu-bouton');
+    for (var i = 0; i < boutons.length; i++) {
+      boutons[i].addEventListener('click', function (event) {
+        var bouton = event.currentTarget;
+        var menu = document.getElementById(bouton.getAttribute('aria-controls'));
+        var ouvert = !menu.hidden;
+        fermeMenus(liste);
+        if (!ouvert) {
+          menu.hidden = false;
+          bouton.setAttribute('aria-expanded', 'true');
+          var premier = menu.querySelector('button');
+          if (premier) premier.focus();
+        }
+      });
+    }
+    liste.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape') fermeMenus(liste);
+    });
+    var actions = liste.querySelectorAll('.pro-s-menu [data-action]');
+    for (var k = 0; k < actions.length; k++) {
+      actions[k].addEventListener('click', function (event) {
+        var ligneEl = event.currentTarget.closest('.pro-s-ligne');
+        var l = lignes[Number(ligneEl.getAttribute('data-ligne'))];
+        var sousLigne = ligneEl.querySelector('.pro-s-sous-ligne');
+        var action = event.currentTarget.getAttribute('data-action');
+        fermeMenus(liste);
+        if (action === 'annuler-depot') {
+          ouvreAnnulation(sousLigne, l.depot.editId, 'ce dépôt', function () { tableauDeBordCache = null; });
+          return;
+        }
+        var a = l.sortie;
+        if (action === 'modifier') ouvreCorrection(a);
+        else if (action === 'affiche') vaVers(routeSortie(a.id));
+        else if (action === 'dupliquer') dupliqueSortie(a);
+        else if (action === 'stats') vaVers(ROUTE_STATS);
+        else if (action === 'retirer') ouvreRetraitSortie(sousLigne, a, null);
+      });
+    }
+  }
+
+
+  // ── Une sortie ───────────────────────────────────────────────────────
+  var ongletFiche = 'apercu';
+
+  function afficheUneSortie(id) {
+    var jeton = jetonEcran;
+    envelopeCoque('sorties', '<p class="pro-etat">Un instant…</p>');
+    Promise.all([chargeTableauDeBord(false), chargeStats('30d')]).then(function (r) {
+      if (!ecranCourant(jeton)) return;
+      if (!r[0]) { contenuCoque().innerHTML = erreurChargementHtml(); return; }
+      var a = sortiesConnues[id];
+      if (!a) {
+        contenuCoque().innerHTML =
+          '<p style="margin:0 0 14px"><a class="pro-lien-retour" href="' + ROUTE_SORTIES + '" data-route="' + ROUTE_SORTIES + '">\u2190 Mes sorties</a></p>' +
+          '<h1>Sortie introuvable</h1><p>Cette sortie n’est pas (ou plus) rattachée à votre espace.</p>';
+        cableLiensRoute(contenuCoque());
+        return;
+      }
+      ongletFiche = 'apercu';
+      rendUneSortie(a, statsParSortie(r[1])[a.id] || null);
+    });
+  }
+
+  function rendUneSortie(a, st) {
+    var zone = contenuCoque();
+    var estRetiree = a.state === 'withdrawn';
+    zone.innerHTML =
+      '<p style="margin:0 0 14px"><a class="pro-lien-retour" href="' + ROUTE_SORTIES + '" data-route="' + ROUTE_SORTIES + '">\u2190 Mes sorties</a></p>' +
+      pastillesEtatHtml(a) +
+      '<h1 style="margin-top:10px">' + ech(a.title) + '</h1>' +
+      '<p class="pro-sous-titre">' + ech([quandCourtSortie(a), metaSortie(a)].filter(Boolean).join(' \u00b7 ')) + '</p>' +
+      (estRetiree && a.withdrawal ? '<p class="pro-f-bandeau" role="status">Retirée le ' + ech(dateCourteFr(a.withdrawal.at)) + '. Elle n’est plus visible dans l’app.</p>' : '') +
+      '<div class="pro-f-actions-haut">' +
+        (a.kind === 'event' && a.state === 'upcoming' ? '<button type="button" class="pro-bouton-secondaire" id="pro-f-modifier">Modifier la sortie</button>' : '') +
+      '</div>' +
+      '<div class="pro-s-onglets" role="tablist" aria-label="Vues de la sortie">' +
+        ongletFicheHtml('apercu', 'Aperçu') + ongletFicheHtml('stats', 'Statistiques') + ongletFicheHtml('historique', 'Historique') +
+      '</div>' +
+      '<div id="pro-f-corps"></div>';
+
+    cableLiensRoute(zone);
+    var modifier = document.getElementById('pro-f-modifier');
+    if (modifier) modifier.addEventListener('click', function () { ouvreCorrection(a); });
+    var onglets = zone.querySelectorAll('[data-onglet-fiche]');
+    for (var i = 0; i < onglets.length; i++) {
+      onglets[i].addEventListener('click', function (event) {
+        ongletFiche = event.currentTarget.getAttribute('data-onglet-fiche');
+        for (var k = 0; k < onglets.length; k++) {
+          onglets[k].setAttribute('aria-selected', onglets[k] === event.currentTarget ? 'true' : 'false');
+        }
+        rendCorpsFiche(a, st);
+      });
+    }
+    rendCorpsFiche(a, st);
+  }
+
+  function ongletFicheHtml(cle, libelle) {
+    return '<button type="button" role="tab" class="pro-s-onglet" data-onglet-fiche="' + cle + '" aria-selected="' +
+      (cle === ongletFiche ? 'true' : 'false') + '">' + libelle + '</button>';
+  }
+
+  function rendCorpsFiche(a, st) {
+    var corps = document.getElementById('pro-f-corps');
+    if (ongletFiche === 'stats') {
+      corps.innerHTML = carteAVenirHtml('Statistiques de la sortie', 'Bientôt, le détail semaine par semaine. Les chiffres des 30 derniers jours sont dans l’aperçu.');
+      return;
+    }
+    if (ongletFiche === 'historique') {
+      corps.innerHTML = '<div class="pro-carte"><h2>Propositions et historique</h2>' + historiqueHtml(a, a.history || []) + '</div>';
+      cableHistorique(corps, a);
+      return;
+    }
+    corps.innerHTML =
+      '<div class="pro-f-grille"><div>' +
+        carteAfficheHtml(a) +
+        carteFicheParentsHtml(a) +
+        '<div class="pro-carte"><div class="pro-t-entete-carte"><h2>Propositions et historique</h2>' +
+          ((a.history || []).length > 5 ? '<button type="button" class="pro-lien-retour" id="pro-f-tout-voir">Tout voir</button>' : '') + '</div>' +
+          historiqueHtml(a, (a.history || []).slice(0, 5)) + '</div>' +
+      '</div><div class="pro-f-colonne">' +
+        '<div class="pro-carte"><h2>Cette sortie, 30 jours</h2><div class="pro-f-chiffres">' +
+          chiffreFicheHtml(st ? st.views : null, 'consultations') + chiffreFicheHtml(st ? st.favorites : null, 'favoris') +
+          chiffreFicheHtml(st ? st.attendances : null, 'familles « j’y vais »') + chiffreFicheHtml(null, 'clics vers l’inscription') +
+        '</div></div>' +
+        '<div class="pro-carte"><div class="pro-t-entete-carte"><h2>Mise en avant</h2><span class="pro-pastille-etat">À venir</span></div>' +
+          '<p class="pro-sous-titre" style="margin:6px 0 0">Bientôt\u00a0: placer cette sortie en tête de l’accueil ou des résultats, pour une durée choisie.</p></div>' +
+        '<div class="pro-carte"><h2>Actions</h2>' +
+          (a.kind === 'event' ? '<button type="button" class="pro-bouton-secondaire" id="pro-f-dupliquer">Dupliquer pour une autre date</button>' : '') +
+          (a.state !== 'withdrawn'
+            ? '<button type="button" class="pro-bouton-secondaire pro-a-danger" id="pro-f-retirer">Retirer la sortie</button>' +
+              '<p class="pro-a-aide" style="margin:0">Retirer dépublie la fiche sans délai' +
+                (a.attendee_households === 1 ? ' et prévient la famille inscrite' : a.attendee_households > 1 ? ' et prévient les ' + nombreFr(a.attendee_households) + ' familles inscrites' : '') +
+                '. Rien n’est effacé de votre côté\u00a0: elle reste dans «\u00a0Refusées et retirées\u00a0».</p>' +
+              '<div id="pro-f-retrait"></div>'
+            : '') +
+        '</div>' +
+      '</div></div>';
+
+    poseVignettes(corps, sortiesConnues);
+    cableAfficheFiche(a);
+    cableHistorique(corps, a);
+    var toutVoir = document.getElementById('pro-f-tout-voir');
+    if (toutVoir) toutVoir.addEventListener('click', function () {
+      ongletFiche = 'historique';
+      rendUneSortie(a, st);
+    });
+    var dupliquer = document.getElementById('pro-f-dupliquer');
+    if (dupliquer) dupliquer.addEventListener('click', function () { dupliqueSortie(a); });
+    var retirer = document.getElementById('pro-f-retirer');
+    if (retirer) retirer.addEventListener('click', function () {
+      ouvreRetraitSortie(document.getElementById('pro-f-retrait'), a, function () { retirer.hidden = true; });
+    });
+  }
+
+  function chiffreFicheHtml(n, libelle) {
+    return '<div><strong>' + (typeof n === 'number' ? nombreFr(n) : '—') + '</strong><span>' + ech(libelle) + '</span></div>';
+  }
+
+  // ── Affiche ──────────────────────────────────────────────────────────
+  function carteAfficheHtml(a) {
+    var enLigne = afficheEnLigne(a);
+    var enRelecture = a.visual_submission === 'pending';
+    var texte;
+    if (enLigne) {
+      texte = (a.poster_submitted_at ? 'Déposée le ' + dateCourteFr(a.poster_submitted_at) + '. ' : '') +
+        'Elle sert de couverture à la fiche et dans les résultats. Vous pouvez la remplacer ou la retirer à tout moment\u00a0; la fiche reste en ligne sans image.';
+    } else if (a.visual_submission === 'refused') {
+      texte = 'Votre dernière affiche n’a pas été retenue' + (a.visual_refusal_reason ? '\u00a0: ' + a.visual_refusal_reason : '.') ;
+    } else {
+      texte = 'Aucune affiche en ligne. Les sorties avec un visuel sont plus ouvertes.';
+    }
+    if (enRelecture) texte += ' Une nouvelle affiche est en relecture.';
+    var peutDeposer = a.state !== 'withdrawn' && !enRelecture;
+    return '<div class="pro-carte" id="pro-f-affiche"><div class="pro-t-entete-carte"><h2>Affiche</h2>' +
+        (enLigne ? '<span class="pro-pastille-etat">Visible dans l’app</span>' : '') + '</div>' +
+      '<div class="pro-a-actuelle" style="margin-top:10px">' + vignetteAfficheHtml(a, true) +
+        '<div><p class="pro-a-aide">' + ech(texte) + '</p>' +
+          '<div class="pro-a-actions" id="pro-f-affiche-actions">' +
+            (peutDeposer ? '<button type="button" class="pro-bouton-secondaire" id="pro-f-remplacer">' + (enLigne ? 'Remplacer l’affiche' : 'Déposer une affiche') + '</button>' : '') +
+            (enLigne && a.state !== 'withdrawn' ? '<button type="button" class="pro-bouton-secondaire pro-a-danger" id="pro-f-retirer-affiche">Retirer l’affiche</button>' : '') +
+          '</div></div>' +
+      '</div>' +
+      '<div id="pro-f-affiche-zone"></div>' +
+    '</div>';
+  }
+
+  function cableAfficheFiche(a) {
+    var zone = document.getElementById('pro-f-affiche-zone');
+    var actions = document.getElementById('pro-f-affiche-actions');
+    var remplacer = document.getElementById('pro-f-remplacer');
+    if (remplacer) remplacer.addEventListener('click', function () {
+      actions.hidden = true;
+      zone.innerHTML = blocPhotoHtml('Nouvelle affiche') +
+        (clauseVisuelCourante && clauseVisuelCourante.text
+          ? '<div class="pro-a-actions"><button type="button" class="pro-bouton-secondaire" id="pro-f-affiche-annuler">Annuler</button>' +
+            '<button type="button" class="pro-bouton-primaire" style="width:auto;padding:0 20px" id="pro-f-affiche-envoyer">Envoyer l’affiche</button></div>' +
+            '<p class="pro-message" id="pro-f-affiche-message" role="status" aria-live="polite"></p>'
+          : '<p class="pro-note">Le dépôt d’affiche est momentanément indisponible. Rechargez la page.</p>');
+      cablePhoto();
+      var annuler = document.getElementById('pro-f-affiche-annuler');
+      if (annuler) annuler.addEventListener('click', function () { zone.innerHTML = ''; actions.hidden = false; });
+      var envoyer = document.getElementById('pro-f-affiche-envoyer');
+      if (envoyer) envoyer.addEventListener('click', function () { onEnvoieAffiche(a, zone); });
+    });
+    var retirer = document.getElementById('pro-f-retirer-affiche');
+    if (retirer) retirer.addEventListener('click', function () {
+      afficheRetraitAffiche(zone, a, actions, function () {
+        oublieDonnees();
+        document.getElementById('pro-f-affiche').innerHTML =
+          carteConfirmationHtml('pro-f-affiche-confirm', 'Affiche retirée', 'La fiche reste publiée, sans visuel.', null, '');
+        focaliseConfirmation('pro-f-affiche-confirm');
+      });
+    });
+  }
+
+  function messageErreurAfficheFiche(code) {
+    var messages = {
+      rights_required: 'Cochez la case de droits pour envoyer l’affiche.',
+      rights_version_mismatch: 'Nos conditions ont changé. Rechargez la page et redéposez.',
+      missing_file: 'Choisissez une image.',
+      too_large: 'Cette image dépasse 10 Mo.',
+      pdf_not_supported: 'Les PDF ne sont pas acceptés ici. Envoyez une image.',
+      unsupported_type: 'Formats acceptés : JPEG, PNG ou WebP.',
+      already_pending: 'Une affiche est déjà en relecture pour cette sortie.',
+      rate_limited: 'Trop d’envois, réessayez plus tard.',
+      not_granted: 'Cette sortie n’est plus rattachée à votre espace.'
+    };
+    return messages[code] || 'L’envoi n’a pas abouti, réessayez.';
+  }
+
+  function onEnvoieAffiche(a, zone) {
+    var bouton = document.getElementById('pro-f-affiche-envoyer');
+    var messageEl = document.getElementById('pro-f-affiche-message');
+    var champ = document.getElementById('pro-depot-photo');
+    var fichier = champ && champ.files && champ.files[0] ? champ.files[0] : null;
+    if (!fichier) { definirMessage(messageEl, messageErreurAfficheFiche('missing_file'), true); return; }
+    var caseDroits = document.getElementById('pro-depot-photo-clause');
+    if (!caseDroits || !caseDroits.checked) { definirMessage(messageEl, messageErreurAfficheFiche('rights_required'), true); return; }
+    bouton.disabled = true;
+    definirMessage(messageEl, 'Envoi en cours…', false);
+    appelApiFichier('replace_visual', {
+      activity_id: a.id, rights: 'yes', rights_version: clauseVisuelCourante ? clauseVisuelCourante.version : ''
+    }, fichier).then(function (resultat) {
+      if (resultat.ok && resultat.data && resultat.data.ok) {
+        oublieDonnees();
+        a.visual_submission = 'pending';
+        document.getElementById('pro-f-affiche').innerHTML = carteConfirmationHtml('pro-f-affiche-confirm', 'Affiche reçue',
+          'Nous la relisons avant de l’afficher sur votre fiche. D’ici là, l’affiche actuelle reste en ligne. Vous serez prévenu par e-mail.', null, '');
+        focaliseConfirmation('pro-f-affiche-confirm');
+        return;
+      }
+      bouton.disabled = false;
+      definirMessage(messageEl, messageErreurAfficheFiche(resultat.data && resultat.data.error), true);
+    }).catch(function () {
+      bouton.disabled = false;
+      definirMessage(messageEl, 'L’envoi n’a pas abouti, réessayez.', true);
+    });
+  }
+
+  // ── La fiche telle que la lisent les parents ─────────────────────────
+  function carteFicheParentsHtml(a) {
+    var ou = [a.locationName, a.address, a.city].filter(function (x) { return x; }).join(', ');
+    var lignes = [
+      ['Titre', a.title],
+      ['Quand', a.dateLabel || quandLongSortie(a)],
+      ['Où', ou],
+      ['Âges', agesSortie(a)],
+      ['Tarif', libelleTarif(a.price)],
+      ['Description', a.description],
+      ['Inscription', a.registrationUrl]
+    ];
+    var html = '<div class="pro-carte"><h2>La fiche telle que la lisent les parents</h2><dl class="pro-f-fiche">';
+    for (var i = 0; i < lignes.length; i++) {
+      html += '<dt>' + lignes[i][0] + '</dt><dd>' + (lignes[i][1] ? ech(lignes[i][1]) : '<span style="color:var(--fg-2)">Non renseigné</span>') + '</dd>';
+    }
+    return html + '</dl></div>';
+  }
+
+  function quandLongSortie(a) {
+    var iso = a.next_occurrence_at || a.last_occurrence_at || a.startsAt;
+    if (!iso) return a.kind === 'place' ? 'Toute l’année' : '';
+    var h = heureFr(iso);
+    return jourCourtFr(iso) + ' ' + (partiesParis(iso) ? partiesParis(iso).annee : '') + (h ? ', ' + h : '');
+  }
+
+  // ── Propositions et historique ───────────────────────────────────────
+  var LIBELLES_HISTORIQUE = {
+    edit_pending: 'Correction en relecture',
+    edit_applied: 'Correction appliquée',
+    edit_refused: 'Correction refusée',
+    visual_submitted: 'Affiche déposée, en relecture',
+    visual_approved: 'Affiche validée par Urson',
+    visual_refused: 'Affiche refusée',
+    visual_withdrawn: 'Affiche retirée',
+    withdrawn: 'Sortie retirée'
+  };
+
+  function historiqueHtml(a, items) {
+    if (items.length === 0) return '<p class="pro-note" style="margin:6px 0 0">Aucune proposition pour le moment.</p>';
+    var html = '<ul class="pro-f-histo">';
+    for (var i = 0; i < items.length; i++) {
+      var h = items[i];
+      var enAttente = h.kind === 'edit_pending' && a.pending_edit && a.pending_edit.id === h.edit_id;
+      html += '<li><strong>' + ech(LIBELLES_HISTORIQUE[h.kind] || 'Événement') + '</strong>' +
+        '<p>' + ech(dateCourteFr(h.at)) + (enAttente ? ' \u00b7 réponse sous 1 à 2 jours' : '') + '</p>' +
+        (h.reason ? '<p>Motif\u00a0: ' + ech(h.reason) + '</p>' : '') +
+        (enAttente ? '<p><button type="button" class="pro-lien-retour" data-annuler-edit="' + ech(h.edit_id) + '">Annuler</button></p><div class="pro-f-annulation"></div>' : '') +
+      '</li>';
+    }
+    return html + '</ul>';
+  }
+
+  function cableHistorique(racine, a) {
+    var boutons = racine.querySelectorAll('[data-annuler-edit]');
+    for (var i = 0; i < boutons.length; i++) {
+      boutons[i].addEventListener('click', function (event) {
+        var bouton = event.currentTarget;
+        var conteneur = bouton.parentNode.nextSibling;
+        ouvreAnnulation(conteneur, bouton.getAttribute('data-annuler-edit'), 'cette correction', function () {
+          bouton.hidden = true;
+          a.pending_edit = null;
+        });
+      });
+    }
+  }
+
+
+  // ── Paramètres ───────────────────────────────────────────────────────
+  var LOGO_MAX_OCTETS = 2 * 1024 * 1024;
+  var clauseLogoCourante = null;
+
+  function afficheParametres() {
+    var jeton = jetonEcran;
+    envelopeCoque('parametres', '<p class="pro-etat">Un instant…</p>');
+    chargeTableauDeBord(false).then(function (d) {
+      if (!ecranCourant(jeton)) return;
+      if (!d) { contenuCoque().innerHTML = erreurChargementHtml(); return; }
+      rendParametres(d);
+    });
+  }
+
+  function rendParametres(d) {
+    var c = d.account || {};
+    clauseLogoCourante = d.logo_clause || null;
+    var zone = contenuCoque();
+    zone.innerHTML =
+      '<p class="pro-eyebrow">Paramètres</p><h1>Votre structure et votre accès</h1>' +
+      carteStructureHtml(c) + carteConnexionHtml(c) + carteEquipeHtml(c) + carteEmailsHtml(c) + carteAccordsHtml(c) + carteFermetureHtml(c);
+    poseLogo(zone, c);
+    cableStructure(c);
+    cableConnexion(c);
+    cableEmails(c);
+    cableFermeture();
+  }
+
+  // ── Structure ────────────────────────────────────────────────────────
+  var LIBELLES_CHAMPS = {
+    structure_name: 'Nom', structure_kind: 'Type', website_url: 'Site web', phone: 'Téléphone',
+    presentation: 'Présentation', logo: 'Logo'
+  };
+
+  function valeurProposeeTexte(cle, v) {
+    if (cle === 'logo') return v === 'new' ? 'nouveau logo' : 'logo retiré';
+    if (cle === 'structure_kind') return libelleTypeStructure(v);
+    return v ? String(v) : '(effacé)';
+  }
+
+  function resumeProposition(proposed) {
+    var bouts = [];
+    for (var cle in proposed) {
+      if (!Object.prototype.hasOwnProperty.call(proposed, cle)) continue;
+      bouts.push((LIBELLES_CHAMPS[cle] || cle) + '\u00a0: ' + valeurProposeeTexte(cle, proposed[cle]));
+    }
+    return bouts.join(' \u00b7 ');
+  }
+
+  function carteStructureHtml(c) {
+    var attente = c.pending_account_edit;
+    var refus = c.last_refused_account_edit;
+    var bandeau = '';
+    if (attente) {
+      bandeau = '<div class="pro-p-bandeau" role="status"><p><strong>Une modification est en relecture</strong> depuis le ' +
+        ech(dateCourteFr(attente.submitted_at)) + '. Réponse sous 1 à 2 jours.</p><p>' + ech(resumeProposition(attente.proposed || {})) + '</p></div>';
+    } else if (refus) {
+      bandeau = '<div class="pro-p-bandeau" role="status"><p><strong>Votre dernière modification n’a pas été retenue</strong>' +
+        (refus.reviewed_at ? ' (' + ech(dateCourteFr(refus.reviewed_at)) + ')' : '') + '.</p><p>Motif\u00a0: ' +
+        ech(refus.refusal_reason || 'non précisé') + '</p></div>';
+    }
+    var types = '';
+    for (var i = 0; i < STRUCTURE_KINDS.length; i++) {
+      types += '<option value="' + STRUCTURE_KINDS[i][0] + '"' + (STRUCTURE_KINDS[i][0] === c.structure_kind ? ' selected' : '') + '>' + STRUCTURE_KINDS[i][1] + '</option>';
+    }
+    var logoBloc = clauseLogoCourante && clauseLogoCourante.text
+      ? '<div class="pro-p-logo"><span class="pro-p-logo-cadre" id="pro-p-logo-cadre">' + ech(initialesStructure(c.structure_name)) + '</span>' +
+          '<div style="flex:1;min-width:220px"><label class="pro-label" for="pro-p-logo">Logo (facultatif)</label>' +
+          '<p class="pro-note-champ" style="margin:0 0 8px">Carré, JPEG, PNG ou WebP, 2 Mo maximum. Affiché à côté de vos fiches.</p>' +
+          '<input class="pro-fichier" type="file" id="pro-p-logo" accept="image/jpeg,image/png,image/webp" />' +
+          (c.logo_url ? '<label class="pro-case" style="margin:10px 0 0"><input type="checkbox" id="pro-p-logo-retirer" /><span>Retirer le logo actuel</span></label>' : '') +
+          '<div id="pro-p-logo-clause-zone" hidden><img class="pro-apercu" id="pro-p-logo-apercu" alt="Aperçu du logo choisi" draggable="false" />' +
+            '<label class="pro-case" style="margin:10px 0 0"><input type="checkbox" id="pro-p-logo-clause" /><span>' + ech(clauseLogoCourante.text) + '</span></label></div>' +
+          '<p class="pro-message" id="pro-p-logo-message" role="status" aria-live="polite"></p></div></div>'
+      : '';
+    return '<form class="pro-carte" id="pro-p-structure" novalidate><h2>Structure</h2>' + bandeau + logoBloc +
+      '<div class="pro-champ"><label class="pro-label" for="pro-p-nom">Nom affiché aux parents</label>' +
+        '<input class="pro-input" type="text" id="pro-p-nom" maxlength="200" required value="' + ech(c.structure_name) + '" /></div>' +
+      '<div class="pro-champ"><label class="pro-label" for="pro-p-type">Type de structure</label>' +
+        '<select class="pro-input" id="pro-p-type">' + types + '</select>' +
+        '<p class="pro-note-champ">Un changement de type est vérifié par Urson.</p></div>' +
+      '<div class="pro-champ pro-ligne-deux"><div><label class="pro-label" for="pro-p-site">Site web</label>' +
+        '<input class="pro-input" type="text" id="pro-p-site" maxlength="300" placeholder="https://" value="' + ech(c.website_url) + '" /></div>' +
+        '<div><label class="pro-label" for="pro-p-tel">Téléphone (affiché aux parents)</label>' +
+        '<input class="pro-input" type="tel" id="pro-p-tel" maxlength="40" value="' + ech(c.phone) + '" /></div></div>' +
+      '<div class="pro-champ"><label class="pro-label" for="pro-p-presentation">Présentation (affichée sous vos fiches)</label>' +
+        '<textarea class="pro-input" id="pro-p-presentation" rows="4" maxlength="2000">' + ech(c.presentation) + '</textarea></div>' +
+      '<button type="submit" class="pro-bouton-primaire" id="pro-p-enregistrer"' + (attente ? ' disabled' : '') + '>Enregistrer</button>' +
+      '<p class="pro-note" style="margin:10px 0 0">' + (attente
+        ? 'Une modification attend déjà sa relecture\u00a0: vous pourrez en proposer une autre ensuite.'
+        : 'Chaque modification est relue par Urson avant d’apparaître aux parents.') + '</p>' +
+      '<div id="pro-p-structure-message" role="status" aria-live="polite"></div>' +
+    '</form>';
+  }
+
+  function poseLogo(racine, c) {
+    var cadre = racine.querySelector('#pro-p-logo-cadre');
+    if (!cadre || !c.logo_url) return;
+    var img = document.createElement('img');
+    img.setAttribute('alt', 'Logo actuel');
+    img.setAttribute('draggable', 'false');
+    img.setAttribute('src', c.logo_url);
+    cadre.textContent = '';
+    cadre.appendChild(img);
+  }
+
+  function cableStructure(c) {
+    var champ = document.getElementById('pro-p-logo');
+    if (champ) {
+      var zoneClause = document.getElementById('pro-p-logo-clause-zone');
+      var apercu = document.getElementById('pro-p-logo-apercu');
+      var messageLogo = document.getElementById('pro-p-logo-message');
+      champ.addEventListener('change', function () {
+        var fichier = champ.files && champ.files[0] ? champ.files[0] : null;
+        definirMessage(messageLogo, '', false);
+        if (apercu.src) { URL.revokeObjectURL(apercu.src); apercu.removeAttribute('src'); }
+        if (!fichier) { zoneClause.hidden = true; return; }
+        if (PHOTO_TYPES.indexOf(fichier.type) === -1) {
+          champ.value = ''; zoneClause.hidden = true;
+          definirMessage(messageLogo, 'Formats acceptés : JPEG, PNG ou WebP.', true);
+          return;
+        }
+        if (fichier.size > LOGO_MAX_OCTETS) {
+          champ.value = ''; zoneClause.hidden = true;
+          definirMessage(messageLogo, 'Ce logo dépasse 2 Mo.', true);
+          return;
+        }
+        apercu.src = URL.createObjectURL(fichier);
+        zoneClause.hidden = false;
+      });
+    }
+    document.getElementById('pro-p-structure').addEventListener('submit', function (event) {
+      event.preventDefault();
+      onEnvoieStructure(c);
+    });
+  }
+
+  function messageErreurStructure(code) {
+    var messages = {
+      already_pending: 'Une modification attend déjà sa relecture.',
+      no_change: 'Rien n’a changé par rapport à votre fiche actuelle.',
+      invalid_structure_name: 'Le nom est obligatoire (200 caractères au plus).',
+      invalid_structure_kind: 'Choisissez un type de structure.',
+      invalid_website_url: 'L’adresse du site est invalide (elle commence par http ou https).',
+      invalid_phone: 'Le téléphone ne peut contenir que des chiffres, espaces, points, tirets et +.',
+      invalid_presentation: 'La présentation dépasse 2000 caractères.',
+      logo_clause_required: 'Cochez la case pour joindre ce logo.',
+      logo_clause_version_mismatch: 'Nos conditions ont changé. Rechargez la page.',
+      too_large: 'Ce logo dépasse 2 Mo.',
+      unsupported_type: 'Formats acceptés : JPEG, PNG ou WebP.',
+      rate_limited: 'Trop de propositions, réessayez plus tard.'
+    };
+    return messages[code] || 'L’envoi n’a pas abouti, réessayez.';
+  }
+
+  function onEnvoieStructure(c) {
+    var bouton = document.getElementById('pro-p-enregistrer');
+    var messageEl = document.getElementById('pro-p-structure-message');
+    var corps = {
+      structure_name: document.getElementById('pro-p-nom').value,
+      structure_kind: document.getElementById('pro-p-type').value,
+      website_url: document.getElementById('pro-p-site').value,
+      phone: document.getElementById('pro-p-tel').value,
+      presentation: document.getElementById('pro-p-presentation').value
+    };
+    var retirer = document.getElementById('pro-p-logo-retirer');
+    if (retirer && retirer.checked) corps.remove_logo = 'true';
+    var champ = document.getElementById('pro-p-logo');
+    var fichier = champ && champ.files && champ.files[0] ? champ.files[0] : null;
+    if (fichier) {
+      var caseClause = document.getElementById('pro-p-logo-clause');
+      if (!caseClause || !caseClause.checked) {
+        messageEl.innerHTML = '<p class="pro-message pro-message--error">' + messageErreurStructure('logo_clause_required') + '</p>';
+        return;
+      }
+      corps.logo_clause_version = clauseLogoCourante ? clauseLogoCourante.version : '';
+    }
+    bouton.disabled = true;
+    messageEl.innerHTML = '<p class="pro-message">Envoi en cours…</p>';
+    var envoi = fichier ? appelApiFichier('propose_account_edit', corps, fichier) : appelApi('propose_account_edit', corps, true);
+    envoi.then(function (resultat) {
+      if (resultat.ok && resultat.data && resultat.data.ok) {
+        oublieDonnees();
+        messageEl.innerHTML = carteConfirmationHtml('pro-p-confirm', 'Modification envoyée', 'Elle est relue sous 1 à 2 jours. Vous recevrez un e-mail dans les deux cas.', null, '');
+        focaliseConfirmation('pro-p-confirm');
+        return;
+      }
+      bouton.disabled = false;
+      messageEl.innerHTML = '<p class="pro-message pro-message--error">' + ech(messageErreurStructure(resultat.data && resultat.data.error)) + '</p>';
+    }).catch(function () {
+      bouton.disabled = false;
+      messageEl.innerHTML = '<p class="pro-message pro-message--error">L’envoi n’a pas abouti, réessayez.</p>';
+    });
+  }
+
+  // ── Connexion et sécurité ────────────────────────────────────────────
+  function carteConnexionHtml(c) {
+    return '<div class="pro-carte"><h2>Connexion et sécurité</h2>' +
+      '<div class="pro-p-ligne"><div><strong>Adresse de connexion</strong><p>' + ech(c.email) + '</p></div>' +
+        '<button type="button" class="pro-bouton-secondaire" id="pro-p-adresse">Changer d’adresse</button></div>' +
+      '<div id="pro-p-adresse-zone"></div>' +
+      '<div class="pro-p-ligne"><div><strong>Mot de passe</strong><p>' +
+        (c.password_set_at ? 'Défini le ' + ech(dateCourteFr(c.password_set_at)) : 'Aucun mot de passe pour le moment') + '</p></div>' +
+        '<button type="button" class="pro-bouton-secondaire" id="pro-p-mdp">' + (c.has_password ? 'Changer le mot de passe' : 'Choisir un mot de passe') + '</button></div>' +
+      '<div class="pro-p-ligne"><div><strong>Code par e-mail</strong><p>Toujours possible, en secours.</p></div></div>' +
+      '<div class="pro-p-ligne"><div><strong>Autres appareils</strong><p>Ferme les sessions ouvertes ailleurs (autre navigateur, autre ordinateur). Celle-ci reste ouverte.</p></div>' +
+        '<button type="button" class="pro-bouton-secondaire" id="pro-p-autres">Déconnecter les autres appareils</button></div>' +
+      '<p class="pro-message" id="pro-p-connexion-message" role="status" aria-live="polite"></p>' +
+      '<p class="pro-note" style="margin:6px 0 0">Un changement d’adresse est confirmé depuis les deux boîtes. Il ne touche pas votre compte parent Urson si vous en avez un.</p>' +
+    '</div>';
+  }
+
+  function cableConnexion(c) {
+    document.getElementById('pro-p-mdp').addEventListener('click', function () {
+      afficheChoixMotDePasse(compteCourant, { depuisEspace: true });
+    });
+    document.getElementById('pro-p-autres').addEventListener('click', function () {
+      onDeconnecteAutres();
+    });
+    document.getElementById('pro-p-adresse').addEventListener('click', function (event) {
+      event.currentTarget.hidden = true;
+      var zone = document.getElementById('pro-p-adresse-zone');
+      zone.innerHTML = '<form class="pro-a-panneau" id="pro-p-adresse-form" novalidate>' +
+        '<div class="pro-champ"><label class="pro-label" for="pro-p-nouvelle-adresse">Nouvelle adresse</label>' +
+        '<input class="pro-input" type="email" id="pro-p-nouvelle-adresse" maxlength="254" autocomplete="email" /></div>' +
+        '<p class="pro-a-aide">Un lien de confirmation part vers l’ancienne et la nouvelle adresse\u00a0: le changement vaut une fois les deux confirmés. Il ne touche pas votre compte parent Urson.</p>' +
+        '<div class="pro-a-actions"><button type="submit" class="pro-bouton-secondaire" id="pro-p-adresse-envoyer">Envoyer la confirmation</button></div>' +
+        '<p class="pro-message" id="pro-p-adresse-message" role="status" aria-live="polite"></p></form>';
+      document.getElementById('pro-p-adresse-form').addEventListener('submit', function (ev) {
+        ev.preventDefault();
+        onChangeAdresse(c);
+      });
+    });
+  }
+
+  function onChangeAdresse(c) {
+    var champ = document.getElementById('pro-p-nouvelle-adresse');
+    var messageEl = document.getElementById('pro-p-adresse-message');
+    var bouton = document.getElementById('pro-p-adresse-envoyer');
+    var adresse = champ.value.trim().toLowerCase();
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(adresse) || adresse === String(c.email || '').toLowerCase()) {
+      definirMessage(messageEl, 'Indiquez une nouvelle adresse valide.', true);
+      return;
+    }
+    bouton.disabled = true;
+    definirMessage(messageEl, 'Envoi en cours…', false);
+    // Double confirmation Supabase : rien ne change tant que les deux boîtes
+    // n'ont pas confirmé ; la base recopie ensuite l'adresse dans l'espace.
+    sb.auth.updateUser({ email: adresse }).then(function (r) {
+      bouton.disabled = false;
+      if (r && r.error) {
+        definirMessage(messageEl, 'La demande n’a pas abouti. Cette adresse est peut-être déjà utilisée.', true);
+        return;
+      }
+      definirMessage(messageEl, 'C’est parti\u00a0: confirmez depuis les deux boîtes pour terminer.', false);
+    }).catch(function () {
+      bouton.disabled = false;
+      definirMessage(messageEl, 'La demande n’a pas abouti, réessayez.', true);
+    });
+  }
+
+  function onDeconnecteAutres() {
+    var bouton = document.getElementById('pro-p-autres');
+    var messageEl = document.getElementById('pro-p-connexion-message');
+    bouton.disabled = true;
+    // Portée 'others' : cette session reste ouverte (piège #550).
+    sb.auth.signOut({ scope: 'others' }).then(function (r) {
+      bouton.disabled = false;
+      definirMessage(messageEl, r && r.error ? 'La déconnexion n’a pas abouti, réessayez.' : 'Les autres appareils sont déconnectés.', !!(r && r.error));
+    }).catch(function () {
+      bouton.disabled = false;
+      definirMessage(messageEl, 'La déconnexion n’a pas abouti, réessayez.', true);
+    });
+  }
+
+  // ── Personnes du compte ──────────────────────────────────────────────
+  function carteEquipeHtml(c) {
+    return '<div class="pro-carte"><h2>Personnes du compte</h2>' +
+      '<div class="pro-p-ligne"><div><strong>' + ech(c.email) + '</strong><p>Titulaire</p></div></div>' +
+      '<p class="pro-sous-titre" style="margin:8px 0 0">Inviter un ou une collègue à gérer l’espace avec vous\u00a0: <span class="pro-pastille-etat">À venir</span>. Aujourd’hui, une seule adresse par espace.</p>' +
+    '</div>';
+  }
+
+  // ── E-mails ──────────────────────────────────────────────────────────
+  function carteEmailsHtml(c) {
+    var p = c.preferences || {};
+    return '<div class="pro-carte"><h2>E-mails que vous recevez</h2>' +
+      '<label class="pro-p-case"><input type="checkbox" checked disabled /><span>Décision sur un dépôt ou une correction<small>Publiée, refusée, appliquée — toujours envoyé.</small></span></label>' +
+      '<label class="pro-p-case"><input type="checkbox" id="pro-p-recap" data-preference="weekly_recap"' + (p.weekly_recap ? ' checked' : '') + ' /><span>Récapitulatif du lundi<small>Consultations, favoris, « j’y vais » de la semaine.</small></span></label>' +
+      '<label class="pro-p-case"><input type="checkbox" id="pro-p-rappel" data-preference="event_reminder"' + (p.event_reminder ? ' checked' : '') + ' /><span>Rappel avant une sortie <span class="pro-pastille-etat">Bientôt</span><small>3 jours avant\u00a0: le nombre de familles inscrites, l’affiche manquante s’il y a lieu.</small></span></label>' +
+      '<p class="pro-message" id="pro-p-emails-message" role="status" aria-live="polite"></p>' +
+    '</div>';
+  }
+
+  function cableEmails() {
+    var cases = document.querySelectorAll('[data-preference]');
+    for (var i = 0; i < cases.length; i++) {
+      cases[i].addEventListener('change', function (event) { onChangePreference(event.currentTarget); });
+    }
+  }
+
+  function onChangePreference(caseEl) {
+    var messageEl = document.getElementById('pro-p-emails-message');
+    var corps = {};
+    corps[caseEl.getAttribute('data-preference')] = caseEl.checked;
+    caseEl.disabled = true;
+    definirMessage(messageEl, 'Enregistrement…', false);
+    appelApi('update_preferences', corps, true).then(function (resultat) {
+      caseEl.disabled = false;
+      if (resultat.ok && resultat.data && resultat.data.ok) {
+        if (tableauDeBordCache && tableauDeBordCache.account) tableauDeBordCache.account.preferences = resultat.data.preferences;
+        definirMessage(messageEl, 'Préférence enregistrée.', false);
+        return;
+      }
+      caseEl.checked = !caseEl.checked;
+      definirMessage(messageEl, 'L’enregistrement n’a pas abouti, réessayez.', true);
+    }).catch(function () {
+      caseEl.disabled = false;
+      caseEl.checked = !caseEl.checked;
+      definirMessage(messageEl, 'L’enregistrement n’a pas abouti, réessayez.', true);
+    });
+  }
+
+  // ── Vos accords ──────────────────────────────────────────────────────
+  function carteAccordsHtml(c) {
+    var ag = c.agreements || {};
+    var propriete = ag.ownership
+      ? 'Confirmée le ' + dateCourteFr(ag.ownership.accepted_at) + ' (version ' + ag.ownership.version + ')'
+      : 'Aucune confirmation retrouvée';
+    var n = ag.visual_attestations_count || 0;
+    return '<div class="pro-carte"><h2>Vos accords</h2>' +
+      '<div class="pro-p-ligne"><div><strong>Propriété</strong><p>' + ech(propriete) + '</p></div></div>' +
+      '<div class="pro-p-ligne"><div><strong>Droits visuels</strong><p>' + ech(n === 0 ? 'Aucune attestation' : pluriel(n, 'attestation', 'attestations')) + '</p></div></div>' +
+      '<div class="pro-p-ligne"><div><strong>Conditions</strong><p><a href="/conditions/">Conditions d’utilisation</a> \u00b7 <a href="/confidentialite/">Confidentialité</a></p></div></div>' +
+    '</div>';
+  }
+
+  // ── Fermer l'espace ──────────────────────────────────────────────────
+  function carteFermetureHtml(c) {
+    return '<div class="pro-carte" id="pro-p-fermeture"><h2>Fermer l’espace</h2>' +
+      '<p class="pro-sous-titre">Vos fiches publiées restent dans le catalogue, sans lien avec votre structure, sauf si vous demandez leur retrait avant. Vos statistiques et attestations sont conservées 3 ans, puis effacées.</p>' +
+      (c.closure_requested_at
+        ? '<p class="pro-p-bandeau" role="status">Fermeture demandée le ' + ech(dateCourteFr(c.closure_requested_at)) + ' — nous revenons vers vous par e-mail.</p>'
+        : '<button type="button" class="pro-bouton-secondaire pro-a-danger" style="width:auto;padding:0 18px" id="pro-p-fermer">Demander la fermeture</button><div id="pro-p-fermeture-zone"></div>') +
+    '</div>';
+  }
+
+  function cableFermeture() {
+    var bouton = document.getElementById('pro-p-fermer');
+    if (!bouton) return;
+    bouton.addEventListener('click', function () {
+      bouton.hidden = true;
+      var zone = document.getElementById('pro-p-fermeture-zone');
+      zone.innerHTML = '<div class="pro-a-panneau">' +
+        '<p><strong>Demander la fermeture de votre espace\u00a0?</strong></p>' +
+        '<p class="pro-a-aide">Rien n’est fermé automatiquement\u00a0: Urson reçoit votre demande et revient vers vous par e-mail.</p>' +
+        '<div class="pro-champ"><label class="pro-label" for="pro-p-fermeture-motif">Un mot pour nous (facultatif)</label>' +
+        '<textarea class="pro-input" id="pro-p-fermeture-motif" rows="2" maxlength="1000"></textarea></div>' +
+        '<div class="pro-a-actions"><button type="button" class="pro-bouton-secondaire" id="pro-p-fermeture-annuler">Annuler</button>' +
+        '<button type="button" class="pro-bouton-secondaire pro-a-danger" id="pro-p-fermeture-confirmer">Confirmer la demande</button></div>' +
+        '<p class="pro-message" id="pro-p-fermeture-message" role="status" aria-live="polite"></p></div>';
+      document.getElementById('pro-p-fermeture-annuler').addEventListener('click', function () { zone.innerHTML = ''; bouton.hidden = false; });
+      document.getElementById('pro-p-fermeture-confirmer').addEventListener('click', function () {
+        onConfirmeFermeture();
+      });
+    });
+  }
+
+  function onConfirmeFermeture() {
+    var bouton = document.getElementById('pro-p-fermeture-confirmer');
+    var messageEl = document.getElementById('pro-p-fermeture-message');
+    bouton.disabled = true;
+    definirMessage(messageEl, 'Envoi en cours…', false);
+    appelApi('request_closure', { reason: document.getElementById('pro-p-fermeture-motif').value }, true).then(function (resultat) {
+      if (resultat.ok && resultat.data && resultat.data.ok) {
+        oublieDonnees();
+        document.getElementById('pro-p-fermeture').innerHTML = '<h2>Fermer l’espace</h2>' +
+          carteConfirmationHtml('pro-p-fermeture-confirm', 'Demande envoyée',
+            'Fermeture demandée le ' + ech(dateCourteFr(resultat.data.closure_requested_at)) + ' — nous revenons vers vous par e-mail.', null, '');
+        focaliseConfirmation('pro-p-fermeture-confirm');
+        return;
+      }
+      bouton.disabled = false;
+      definirMessage(messageEl, 'La demande n’a pas abouti, réessayez.', true);
+    }).catch(function () {
+      bouton.disabled = false;
+      definirMessage(messageEl, 'La demande n’a pas abouti, réessayez.', true);
+    });
+  }
+
+
   // ── Déposer / modifier une sortie ────────────────────────────────────
   // Un seul formulaire pour les deux gestes (retour de Kevin, en-tête) :
   // 'create' envoie create_event (activity_id absent), 'update' envoie
   // update_event (activity_id = la fiche à corriger, préremplie depuis la
-  // ligne déjà chargée par chargeMesSorties — aucun aller-retour de plus).
+  // ligne déjà chargée par le tableau de bord — aucun aller-retour de plus).
   // Nom du lieu / adresse / ville tapés librement, jamais une recherche du
   // catalogue.
 
-  function afficheFormulaireEvenement(mode, activite) {
+  function afficheFormulaireEvenement(mode, activite, modele) {
     var zone = document.getElementById('pro-depot-zone');
     var estEdition = mode === 'update';
     var val = function (v) { return v === null || v === undefined ? '' : String(v); };
+    // « Dupliquer » (lot 3) : un modèle pré-remplit un DÉPÔT neuf, jamais ses dates.
+    var source = estEdition ? activite : (modele || null);
 
     var titreCarte = document.getElementById('pro-depot-titre-carte');
     var sousTitreCarte = document.getElementById('pro-depot-soustitre');
@@ -3533,7 +5124,7 @@
         : 'Cinq questions. Elle est relue avant publication.';
     }
 
-    categorieChoisie = estEdition && activite.category ? activite.category : '';
+    categorieChoisie = source && source.category ? source.category : '';
 
     // L'ordre des questions EST le correctif de la collision « nom du lieu /
     // titre » (maquettes validées le 2026-09-11) : on demande d'abord comment
@@ -3549,7 +5140,7 @@
             '<span class="pro-q-num">1</span>' +
           '</div>' +
           '<p class="pro-q-sous">Le nom de l’activité, tel que les familles le liront en premier.</p>' +
-          '<input class="pro-input" type="text" id="pro-depot-titre" required maxlength="200" value="' + ech(val(estEdition ? activite.title : '')) + '" />' +
+          '<input class="pro-input" type="text" id="pro-depot-titre" required maxlength="200" value="' + ech(val(source ? source.title : '')) + '" />' +
           '<div class="pro-encart">' +
             '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:3px;color:var(--fg-3)" aria-hidden="true">' +
             '<circle cx="12" cy="12" r="9"></circle><path d="M12 11v5M12 7.6v.1"></path></svg>' +
@@ -3575,7 +5166,7 @@
           '<div class="pro-champ">' +
             '<label class="pro-label" for="pro-depot-lieu-nom">Le lieu qui accueille l’activité</label>' +
             '<p class="pro-note-champ" style="margin:0 0 8px">La salle, le parc, le bâtiment.</p>' +
-            '<input class="pro-input" type="text" id="pro-depot-lieu-nom" required maxlength="200" value="' + ech(val(estEdition ? activite.locationName : '')) + '" />' +
+            '<input class="pro-input" type="text" id="pro-depot-lieu-nom" required maxlength="200" value="' + ech(val(source ? source.locationName : '')) + '" />' +
           '</div>' +
           '<div class="pro-champ pro-champ--adresse">' +
             '<label class="pro-label" for="pro-depot-adresse">Adresse</label>' +
@@ -3583,13 +5174,13 @@
             '<input class="pro-input" type="text" id="pro-depot-adresse" required maxlength="300" ' +
               'autocomplete="off" role="combobox" aria-expanded="false" aria-autocomplete="list" ' +
               'aria-controls="pro-depot-suggestions" ' +
-              'value="' + ech(val(estEdition ? activite.address : '')) + '" />' +
+              'value="' + ech(val(source ? source.address : '')) + '" />' +
             '<ul class="pro-suggestions" id="pro-depot-suggestions" role="listbox" aria-label="Adresses proposées" hidden></ul>' +
             '<div id="pro-depot-carte"></div>' +
           '</div>' +
           '<div class="pro-champ">' +
             '<label class="pro-label" for="pro-depot-ville">Ville</label>' +
-            '<input class="pro-input" type="text" id="pro-depot-ville" required maxlength="100" value="' + ech(val(estEdition ? activite.city : '')) + '" />' +
+            '<input class="pro-input" type="text" id="pro-depot-ville" required maxlength="100" value="' + ech(val(source ? source.city : '')) + '" />' +
           '</div>' +
         '</div>' +
 
@@ -3611,16 +5202,16 @@
           '<p class="pro-q-sous">Rien d’obligatoire ici. Mais chaque info fait gagner du temps aux familles, et évite un aller-retour avec la relecture.</p>' +
           '<div class="pro-champ">' +
             '<label class="pro-label" for="pro-depot-description">Description</label>' +
-            '<textarea class="pro-input" id="pro-depot-description" rows="3" maxlength="5000">' + ech(val(estEdition ? activite.description : '')) + '</textarea>' +
+            '<textarea class="pro-input" id="pro-depot-description" rows="3" maxlength="5000">' + ech(val(source ? source.description : '')) + '</textarea>' +
           '</div>' +
           '<div class="pro-champ pro-ligne-deux">' +
             '<div>' +
               '<label class="pro-label" for="pro-depot-age-min">À partir de quel âge ?</label>' +
-              '<input class="pro-input" type="number" min="0" max="18" id="pro-depot-age-min" value="' + ech(val(estEdition ? activite.ageMin : '')) + '" />' +
+              '<input class="pro-input" type="number" min="0" max="18" id="pro-depot-age-min" value="' + ech(val(source ? source.ageMin : '')) + '" />' +
             '</div>' +
             '<div>' +
               '<label class="pro-label" for="pro-depot-age-max">Jusqu’à quel âge ?</label>' +
-              '<input class="pro-input" type="number" min="0" max="18" id="pro-depot-age-max" value="' + ech(val(estEdition ? activite.ageMax : '')) + '" />' +
+              '<input class="pro-input" type="number" min="0" max="18" id="pro-depot-age-max" value="' + ech(val(source ? source.ageMax : '')) + '" />' +
             '</div>' +
           '</div>' +
           '<div class="pro-champ">' +
@@ -3630,7 +5221,7 @@
           '<div class="pro-champ">' +
             '<label class="pro-label" for="pro-depot-lien">Inscription ou renseignements</label>' +
             '<p class="pro-note-champ" style="margin:0 0 8px">Un lien vers votre page, si vous en avez une.</p>' +
-            '<input class="pro-input" type="text" id="pro-depot-lien" maxlength="300" placeholder="https://" value="' + ech(val(estEdition ? activite.registrationUrl : '')) + '" />' +
+            '<input class="pro-input" type="text" id="pro-depot-lien" maxlength="300" placeholder="https://" value="' + ech(val(source ? source.registrationUrl : '')) + '" />' +
           '</div>' +
           (estEdition ? blocAfficheActuelleHtml(activite) : '') +
           blocPhotoHtml(estEdition && afficheEnLigne(activite) ? 'Remplacer l’affiche' : '') +
@@ -3660,14 +5251,14 @@
       estEdition ? activite.datesEditable !== false : true
     );
     dCableControleDates();
-    tInitialiser(estEdition ? activite.price : null);
+    tInitialiser(source ? source.price : null);
 
     document.getElementById('pro-form-depot').addEventListener('submit', function (event) {
       onEnvoiFormulaireEvenement(event, mode, estEdition ? activite.id : null);
     });
     if (estEdition) {
       document.getElementById('pro-depot-annuler').addEventListener('click', function () {
-        afficheFormulaireEvenement('create', null);
+        vaVers(routeSortie(activite.id));
       });
     }
   }
