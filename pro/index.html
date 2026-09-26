@@ -795,6 +795,149 @@
     .pro-p-case span { font-size: 15px; font-weight: 600; color: var(--fg-1); }
     .pro-p-case small { display: block; font-size: 13px; font-weight: 400; color: var(--fg-2); margin-top: 2px; }
 
+    .pro-st-controles { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 0 0 16px; }
+    .pro-st-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .pro-st-select { width: auto; min-width: 200px; max-width: 100%; height: 44px; }
+    .pro-st-controles .pro-st-exporter { width: auto; height: 44px; padding: 0 18px; }
+    .pro-st-select:focus-visible, .pro-st-exporter:focus-visible { outline: 2px solid var(--coral-deep); outline-offset: 1px; }
+    .pro-st-clics { margin: 0 0 16px; font-size: 14px; color: var(--fg-2); }
+    .pro-st-batons {
+      display: flex; align-items: flex-end; gap: 3px; height: 160px; margin: 14px 0 6px;
+      border-bottom: 1px solid var(--line-soft);
+    }
+    .pro-st-baton { flex: 1; min-width: 0; background: var(--coral); border-radius: 4px 4px 0 0; cursor: pointer; }
+    .pro-st-baton:focus-visible { outline: 2px solid var(--coral-deep); outline-offset: 1px; }
+    .pro-st-carte-graphe { position: relative; }
+    .pro-st-bulle {
+      position: absolute; z-index: 5; width: max-content; max-width: min(260px, calc(100% - 16px));
+      background: var(--bg-surface); border: 1px solid var(--line-medium); color: var(--fg-1);
+      border-radius: 12px; padding: 10px 12px; font-size: 13px; line-height: 1.4;
+      box-shadow: 0 6px 18px rgba(68, 44, 46, 0.12); pointer-events: none;
+    }
+    .pro-st-bulle--dessus { max-width: none; }
+    .pro-st-baton--visee, .pro-st-baton--vide.pro-st-baton--visee { background: var(--coral-deep); }
+    .pro-st-bulle p { margin: 0; }
+    .pro-st-bulle-titre { font-weight: 700; margin-bottom: 4px !important; }
+    .pro-st-bulle ul { list-style: none; margin: 0; padding: 0; }
+    .pro-st-bulle-detail { margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--line-soft); }
+    .pro-st-bulle-detail li { overflow-wrap: anywhere; }
+    .pro-st-baton--vide { background: var(--line-soft); }
+    .pro-st-reperes { display: flex; justify-content: space-between; gap: 8px; font-size: 12px; color: var(--fg-2); }
+    .pro-st-grille { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+    .pro-st-grille--seule { grid-template-columns: minmax(0, 1fr); }
+    .pro-st-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    .pro-st-table th { text-align: left; font-size: 12px; font-weight: 700; color: var(--fg-2); padding: 8px 6px; border-bottom: 1px solid var(--line-soft); }
+    .pro-st-table td { padding: 10px 6px; border-bottom: 1px solid var(--line-soft); color: var(--fg-1); vertical-align: middle; }
+    .pro-st-table tr:last-child td { border-bottom: none; }
+    .pro-st-table .pro-st-num { text-align: right; white-space: nowrap; }
+    .pro-st-table .pro-s-pastille { margin-left: 8px; }
+    .pro-st-source { padding: 10px 0; }
+    .pro-st-source-tete { display: flex; justify-content: space-between; gap: 10px; font-size: 14px; color: var(--fg-1); }
+    .pro-st-source-tete span:first-child { font-weight: 600; }
+    .pro-st-piste { display: block; height: 8px; border-radius: 4px; background: var(--bg-soft); margin-top: 6px; }
+    .pro-st-remplissage { display: block; height: 8px; border-radius: 4px; background: var(--coral); }
+    .pro-st-bientot { background: var(--bg-soft); }
+    .pro-st-bientot p { margin: 0; color: var(--fg-1); font-size: 14px; line-height: 1.5; }
+    .pro-st-sr {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden;
+      clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+    }
+    @media (max-width: 720px) {
+      .pro-st-grille { grid-template-columns: minmax(0, 1fr); }
+      .pro-st-batons { gap: 1px; }
+      .pro-st-table thead { display: none; }
+      .pro-st-table, .pro-st-table tbody, .pro-st-table tr, .pro-st-table td { display: block; width: 100%; }
+      .pro-st-table tr { padding: 10px 0; border-bottom: 1px solid var(--line-soft); }
+      .pro-st-table tr:last-child { border-bottom: none; }
+      .pro-st-table td { border-bottom: none; padding: 2px 0; }
+      .pro-st-table td.pro-st-num { display: flex; justify-content: space-between; text-align: left; }
+      .pro-st-table td.pro-st-num::before { content: attr(data-label); color: var(--fg-2); }
+    }
+
+    .pro-m-entete { display: flex; gap: 16px; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; }
+    .pro-m-entete > div { flex: 1; min-width: 240px; }
+    .pro-m-grille { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: start; }
+    .pro-m-carte-tete { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+    .pro-m-apercu {
+      border: 1px solid var(--line-medium); border-radius: 16px; padding: 12px;
+      background: var(--bg-app); margin: 10px 0 12px;
+    }
+    .pro-m-apercu-legende { font-size: 12px; color: var(--fg-2); margin: 0 0 8px; }
+    .pro-m-apercu-rang { display: flex; gap: 8px; }
+    .pro-m-bloc {
+      border-radius: 10px; background: var(--line-soft); min-height: 76px; flex: 1;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 4px; font-size: 11px; color: var(--fg-2);
+    }
+    .pro-m-bloc--promu { flex: 1.6; border: 2px solid var(--coral-deep); background: var(--bg-surface); color: var(--fg-1); font-weight: 700; }
+    .pro-m-etiquette {
+      display: inline-block; padding: 2px 8px; border-radius: 999px; background: var(--bg-soft);
+      color: var(--fg-1); font-size: 10px; font-weight: 800;
+    }
+    .pro-m-ligne-res { display: flex; gap: 8px; align-items: center; padding: 8px; border-radius: 12px; font-size: 12px; color: var(--fg-2); }
+    .pro-m-ligne-res--promue { border: 2px solid var(--coral-deep); background: var(--bg-surface); color: var(--fg-1); font-weight: 700; }
+    .pro-m-ligne-res span { display: flex; flex-direction: column; align-items: flex-start; gap: 3px; }
+    .pro-m-vignette { width: 48px; height: 36px; border-radius: 8px; background: var(--line-soft); flex-shrink: 0; }
+    /* Texte d'aide : --fg-1 sur --bg-soft (le gris y tombe sous AA). */
+    .pro-m-aide { background: var(--bg-soft); color: var(--fg-1); border-radius: 14px; padding: 12px 14px; font-size: 14px; line-height: 1.5; margin: 0 0 14px; }
+    .pro-m-durees { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 0 0 14px; }
+    .pro-m-durees .pro-pastille { width: 100%; padding: 6px 8px; min-height: 44px; height: auto; }
+    .pro-m-durees .pro-pastille small { display: block; font-size: 12px; font-weight: 600; color: var(--fg-2); }
+    .pro-m-durees .pro-pastille:disabled { cursor: default; opacity: .6; }
+    .pro-m-champ { margin: 0 0 14px; }
+    .pro-m-tranches { border: none; padding: 0; margin: 0 0 14px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 12px; }
+    .pro-m-tranches legend { grid-column: 1 / -1; padding: 0; }
+    .pro-m-tranches .pro-note-champ { grid-column: 1 / -1; }
+    .pro-m-tranche { margin: 0; min-height: 44px; align-items: center; }
+    .pro-m-tranche small { font-size: 13px; color: var(--fg-2); font-weight: 400; }
+    .pro-m-tranche input:focus-visible { outline: 2px solid var(--coral-deep); outline-offset: 1px; }
+    .pro-m-bientot { background: var(--bg-soft); display: flex; gap: 24px; align-items: center; flex-wrap: wrap; }
+    .pro-m-bientot > div { flex: 1; min-width: 240px; }
+    .pro-m-bientot p { color: var(--fg-1); margin: 0; line-height: 1.5; }
+    .pro-m-case { max-width: 360px; margin: 0; }
+    .pro-m-case small { display: block; font-size: 13px; color: var(--fg-1); font-weight: 400; margin-top: 2px; }
+    .pro-m-case input:focus-visible { outline: 2px solid var(--coral-deep); outline-offset: 1px; }
+    .pro-m-demande { padding: 12px 0; border-bottom: 1px solid var(--line-soft); }
+    .pro-m-demande:last-child { border-bottom: none; }
+    .pro-m-demande p { margin: 2px 0 0; font-size: 13px; color: var(--fg-2); }
+    .pro-m-demande .pro-s-pastilles { margin-top: 6px; }
+    .pro-m-lien { min-height: 44px; }
+    .pro-m-lien:focus-visible { outline: 2px solid var(--coral-deep); outline-offset: 1px; }
+    @media (max-width: 720px) {
+      .pro-m-grille { grid-template-columns: minmax(0, 1fr); }
+      .pro-m-bientot { display: block; }
+      .pro-m-case { max-width: none; margin-top: 14px; }
+    }
+
+    .pro-cal { margin: 0 0 14px; }
+    .pro-cal-tete { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 0 0 8px; }
+    .pro-cal-mois { font-size: 15px; font-weight: 700; color: var(--fg-1); margin: 0; text-transform: capitalize; }
+    .pro-cal-nav {
+      min-width: 44px; min-height: 44px; border-radius: 999px; border: 1px solid var(--line-medium);
+      background: var(--bg-surface); color: var(--fg-1); font-size: 18px; cursor: pointer; font-family: inherit;
+    }
+    .pro-cal-nav:disabled { opacity: .4; cursor: default; }
+    .pro-cal-grille { display: grid; grid-template-columns: repeat(7, minmax(44px, 1fr)); gap: 4px; overflow-x: auto; }
+    .pro-cal-semaine { font-size: 11px; font-weight: 700; color: var(--fg-2); text-align: center; padding: 2px 0; }
+    .pro-cal-jour {
+      min-height: 48px; min-width: 44px; border-radius: 10px; border: 1px solid var(--line-soft);
+      background: var(--bg-surface); color: var(--fg-1); font-family: inherit; cursor: pointer;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; padding: 2px;
+    }
+    .pro-cal-jour strong { font-size: 14px; }
+    .pro-cal-jour small { font-size: 10px; font-weight: 700; color: var(--fg-2); }
+    .pro-cal-jour--peu small { color: var(--fg-1); }
+    .pro-cal-jour--complet { background: var(--line-soft); }
+    .pro-cal-jour--complet small { color: var(--fg-1); }
+    .pro-cal-jour[aria-disabled="true"] { cursor: not-allowed; color: var(--fg-3); }
+    .pro-cal-jour[aria-disabled="true"] strong { font-weight: 600; }
+    .pro-cal-jour--periode { background: var(--bg-soft); border-color: var(--coral); }
+    .pro-cal-jour[aria-pressed="true"] { border: 2px solid var(--coral-deep); background: var(--bg-soft); }
+    .pro-cal-jour:focus-visible, .pro-cal-nav:focus-visible { outline: 2px solid var(--coral-deep); outline-offset: 1px; }
+    .pro-cal-vide { min-height: 48px; }
+    .pro-cal-legende { margin: 8px 0 0; font-size: 13px; color: var(--fg-2); line-height: 1.5; }
+    .pro-cal-choix { margin: 8px 0 0; font-size: 14px; color: var(--fg-1); font-weight: 600; }
+
   </style>
 </head>
 <body>
@@ -3199,10 +3342,12 @@
   var ROUTE_DEPOSE = '#/depose';
   var ROUTE_LIEU = '#/lieu';
   var ROUTE_STATS = '#/stats';
+  var PREFIXE_STATS = '#/stats/';
   var ROUTE_MISE_EN_AVANT = '#/mise-en-avant';
   var ROUTE_PARAMETRES = '#/parametres';
   var PREFIXE_SORTIE = '#/sortie/';
   var PREFIXE_MODIFIER = '#/modifier/';
+  var PREFIXE_MISE_EN_AVANT = '#/mise-en-avant/';
 
   // Compte vérifié en mémoire. Sans lui, aucune route ne rend d'écran privé.
   var compteCourant = null;
@@ -3229,13 +3374,15 @@
     if (h === ROUTE_DEPOT) return { nom: 'depot' };
     if (h === ROUTE_DEPOSE) return { nom: 'depose' };
     if (h === ROUTE_LIEU) return { nom: 'lieu' };
-    if (h === ROUTE_STATS) return { nom: 'stats' };
+    if (h === ROUTE_STATS) return { nom: 'stats', id: null };
+    if (h.indexOf(PREFIXE_STATS) === 0) return { nom: 'stats', id: idDepuisFragment(h.slice(PREFIXE_STATS.length)) };
     if (h === ROUTE_MISE_EN_AVANT) return { nom: 'avant' };
     if (h === ROUTE_PARAMETRES) return { nom: 'parametres' };
     if (h.indexOf(PREFIXE_SORTIE) === 0) {
       var idS = idDepuisFragment(h.slice(PREFIXE_SORTIE.length));
       return idS ? { nom: 'sortie', id: idS } : { nom: 'sorties' };
     }
+    if (h.indexOf(PREFIXE_MISE_EN_AVANT) === 0) return { nom: 'avant', id: idDepuisFragment(h.slice(PREFIXE_MISE_EN_AVANT.length)) };
     if (h.indexOf(PREFIXE_MODIFIER) === 0) {
       var idM = idDepuisFragment(h.slice(PREFIXE_MODIFIER.length));
       return idM ? { nom: 'modifier', id: idM } : { nom: 'sorties' };
@@ -3291,7 +3438,9 @@
     if (route.nom === 'modifier') { ouvreModifier(route.id); return; }
     if (route.nom === 'sortie') { afficheUneSortie(route.id); return; }
     if (route.nom === 'sorties') { afficheMesSorties(); return; }
-    if (route.nom === 'lieu' || route.nom === 'stats' || route.nom === 'avant') { afficheAVenir(route.nom); return; }
+    if (route.nom === 'stats') { afficheStatistiques(route.id); return; }
+    if (route.nom === 'lieu') { afficheAVenir(route.nom); return; }
+    if (route.nom === 'avant') { afficheMiseEnAvant(route.id || null); return; }
     if (route.nom === 'parametres') { afficheParametres(); return; }
     afficheTableauDeBord();
   }
@@ -3346,6 +3495,7 @@
   function oublieDonnees() {
     tableauDeBordCache = null;
     statsCache = {};
+    miseEnAvantCache = null;
   }
 
   function statsParSortie(stats) {
@@ -3362,8 +3512,6 @@
   // ── Écrans « à venir » ───────────────────────────────────────────────
   var TEXTES_A_VENIR = {
     lieu: ['Mon lieu', 'Bientôt, vous pourrez présenter votre lieu (adresse, horaires, photos) et y rattacher vos sorties.'],
-    stats: ['Statistiques', 'Bientôt, le détail des consultations, des favoris et des « j’y vais » de chaque sortie, semaine après semaine.'],
-    avant: ['Mise en avant', 'Bientôt, vous pourrez placer une sortie en tête de l’accueil ou des résultats pour une durée choisie.']
   };
 
   function afficheAVenir(section) {
@@ -3843,8 +3991,9 @@
     });
   }
 
-  /** Carte sobre pour les trois écrans « à venir » (Mon lieu, Statistiques,
-   *  Mise en avant) — titre, une phrase, pastille « À venir », rien de plus. */
+  /** Carte sobre pour l'écran « à venir » (Mon lieu ; les statistiques et la mise
+   *  en avant ont leur écran, ./pro-stats.mjs et ./pro-mise-en-avant.mjs) — titre,
+   *  une phrase, pastille « À venir », rien de plus. */
   function carteAVenirHtml(titre, phrase) {
     return '<div class="pro-carte pro-coque-carte-avenir">' +
       '<h1 style="margin:0 0 8px">' + ech(titre) + '</h1>' +
@@ -3886,7 +4035,8 @@
         (c.activated_at ? ' \u00b7 espace vérifié le ' + ech(dateCourteFr(c.activated_at)) : '') +
         ' \u00b7 ' + ech(pluriel(counts.online || 0, 'sortie en ligne', 'sorties en ligne')) + '</p>' +
       '<div class="pro-t-chips" role="group" aria-label="Période">' + chipsPeriodeHtml() + '</div>' +
-      '<div class="pro-t-tuiles" id="pro-t-tuiles" aria-live="polite">' + tuilesHtml(null, counts) + '</div>';
+      '<div class="pro-t-tuiles" id="pro-t-tuiles" aria-live="polite">' + tuilesHtml(null, counts) + '</div>' +
+      '<p style="margin:-6px 0 18px"><a class="pro-lien-retour" href="' + ROUTE_STATS + '" data-route="' + ROUTE_STATS + '">Voir les statistiques</a></p>';
 
     if (sansAffiche.length > 0) {
       var s = sansAffiche[0];
@@ -3903,8 +4053,7 @@
         '<div id="pro-t-prochaines">' + prochainesHtml(aVenir, null) + '</div>' +
       '</div></div><div>' +
       aTraiterHtml(counts, sansAffiche) +
-      '<div class="pro-carte"><div class="pro-t-entete-carte"><h2>Mise en avant</h2><span class="pro-pastille-etat">À venir</span></div>' +
-        '<p class="pro-sous-titre" style="margin:6px 0 0">Bientôt, vous pourrez placer une sortie en tête de l’accueil ou des résultats pour une durée choisie.</p></div>' +
+      '<div class="pro-carte" id="pro-t-avant">' + carteMeaTableauHtml() + '</div>' +
       '<div class="pro-carte"><div class="pro-t-entete-carte"><h2>Mon lieu</h2><span class="pro-pastille-etat">À venir</span></div>' +
         '<p class="pro-sous-titre" style="margin:6px 0 0">Présenter votre lieu et y rattacher vos sorties.</p></div>' +
       '<div class="pro-carte pro-t-recap"><h2>Recevoir un récapitulatif chaque lundi</h2>' +
@@ -3919,6 +4068,7 @@
     cableLiensRoute(zone);
     cableChipsPeriode(zone, counts, aVenir, jeton);
     chargeTuiles(counts, aVenir, jeton);
+    poseCarteMeaTableau(jeton);
   }
 
   function chipsPeriodeHtml() {
@@ -3964,7 +4114,7 @@
     return tuileHtml('Consultations', v(t && t.views), 'un foyer compté une fois par jour') +
       tuileHtml('Ajouts en favoris', v(t && t.favorites), 'sur la période') +
       tuileHtml('Familles « j’y vais »', v(t && t.attendances), 'sur ' + pluriel(counts.upcoming || 0, 'sortie à venir', 'sorties à venir')) +
-      tuileHtml('Clics vers votre site', '—', 'bientôt mesuré');
+      tuileHtml('Clics vers votre site', t && stats.clicks_measured_since ? nombreFr(t.clicks) : (t ? '—' : '…'), noteClics(stats && stats.clicks_measured_since));
   }
 
   function tuileHtml(libelle, valeur, note) {
@@ -4216,7 +4366,7 @@
   function afficheMesSorties() {
     var jeton = jetonEcran;
     envelopeCoque('sorties', '<p class="pro-etat">Un instant…</p>');
-    Promise.all([chargeTableauDeBord(false), chargeStats('30d')]).then(function (r) {
+    Promise.all([chargeTableauDeBord(false), chargeStats('30d'), chargeMiseEnAvant(false)]).then(function (r) {
       if (!ecranCourant(jeton)) return;
       if (!r[0]) { contenuCoque().innerHTML = erreurChargementHtml(); return; }
       rendMesSorties(r[0], r[1]);
@@ -4350,6 +4500,7 @@
     entrees.push(['affiche', 'Affiche…', false]);
     if (a.kind === 'event') entrees.push(['dupliquer', 'Dupliquer', false]);
     entrees.push(['stats', 'Statistiques', false]);
+    if (a.state === 'upcoming' && miseEnAvantOuverte()) entrees.push(['avant', 'Mettre en avant', false]);
     if (a.state !== 'withdrawn') entrees.push(['retirer', 'Retirer la sortie', true]);
     return '<div class="pro-s-ligne" data-ligne="' + i + '">' +
       vignetteAfficheHtml(a, false) +
@@ -4416,7 +4567,8 @@
         if (action === 'modifier') ouvreCorrection(a);
         else if (action === 'affiche') vaVers(routeSortie(a.id));
         else if (action === 'dupliquer') dupliqueSortie(a);
-        else if (action === 'stats') vaVers(ROUTE_STATS);
+        else if (action === 'stats') vaVers(routeStats(a.id));
+        else if (action === 'avant') vaVers(routeMiseEnAvant(a.id));
         else if (action === 'retirer') ouvreRetraitSortie(sousLigne, a, null);
       });
     }
@@ -4429,7 +4581,7 @@
   function afficheUneSortie(id) {
     var jeton = jetonEcran;
     envelopeCoque('sorties', '<p class="pro-etat">Un instant…</p>');
-    Promise.all([chargeTableauDeBord(false), chargeStats('30d')]).then(function (r) {
+    Promise.all([chargeTableauDeBord(false), chargeStats('30d'), chargeMiseEnAvant(false)]).then(function (r) {
       if (!ecranCourant(jeton)) return;
       if (!r[0]) { contenuCoque().innerHTML = erreurChargementHtml(); return; }
       var a = sortiesConnues[id];
@@ -4486,7 +4638,7 @@
   function rendCorpsFiche(a, st) {
     var corps = document.getElementById('pro-f-corps');
     if (ongletFiche === 'stats') {
-      corps.innerHTML = carteAVenirHtml('Statistiques de la sortie', 'Bientôt, le détail semaine par semaine. Les chiffres des 30 derniers jours sont dans l’aperçu.');
+      rendBlocStatistiques(corps, a.id);
       return;
     }
     if (ongletFiche === 'historique') {
@@ -4504,10 +4656,10 @@
       '</div><div class="pro-f-colonne">' +
         '<div class="pro-carte"><h2>Cette sortie, 30 jours</h2><div class="pro-f-chiffres">' +
           chiffreFicheHtml(st ? st.views : null, 'consultations') + chiffreFicheHtml(st ? st.favorites : null, 'favoris') +
-          chiffreFicheHtml(st ? st.attendances : null, 'familles « j’y vais »') + chiffreFicheHtml(null, 'clics vers l’inscription') +
+          chiffreFicheHtml(st ? st.attendances : null, 'familles « j’y vais »') +
+          chiffreFicheHtml(st && statsCache['30d'] && statsCache['30d'].clicks_measured_since ? st.clicks : null, 'clics vers l’inscription \u00b7 ' + noteClics(statsCache['30d'] && statsCache['30d'].clicks_measured_since)) +
         '</div></div>' +
-        '<div class="pro-carte"><div class="pro-t-entete-carte"><h2>Mise en avant</h2><span class="pro-pastille-etat">À venir</span></div>' +
-          '<p class="pro-sous-titre" style="margin:6px 0 0">Bientôt\u00a0: placer cette sortie en tête de l’accueil ou des résultats, pour une durée choisie.</p></div>' +
+        '<div class="pro-carte">' + carteMeaSortieHtml(a) + '</div>' +
         '<div class="pro-carte"><h2>Actions</h2>' +
           (a.kind === 'event' ? '<button type="button" class="pro-bouton-secondaire" id="pro-f-dupliquer">Dupliquer pour une autre date</button>' : '') +
           (a.state !== 'withdrawn'
@@ -5097,6 +5249,1353 @@
       bouton.disabled = false;
       definirMessage(messageEl, 'La demande n’a pas abouti, réessayez.', true);
     });
+  }
+
+
+  // ── Statistiques ─────────────────────────────────────────────────────
+  var ST_MOIS = ["janv.","févr.","mars","avr.","mai","juin","juil.","août","sept.","oct.","nov.","déc."];
+  var ST_JOURS = ["dim.","lun.","mar.","mer.","jeu.","ven.","sam."];
+  function stCelluleCsv(valeur) {
+    if (typeof valeur === 'number') return isFinite(valeur) ? String(valeur) : '';
+    var t = valeur == null ? '' : String(valeur);
+    var premier = t.charAt(0);
+    if (premier === '=' || premier === '+' || premier === '-' || premier === '@' || premier === '\t' || premier === '\r') {
+      t = "'" + t;
+    }
+    if (/[;"\r\n]/.test(t)) t = '"' + t.replace(/"/g, '""') + '"';
+    return t;
+  }
+  function stTitreCsv(titres, id) {
+    return titres && titres[id] ? String(titres[id]) : String(id);
+  }
+  function stCsvStatistiques(stats, titres) {
+    var lignes = [['date', 'sortie', 'consultations', 'favoris', "j'y vais", 'clics', 'partages']];
+    var serie = stats && stats.series ? stats.series.slice() : [];
+    serie.sort(function (a, b) {
+      if (a.bucket !== b.bucket) return a.bucket < b.bucket ? -1 : 1;
+      var ta = stTitreCsv(titres, a.activity_id);
+      var tb = stTitreCsv(titres, b.activity_id);
+      return ta < tb ? -1 : ta > tb ? 1 : 0;
+    });
+    for (var i = 0; i < serie.length; i++) {
+      var s = serie[i];
+      lignes.push([s.bucket, stTitreCsv(titres, s.activity_id), s.views, s.favorites, s.attendances, s.clicks, s.shares]);
+    }
+    var texte = '\uFEFF';
+    for (var k = 0; k < lignes.length; k++) {
+      var cellules = [];
+      for (var c = 0; c < lignes[k].length; c++) cellules.push(stCelluleCsv(lignes[k][c]));
+      texte += cellules.join(';') + '\r\n';
+    }
+    return texte;
+  }
+  function stNomFichierCsv(periode, jour) {
+    var codes = { '7d': '7-jours', '30d': '30-jours', '90d': '90-jours', all: 'tout' };
+    var code = Object.prototype.hasOwnProperty.call(codes, periode) ? codes[periode] : 'periode';
+    var date = /^\d{4}-\d{2}-\d{2}$/.test(String(jour)) ? String(jour) : 'date';
+    return 'urson-statistiques-' + code + '-' + date + '.csv';
+  }
+  function stValeursParPeriode(buckets, series) {
+    var index = {};
+    var valeurs = [];
+    for (var i = 0; i < buckets.length; i++) {
+      index[buckets[i]] = i;
+      valeurs.push(0);
+    }
+    for (var k = 0; k < series.length; k++) {
+      if (Object.prototype.hasOwnProperty.call(index, series[k].bucket)) {
+        valeurs[index[series[k].bucket]] += series[k].views;
+      }
+    }
+    return valeurs;
+  }
+  function stIndexPic(valeurs) {
+    var pic = -1;
+    for (var i = 0; i < valeurs.length; i++) {
+      if (valeurs[i] > 0 && (pic < 0 || valeurs[i] > valeurs[pic])) pic = i;
+    }
+    return pic;
+  }
+  function stLibelleRepere(cle) {
+    var p = String(cle || '').split('-');
+    var m = Number(p[1]);
+    var j = Number(p[2]);
+    if (p.length !== 3 || !m || !j || m > 12) return '';
+    return (j === 1 ? '1er' : String(j)) + ' ' + ST_MOIS[m - 1];
+  }
+  function stLibelleJourCle(cle) {
+    var p = String(cle || '').split('-');
+    var a = Number(p[0]);
+    var m = Number(p[1]);
+    var j = Number(p[2]);
+    if (p.length !== 3 || !a || !m || !j || m > 12) return '';
+    return ST_JOURS[new Date(Date.UTC(a, m - 1, j)).getUTCDay()] + ' ' + stLibelleRepere(cle);
+  }
+  function stDecimaleFr(n) {
+    return String(n).replace('.', ',');
+  }
+  function stDeltaTexte(delta, periode) {
+    if (periode === 'all') return 'depuis le début';
+    var n = periode === '7d' ? 7 : periode === '90d' ? 90 : 30;
+    if (typeof delta !== 'number' || !isFinite(delta)) return 'rien à comparer sur les ' + n + ' jours précédents';
+    var signe = delta > 0 ? '+' : delta < 0 ? '\u2212' : '';
+    return signe + Math.abs(delta) + '\u00a0% vs les ' + n + ' jours précédents';
+  }
+  function stDetailPeriode(bucket, series, titres, sortieSeule) {
+    var totaux = { views: 0, favorites: 0, attendances: 0, clicks: 0, shares: 0 };
+    var parSortie = [];
+    for (var i = 0; i < series.length; i++) {
+      var s = series[i];
+      if (s.bucket !== bucket) continue;
+      totaux.views += s.views;
+      totaux.favorites += s.favorites;
+      totaux.attendances += s.attendances;
+      totaux.clicks += s.clicks;
+      totaux.shares += s.shares;
+      if (s.views > 0) parSortie.push({ titre: stTitreCsv(titres, s.activity_id), views: s.views });
+    }
+    if (sortieSeule) return { totaux: totaux, repartition: [], autres: 0 };
+    parSortie.sort(function (a, b) {
+      if (a.views !== b.views) return b.views - a.views;
+      return a.titre < b.titre ? -1 : a.titre > b.titre ? 1 : 0;
+    });
+    return { totaux: totaux, repartition: parSortie.slice(0, 5), autres: Math.max(0, parSortie.length - 5) };
+  }
+  function stPlacementBulle(barreGauche, barreDroite, largeurBulle, hauteurBulle, largeurCarte, hautZone, ecart, marge) {
+    var droite = barreDroite + ecart;
+    if (droite + largeurBulle <= largeurCarte - marge) {
+      return { cote: 'droite', left: Math.round(droite), top: Math.round(hautZone), width: null };
+    }
+    var gauche = barreGauche - ecart - largeurBulle;
+    if (gauche >= marge) {
+      return { cote: 'gauche', left: Math.round(gauche), top: Math.round(hautZone), width: null };
+    }
+    return {
+      cote: 'dessus', left: marge, top: Math.round(hautZone - ecart - hauteurBulle),
+      width: Math.max(0, Math.round(largeurCarte - 2 * marge))
+    };
+  }
+
+  var periodeStats = '30d';
+  // Sortie présélectionnée sur #/stats/<id> ; null = toutes mes sorties.
+  var sortieStats = null;
+  var PERIODES_STATS = [['7d', '7 jours'], ['30d', '30 jours'], ['90d', '90 jours'], ['all', 'Tout']];
+  var DUREES_STATS = { '7d': '7 jours', '30d': '30 jours', '90d': '90 jours' };
+  // Une seule bulle ouverte dans toute la page ; les écouteurs de document ne
+  // se posent qu'une fois.
+  var stBulleOuverte = null;
+  var stBulleDocumentCable = false;
+  var stNumeroBulle = 0;
+
+  function routeStats(id) { return id ? PREFIXE_STATS + encodeURIComponent(id) : ROUTE_STATS; }
+
+  /** Note de la tuile « Clics vers votre site » (tableau de bord, fiche d'une
+   *  sortie, écran Statistiques) : un nombre n'a de sens qu'une fois au moins
+   *  un clic mesuré dans toute la base (clicks_measured_since, serveur). */
+  function noteClics(depuis) {
+    return depuis ? 'mesuré depuis le ' + dateCourteFr(depuis) : 'bientôt mesuré';
+  }
+
+  function afficheStatistiques(id) {
+    sortieStats = id;
+    envelopeCoque('stats', '<div id="pro-st-racine"></div>');
+    rendBlocStatistiques(document.getElementById('pro-st-racine'), null);
+  }
+
+  /** Le rendu partagé : écran #/stats (sortieFixe null, sélecteur de sortie)
+   *  ou onglet Statistiques d'une sortie (sortieFixe = son id). */
+  function rendBlocStatistiques(racine, sortieFixe) {
+    var jeton = jetonEcran;
+    // Chiffres calculés en direct : chaque ouverture relit le serveur ; le
+    // cache ne sert qu'aux allers-retours entre périodes pendant l'ouverture.
+    for (var cle in statsCache) {
+      if (cle.indexOf('detail|') === 0) delete statsCache[cle];
+    }
+    racine.innerHTML = '';
+    racine.appendChild(stEl('p', 'pro-etat', 'Un instant…'));
+    chargeTableauDeBord(false).then(function (d) {
+      if (!ecranCourant(jeton)) return;
+      racine.innerHTML = '';
+      if (!d) {
+        racine.appendChild(stBlocErreur(function () { rendBlocStatistiques(racine, sortieFixe); }));
+        return;
+      }
+      var acts = d.activities || [];
+      if (!sortieFixe) {
+        racine.appendChild(stEl('p', 'pro-eyebrow', 'Statistiques'));
+        racine.appendChild(stEl('h1', '', 'Ce que les familles regardent'));
+        racine.appendChild(stEl('p', 'pro-sous-titre', 'Une consultation = une fiche ouverte dans l’app. Un foyer compte une fois par jour et par fiche.'));
+        if (sortieStats && !sortiesConnues[sortieStats]) sortieStats = null;
+      }
+      if (acts.length === 0) {
+        var vide = stEl('p', 'pro-note', 'Aucune sortie publiée pour le moment\u00a0: les statistiques apparaîtront dès que les familles pourront ouvrir vos fiches. ');
+        var lien = stEl('a', 'pro-lien-retour', 'Déposer une activité');
+        lien.setAttribute('href', ROUTE_DEPOT);
+        lien.setAttribute('data-route', ROUTE_DEPOT);
+        vide.appendChild(lien);
+        racine.appendChild(vide);
+        cableLiensRoute(racine);
+        return;
+      }
+      var ctx = { racine: racine, sortieFixe: sortieFixe, jeton: jeton, counts: d.counts || {}, acts: acts, stats: null };
+      racine.appendChild(stControles(ctx));
+      ctx.zone = stEl('div', '', '');
+      racine.appendChild(ctx.zone);
+      chargeZoneStats(ctx);
+    });
+  }
+
+  function stControles(ctx) {
+    var barre = stEl('div', 'pro-st-controles', '');
+    var chips = stEl('div', 'pro-st-chips', '');
+    chips.setAttribute('role', 'group');
+    chips.setAttribute('aria-label', 'Période');
+    for (var i = 0; i < PERIODES_STATS.length; i++) {
+      var chip = stEl('button', 'pro-pastille', PERIODES_STATS[i][1]);
+      chip.type = 'button';
+      chip.setAttribute('data-periode', PERIODES_STATS[i][0]);
+      chip.setAttribute('aria-pressed', PERIODES_STATS[i][0] === periodeStats ? 'true' : 'false');
+      chip.addEventListener('click', function (event) {
+        periodeStats = event.currentTarget.getAttribute('data-periode');
+        var toutes = chips.querySelectorAll('[data-periode]');
+        for (var k = 0; k < toutes.length; k++) {
+          toutes[k].setAttribute('aria-pressed', toutes[k].getAttribute('data-periode') === periodeStats ? 'true' : 'false');
+        }
+        chargeZoneStats(ctx);
+      });
+      chips.appendChild(chip);
+    }
+    barre.appendChild(chips);
+
+    if (!ctx.sortieFixe) {
+      var etiquette = stEl('label', 'pro-st-sr', 'Sortie affichée');
+      etiquette.setAttribute('for', 'pro-st-sortie');
+      var choix = document.createElement('select');
+      choix.id = 'pro-st-sortie';
+      choix.className = 'pro-input pro-st-select';
+      var toutesOption = stEl('option', '', 'Toutes mes sorties');
+      toutesOption.value = '';
+      choix.appendChild(toutesOption);
+      var triees = ctx.acts.slice().sort(function (a, b) { return String(a.title || '').localeCompare(String(b.title || ''), 'fr'); });
+      for (var j = 0; j < triees.length; j++) {
+        var option = stEl('option', '', triees[j].title || 'Sortie');
+        option.value = triees[j].id;
+        if (triees[j].id === sortieStats) option.selected = true;
+        choix.appendChild(option);
+      }
+      choix.addEventListener('change', function () {
+        sortieStats = choix.value || null;
+        poseRoute(routeStats(sortieStats));
+        chargeZoneStats(ctx);
+      });
+      barre.appendChild(etiquette);
+      barre.appendChild(choix);
+    }
+
+    var exporter = stEl('button', 'pro-bouton-secondaire pro-st-exporter', 'Exporter (CSV)');
+    exporter.type = 'button';
+    exporter.disabled = true;
+    exporter.addEventListener('click', function () { exporteStatistiques(ctx); });
+    ctx.exporter = exporter;
+    barre.appendChild(exporter);
+    return barre;
+  }
+
+  function chargeZoneStats(ctx) {
+    var periode = periodeStats;
+    var sortie = ctx.sortieFixe || sortieStats;
+    var cle = 'detail|' + periode + '|' + (sortie || '');
+    ctx.exporter.disabled = true;
+    ctx.zone.innerHTML = '';
+    ctx.zone.appendChild(stEl('p', 'pro-etat', 'Un instant…'));
+    var charge = statsCache[cle]
+      ? Promise.resolve(statsCache[cle])
+      : appelApi('stats', sortie ? { period: periode, activity_id: sortie } : { period: periode }, true).then(function (r) {
+          if (!r.ok || !r.data || !r.data.totals) return null;
+          statsCache[cle] = r.data;
+          return r.data;
+        }).catch(function () { return null; });
+    charge.then(function (stats) {
+      if (!ecranCourant(ctx.jeton) || periode !== periodeStats || sortie !== (ctx.sortieFixe || sortieStats)) return;
+      ctx.zone.innerHTML = '';
+      if (!stats) {
+        ctx.zone.appendChild(stBlocErreur(function () { chargeZoneStats(ctx); }));
+        return;
+      }
+      ctx.stats = stats;
+      ctx.periode = periode;
+      ctx.sortie = sortie;
+      rendZoneStats(ctx);
+    });
+  }
+
+  function rendZoneStats(ctx) {
+    var s = ctx.stats;
+    var t = s.totals;
+    var zone = ctx.zone;
+    ctx.exporter.disabled = !(s.series && s.series.length > 0);
+    if (!t.views && !t.favorites && !t.attendances) {
+      zone.appendChild(stEl('p', 'pro-note', 'Aucune consultation ' +
+        (ctx.periode === 'all' ? 'pour le moment.' : 'sur les ' + DUREES_STATS[ctx.periode] + ' écoulés. Essayez une période plus longue.')));
+      if (!s.clicks_measured_since) zone.appendChild(stCarteBientot());
+      return;
+    }
+
+    var tuiles = stEl('div', 'pro-t-tuiles', '');
+    tuiles.appendChild(stTuile('Consultations', nombreFr(t.views), stDeltaTexte(s.delta_views_pct, ctx.periode)));
+    tuiles.appendChild(stTuile('Foyers distincts', nombreFr(t.households),
+      typeof s.views_per_household === 'number'
+        ? 'soit ' + stDecimaleFr(s.views_per_household) + (s.views_per_household >= 2 ? ' consultations' : ' consultation') + ' par foyer'
+        : '\u2014'));
+    tuiles.appendChild(stTuile('Ajouts en favoris', nombreFr(t.favorites),
+      typeof s.favorites_pct === 'number' ? stDecimaleFr(s.favorites_pct) + '\u00a0% des consultations' : 'sur la période'));
+    tuiles.appendChild(stTuile('Familles « j’y vais »', nombreFr(t.attendances),
+      ctx.sortie ? 'sur la période' : 'sur ' + pluriel(ctx.counts.upcoming || 0, 'sortie à venir', 'sorties à venir')));
+    zone.appendChild(tuiles);
+
+    zone.appendChild(stEl('p', 'pro-st-clics', s.clicks_measured_since
+      ? 'Clics vers votre site\u00a0: ' + nombreFr(t.clicks) + ' \u00b7 partages de vos fiches\u00a0: ' + nombreFr(t.shares) + ' (' + noteClics(s.clicks_measured_since) + ')'
+      : 'Clics vers votre site\u00a0: \u2014 \u00b7 ' + noteClics(null)));
+
+    zone.appendChild(stCarteGraphe(s, ctx.periode, stTitresSorties(ctx.acts), !!ctx.sortie));
+
+    var grille = stEl('div', ctx.sortie ? 'pro-st-grille pro-st-grille--seule' : 'pro-st-grille', '');
+    if (!ctx.sortie) grille.appendChild(stCarteParSortie(s));
+    var colonne = stEl('div', '', '');
+    colonne.appendChild(stCarteProvenances(s));
+    if (!s.clicks_measured_since) colonne.appendChild(stCarteBientot());
+    grille.appendChild(colonne);
+    zone.appendChild(grille);
+    cableLiensRoute(zone);
+  }
+
+  function stCarteGraphe(s, periode, titres, sortieSeule) {
+    var buckets = s.buckets || [];
+    var valeurs = stValeursParPeriode(buckets, s.series || []);
+    var pic = stIndexPic(valeurs);
+    var parSemaine = s.bucket === 'week';
+    var carte = stEl('section', 'pro-carte', '');
+    var entete = stEl('div', 'pro-t-entete-carte', '');
+    entete.appendChild(stEl('h2', '', parSemaine
+      ? 'Consultations par semaine \u2014 depuis le début'
+      : 'Consultations par jour \u2014 ' + DUREES_STATS[periode]));
+    var textePic = pic < 0 ? '' : (parSemaine
+      ? 'Pic la semaine du ' + stLibelleRepere(buckets[pic])
+      : 'Pic le ' + stLibelleJourCle(buckets[pic])) + '\u00a0: ' + pluriel(valeurs[pic], 'consultation', 'consultations');
+    entete.appendChild(stEl('span', 'pro-note', textePic));
+    carte.appendChild(entete);
+
+    // Chaque bâton est focusable et ouvre la bulle de sa période (survol,
+    // focus clavier, tap) ; le résumé textuel plus bas reste la vue d'ensemble.
+    carte.className = 'pro-carte pro-st-carte-graphe';
+    var batons = stEl('div', 'pro-st-batons', '');
+    var bulle = stEl('div', 'pro-st-bulle', '');
+    stNumeroBulle += 1;
+    bulle.id = 'pro-st-bulle-' + stNumeroBulle;
+    bulle.setAttribute('role', 'tooltip');
+    bulle.hidden = true;
+    var etat = {
+      carte: carte, batons: batons, bulle: bulle, baton: null, buckets: buckets, series: s.series || [],
+      titres: titres, sortieSeule: sortieSeule, parSemaine: parSemaine, clicsMesures: !!s.clicks_measured_since
+    };
+    var max = pic < 0 ? 0 : valeurs[pic];
+    for (var i = 0; i < valeurs.length; i++) {
+      var baton = stEl('span', valeurs[i] > 0 ? 'pro-st-baton' : 'pro-st-baton pro-st-baton--vide', '');
+      baton.style.height = (max > 0 && valeurs[i] > 0 ? Math.max(2, Math.round(valeurs[i] / max * 100)) : 2) + '%';
+      baton.setAttribute('tabindex', '0');
+      baton.setAttribute('role', 'img');
+      baton.setAttribute('aria-label', stTitreBulle(etat, buckets[i]) + '\u00a0: ' + pluriel(valeurs[i], 'consultation', 'consultations'));
+      stCableBaton(etat, baton, i);
+      batons.appendChild(baton);
+    }
+    batons.addEventListener('pointerleave', function (event) {
+      if (event.pointerType === 'mouse' && stBulleOuverte === etat && etat.baton !== document.activeElement) stCacheBulle();
+    });
+    stCableBulleDocument();
+    carte.appendChild(batons);
+    carte.appendChild(bulle);
+
+    var reperes = stEl('div', 'pro-st-reperes', '');
+    reperes.setAttribute('aria-hidden', 'true');
+    var indices = buckets.length > 2 ? [0, Math.floor((buckets.length - 1) / 2), buckets.length - 1] : buckets.length === 2 ? [0, 1] : buckets.length === 1 ? [0] : [];
+    for (var k = 0; k < indices.length; k++) reperes.appendChild(stEl('span', '', stLibelleRepere(buckets[indices[k]])));
+    carte.appendChild(reperes);
+
+    // Pas de point final : les repères de date finissent souvent par une
+    // abréviation (« sept. »), un point de plus se lirait « sept.. ».
+    carte.appendChild(stEl('p', 'pro-st-sr', pluriel(s.totals.views, 'consultation', 'consultations') + ' sur la période' +
+      (buckets.length ? ', du ' + stLibelleRepere(buckets[0]) + ' au ' + stLibelleRepere(buckets[buckets.length - 1]) : '') +
+      (textePic ? ' ; ' + textePic : '')));
+    return carte;
+  }
+
+  // ── Bulle d'une barre de l'histogramme ───────────────────────────────
+  function stTitresSorties(acts) {
+    var titres = {};
+    for (var i = 0; i < acts.length; i++) titres[acts[i].id] = acts[i].title || 'Sortie';
+    return titres;
+  }
+
+  function stTitreBulle(etat, cle) {
+    return etat.parSemaine ? 'Semaine du ' + stLibelleRepere(cle) : stLibelleJourCle(cle);
+  }
+
+  function stCableBaton(etat, baton, index) {
+    baton.addEventListener('pointerenter', function (event) {
+      if (event.pointerType === 'mouse') stMontreBulle(etat, baton, index);
+    });
+    baton.addEventListener('focus', function () { stMontreBulle(etat, baton, index); });
+    baton.addEventListener('blur', function () {
+      if (stBulleOuverte === etat && etat.baton === baton) stCacheBulle();
+    });
+    // Tap (ou clic) : ouvre la bulle de cette barre ; un tap ailleurs la ferme.
+    baton.addEventListener('click', function () { stMontreBulle(etat, baton, index); });
+  }
+
+  function stCableBulleDocument() {
+    if (stBulleDocumentCable) return;
+    stBulleDocumentCable = true;
+    document.addEventListener('click', function (event) {
+      if (stBulleOuverte && !stBulleOuverte.batons.contains(event.target)) stCacheBulle();
+    });
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' || event.key === 'Esc') stCacheBulle();
+    });
+  }
+
+  function stMontreBulle(etat, baton, index) {
+    if (stBulleOuverte && stBulleOuverte !== etat) stCacheBulle();
+    if (etat.baton && etat.baton !== baton) {
+      etat.baton.removeAttribute('aria-describedby');
+      etat.baton.classList.remove('pro-st-baton--visee');
+    }
+    var cle = etat.buckets[index];
+    var d = stDetailPeriode(cle, etat.series, etat.titres, etat.sortieSeule);
+    var t = d.totaux;
+    var bulle = etat.bulle;
+    while (bulle.firstChild) bulle.removeChild(bulle.firstChild);
+    bulle.appendChild(stEl('p', 'pro-st-bulle-titre', stTitreBulle(etat, cle)));
+    var liste = stEl('ul', '', '');
+    liste.appendChild(stEl('li', '', pluriel(t.views, 'consultation', 'consultations')));
+    liste.appendChild(stEl('li', '', nombreFr(t.favorites) + (t.favorites > 1 ? ' ajouts en favoris' : ' ajout en favoris')));
+    liste.appendChild(stEl('li', '', pluriel(t.attendances, 'famille « j’y vais »', 'familles « j’y vais »')));
+    if (etat.clicsMesures) {
+      liste.appendChild(stEl('li', '', pluriel(t.clicks, 'clic vers votre site', 'clics vers votre site')));
+      liste.appendChild(stEl('li', '', pluriel(t.shares, 'partage', 'partages')));
+    } else {
+      liste.appendChild(stEl('li', '', 'Clics et partages\u00a0: bientôt mesurés'));
+    }
+    bulle.appendChild(liste);
+    if (d.repartition.length > 0) {
+      var detail = stEl('div', 'pro-st-bulle-detail', '');
+      detail.appendChild(stEl('p', 'pro-note', 'Par sortie'));
+      var repartition = stEl('ul', '', '');
+      for (var i = 0; i < d.repartition.length; i++) {
+        repartition.appendChild(stEl('li', '', d.repartition[i].titre + ' \u00b7 ' + nombreFr(d.repartition[i].views)));
+      }
+      if (d.autres > 0) repartition.appendChild(stEl('li', '', 'et ' + nombreFr(d.autres) + (d.autres > 1 ? ' autres' : ' autre')));
+      detail.appendChild(repartition);
+      bulle.appendChild(detail);
+    }
+    bulle.hidden = false;
+    baton.setAttribute('aria-describedby', bulle.id);
+    baton.classList.add('pro-st-baton--visee');
+    etat.baton = baton;
+    stBulleOuverte = etat;
+
+    // À côté de la barre, jamais dessus : la bulle ne masque pas ce qu'on vise.
+    // Contenu remplacé sur place, sans masquer : passer à la barre voisine ne
+    // fait pas clignoter la bulle.
+    var rc = etat.carte.getBoundingClientRect();
+    var rb = baton.getBoundingClientRect();
+    var hautZone = etat.batons.getBoundingClientRect().top - rc.top;
+    bulle.classList.remove('pro-st-bulle--dessus');
+    bulle.style.width = '';
+    var place = stPlacementBulle(rb.left - rc.left, rb.right - rc.left, bulle.offsetWidth, bulle.offsetHeight, rc.width, hautZone, 12, 8);
+    if (place.cote === 'dessus') {
+      // Pleine largeur : la hauteur change, on la remesure avant de poser le haut.
+      bulle.classList.add('pro-st-bulle--dessus');
+      bulle.style.width = place.width + 'px';
+      place = stPlacementBulle(rb.left - rc.left, rb.right - rc.left, place.width, bulle.offsetHeight, rc.width, hautZone, 12, 8);
+    }
+    bulle.style.left = place.left + 'px';
+    bulle.style.top = place.top + 'px';
+  }
+
+  function stCacheBulle() {
+    var etat = stBulleOuverte;
+    if (!etat) return;
+    etat.bulle.hidden = true;
+    if (etat.baton) {
+      etat.baton.removeAttribute('aria-describedby');
+      etat.baton.classList.remove('pro-st-baton--visee');
+    }
+    etat.baton = null;
+    stBulleOuverte = null;
+  }
+
+  function stCarteParSortie(s) {
+    var carte = stEl('section', 'pro-carte', '');
+    carte.appendChild(stEl('h2', '', 'Par sortie'));
+    var table = stEl('table', 'pro-st-table', '');
+    var tete = stEl('thead', '', '');
+    var ligneTete = stEl('tr', '', '');
+    var colonnes = ['Sortie', 'Consultations', 'Favoris', 'J’y vais', 'Clics', 'Part'];
+    for (var c = 0; c < colonnes.length; c++) {
+      var th = stEl('th', c === 0 ? '' : 'pro-st-num', colonnes[c]);
+      th.setAttribute('scope', 'col');
+      ligneTete.appendChild(th);
+    }
+    tete.appendChild(ligneTete);
+    table.appendChild(tete);
+    var corps = stEl('tbody', '', '');
+    var lignes = s.activities || [];
+    for (var i = 0; i < lignes.length; i++) {
+      var l = lignes[i];
+      var sortie = sortiesConnues[l.activity_id];
+      var tr = stEl('tr', '', '');
+      var tdTitre = stEl('td', '', '');
+      var lien = stEl('a', 'pro-lien-retour', sortie && sortie.title ? sortie.title : 'Sortie hors de votre espace');
+      lien.setAttribute('href', routeSortie(l.activity_id));
+      lien.setAttribute('data-route', routeSortie(l.activity_id));
+      tdTitre.appendChild(lien);
+      if (sortie && sortie.state === 'finished') tdTitre.appendChild(stEl('span', 'pro-s-pastille pro-s-pastille--neutre', 'Terminée'));
+      tr.appendChild(tdTitre);
+      var cellules = [
+        nombreFr(l.views), nombreFr(l.favorites), nombreFr(l.attendances),
+        s.clicks_measured_since ? nombreFr(l.clicks) : '\u2014',
+        typeof l.share_pct === 'number' ? l.share_pct + '\u00a0%' : '\u2014'
+      ];
+      for (var k = 0; k < cellules.length; k++) {
+        var td = stEl('td', 'pro-st-num', cellules[k]);
+        td.setAttribute('data-label', colonnes[k + 1]);
+        tr.appendChild(td);
+      }
+      corps.appendChild(tr);
+    }
+    table.appendChild(corps);
+    carte.appendChild(table);
+    return carte;
+  }
+
+  function stCarteProvenances(s) {
+    var carte = stEl('section', 'pro-carte', '');
+    carte.appendChild(stEl('h2', '', 'D’où viennent les consultations'));
+    var lignes = s.sources || [];
+    if (lignes.length === 0) {
+      carte.appendChild(stEl('p', 'pro-note', 'Aucune consultation sur cette période.'));
+      return carte;
+    }
+    for (var i = 0; i < lignes.length; i++) {
+      var l = lignes[i];
+      var bloc = stEl('div', 'pro-st-source', '');
+      var tete = stEl('div', 'pro-st-source-tete', '');
+      tete.appendChild(stEl('span', '', l.label));
+      if (typeof l.pct === 'number') {
+        tete.appendChild(stEl('span', '', l.pct + '\u00a0%'));
+        bloc.appendChild(tete);
+        var piste = stEl('span', 'pro-st-piste', '');
+        var remplissage = stEl('span', 'pro-st-remplissage', '');
+        remplissage.style.width = Math.max(0, Math.min(100, l.pct)) + '%';
+        piste.appendChild(remplissage);
+        bloc.appendChild(piste);
+      } else {
+        tete.appendChild(stEl('span', '', pluriel(l.views, 'consultation', 'consultations')));
+        bloc.appendChild(tete);
+        bloc.appendChild(stEl('p', 'pro-note', 'Ouvertes depuis une version de l’app antérieure à cette mesure\u00a0: les pourcentages portent sur les autres.'));
+      }
+      carte.appendChild(bloc);
+    }
+    return carte;
+  }
+
+  function stCarteBientot() {
+    var carte = stEl('section', 'pro-carte pro-st-bientot', '');
+    carte.appendChild(stEl('h2', '', 'Bientôt mesuré'));
+    carte.appendChild(stEl('p', '', 'Les clics vers votre site d’inscription et les partages de vos fiches seront comptés à partir de la prochaine version de l’app. Ils apparaîtront ici sans rien changer de votre côté.'));
+    return carte;
+  }
+
+  function stBlocErreur(reessayer) {
+    var bloc = stEl('div', '', '');
+    var message = stEl('p', 'pro-message pro-message--error', 'Impossible de charger les statistiques pour le moment.');
+    message.setAttribute('role', 'status');
+    bloc.appendChild(message);
+    var bouton = stEl('button', 'pro-bouton-secondaire pro-st-exporter', 'Réessayer');
+    bouton.type = 'button';
+    bouton.style.width = 'auto';
+    bouton.style.padding = '0 18px';
+    bouton.addEventListener('click', function () { reessayer(); });
+    bloc.appendChild(bouton);
+    return bloc;
+  }
+
+  function exporteStatistiques(ctx) {
+    if (!ctx.stats) return;
+    var titres = {};
+    for (var i = 0; i < ctx.acts.length; i++) titres[ctx.acts[i].id] = ctx.acts[i].title;
+    var fichier = new Blob([stCsvStatistiques(ctx.stats, titres)], { type: 'text/csv;charset=utf-8' });
+    var adresse = URL.createObjectURL(fichier);
+    var lien = document.createElement('a');
+    lien.href = adresse;
+    lien.download = stNomFichierCsv(ctx.periode, ctx.stats.today);
+    document.body.appendChild(lien);
+    lien.click();
+    document.body.removeChild(lien);
+    setTimeout(function () { URL.revokeObjectURL(adresse); }, 1000);
+  }
+
+  function stTuile(libelle, valeur, note) {
+    var tuile = stEl('div', 'pro-t-tuile', '');
+    tuile.appendChild(stEl('p', 'pro-t-tuile-libelle', libelle));
+    tuile.appendChild(stEl('p', 'pro-t-tuile-valeur', valeur));
+    tuile.appendChild(stEl('p', 'pro-t-tuile-note', note));
+    return tuile;
+  }
+
+  /** Un élément et son texte — le texte passe TOUJOURS par textContent. */
+  function stEl(balise, classe, texte) {
+    var el = document.createElement(balise);
+    if (classe) el.className = classe;
+    if (texte) el.textContent = texte;
+    return el;
+  }
+
+
+  // ── Mise en avant ────────────────────────────────────────────────────
+  // Réponse de 'featured_status' ; vidée par oublieDonnees() (toute écriture,
+  // toute entrée dans l'espace).
+  var miseEnAvantCache = null;
+  var EMPLACEMENTS_MEA = [
+    ['home_top', '« À la une » sur l’accueil',
+      'En tête du carrousel d’idées de l’accueil. Jusqu’à trois sorties à la fois par tranche d’âge, montrées aux familles qui ont un enfant de cet âge.'],
+    ['search_top', '« En tête des résultats »',
+      'Dans une section « Mis en avant » en haut de la recherche, quelle que soit la recherche du parent. Jusqu’à trois sorties à la fois par tranche d’âge, montrées aux familles qui ont un enfant de cet âge.']
+  ];
+  var TRANCHES_MEA = [
+    ['baby', 'Bébé', '0-3 ans'],
+    ['small', 'Petits', '4-7 ans'],
+    ['kids', 'Enfants', '8-12 ans'],
+    ['teens', 'Ados', '13+ ans']
+  ];
+  // État du calendrier de chaque emplacement (mois affiché, début choisi).
+  var calendriersMea = {};
+  var DUREES_MEA = [7, 14, 30];
+  var ETATS_MEA = {
+    pending: ['En relecture', 'ok'],
+    approved_upcoming: ['Validée — à venir', 'ok'],
+    live: ['En ligne', 'ok'],
+    finished: ['Terminée', 'neutre'],
+    refused: ['Refusée', 'alerte'],
+    cancelled: ['Annulée', 'neutre'],
+    // v3 : validée, mais la sortie n'a plus de séance à venir — plus diffusée.
+    activity_finished: ['Sortie terminée', 'neutre']
+  };
+
+  function routeMiseEnAvant(id) { return PREFIXE_MISE_EN_AVANT + encodeURIComponent(id); }
+
+  function chargeMiseEnAvant(force) {
+    if (miseEnAvantCache && !force) return Promise.resolve(miseEnAvantCache);
+    return appelApi('featured_status', {}, true).then(function (resultat) {
+      if (!resultat.ok || !resultat.data || !resultat.data.ok) return null;
+      miseEnAvantCache = resultat.data;
+      return miseEnAvantCache;
+    }).catch(function () { return null; });
+  }
+
+  /** Vrai seulement si le serveur a dit « ouvert pour ce compte ». */
+  function miseEnAvantOuverte() {
+    return !!(miseEnAvantCache && miseEnAvantCache.enabled_for_account === true);
+  }
+
+  function libelleEmplacementMea(cle) {
+    for (var i = 0; i < EMPLACEMENTS_MEA.length; i++) { if (EMPLACEMENTS_MEA[i][0] === cle) return EMPLACEMENTS_MEA[i][1]; }
+    return 'Emplacement';
+  }
+
+  /** « Bébé, Enfants » — tranches d'une demande, dans l'ordre de l'app. */
+  function tranchesMeaTexte(groupes) {
+    var noms = [];
+    for (var i = 0; i < TRANCHES_MEA.length; i++) {
+      if (groupes && groupes.indexOf(TRANCHES_MEA[i][0]) !== -1) noms.push(TRANCHES_MEA[i][1]);
+    }
+    return noms.length === TRANCHES_MEA.length ? 'Tous âges' : noms.join(', ');
+  }
+
+  /** « du sam. 3 oct. au ven. 9 oct. » — un jour ISO lu en Europe/Paris. */
+  function periodeMea(debut, fin) {
+    return 'du ' + jourCourtFr(debut) + ' au ' + jourCourtFr(fin);
+  }
+
+  /** Pastilles d'une demande : son état, plus « À régler » tant que c'est le cas. */
+  function pastillesDemandeMea(r) {
+    var etat = ETATS_MEA[r.display_state] || ETATS_MEA.cancelled;
+    var p = [etat];
+    if (r.payment_status === 'to_settle' && r.status !== 'refused' && r.status !== 'cancelled') p.push(['À régler', 'alerte']);
+    if (r.offer === 'association_monthly' && r.status !== 'refused' && r.status !== 'cancelled') p.push(['Offerte', 'ok']);
+    return pastillesHtml(p);
+  }
+
+  // ── Écran ────────────────────────────────────────────────────────────
+  function afficheMiseEnAvant(idPreselection) {
+    var jeton = jetonEcran;
+    envelopeCoque('avant', '<p class="pro-etat">Un instant…</p>');
+    chargeMiseEnAvant(false).then(function (d) {
+      if (!ecranCourant(jeton)) return;
+      if (!d) { contenuCoque().innerHTML = erreurChargementHtml(); return; }
+      rendMiseEnAvant(d, idPreselection);
+    });
+  }
+
+  function rendMiseEnAvant(d, idPreselection) {
+    var ouvert = d.enabled_for_account === true;
+    var html =
+      '<div class="pro-m-entete"><div>' +
+        '<p class="pro-eyebrow">Mise en avant</p>' +
+        '<h1>Donner la première place à une sortie</h1>' +
+        '<p class="pro-sous-titre">Pour une durée choisie, votre sortie passe devant les autres, là où les familles regardent. Toujours signalée «\u00a0Mis en avant\u00a0» aux parents.</p>' +
+      '</div>' + (ouvert ? '' : '<span class="pro-pastille-etat">À venir</span>') + '</div>' +
+      '<div class="pro-m-grille">';
+    for (var i = 0; i < EMPLACEMENTS_MEA.length; i++) html += carteEmplacementMeaHtml(EMPLACEMENTS_MEA[i], ouvert, d);
+    html += '</div>';
+    html += ouvert ? carteDemandesMeaHtml(d) : carteBientotMeaHtml();
+
+    var zone = contenuCoque();
+    zone.innerHTML = html;
+    cableLiensRoute(zone);
+    if (!ouvert) {
+      // L'adresse vient du serveur : textContent, jamais concaténée.
+      var aide = document.getElementById('pro-m-prevenir-aide');
+      if (aide) aide.textContent = 'Un seul e-mail, à ' + (d.email || 'l’adresse de votre espace') + ', le jour où la mise en avant ouvre.';
+      var caseEl = document.getElementById('pro-m-prevenir');
+      caseEl.checked = d.notify_opening === true;
+      caseEl.addEventListener('change', function (event) { onChangePrevenir(event.currentTarget); });
+      return;
+    }
+    for (var k = 0; k < EMPLACEMENTS_MEA.length; k++) cableFormulaireMea(EMPLACEMENTS_MEA[k][0], d, idPreselection);
+    cableDemandesMea(zone);
+  }
+
+  function apercuMeaHtml(cle) {
+    if (cle === 'home_top') {
+      return '<div class="pro-m-apercu" aria-hidden="true"><p class="pro-m-apercu-legende">Idées pour ce week-end</p>' +
+        '<div class="pro-m-apercu-rang"><div class="pro-m-bloc pro-m-bloc--promu"><span class="pro-m-etiquette">Mis en avant</span>Votre sortie</div>' +
+        '<div class="pro-m-bloc">2e</div><div class="pro-m-bloc">3e</div></div></div>';
+    }
+    return '<div class="pro-m-apercu" aria-hidden="true"><p class="pro-m-apercu-legende">Recherche · vos filtres</p>' +
+      '<div class="pro-m-ligne-res pro-m-ligne-res--promue"><span class="pro-m-vignette"></span><span>Votre sortie<span class="pro-m-etiquette">Mis en avant</span></span></div>' +
+      '<div class="pro-m-ligne-res"><span class="pro-m-vignette"></span>Résultat suivant</div></div>';
+  }
+
+  function carteEmplacementMeaHtml(e, ouvert, d) {
+    var html = '<section class="pro-carte" aria-labelledby="pro-m-titre-' + e[0] + '">' +
+      '<div class="pro-m-carte-tete"><h2 id="pro-m-titre-' + e[0] + '">' + e[1] + '</h2>' +
+        (ouvert ? '' : '<span class="pro-pastille-etat">À venir</span>') + '</div>' +
+      apercuMeaHtml(e[0]) +
+      '<p class="pro-m-aide">' + e[2] + '</p>';
+    if (!ouvert) {
+      html += '<div class="pro-m-durees">';
+      for (var i = 0; i < DUREES_MEA.length; i++) {
+        html += '<button type="button" class="pro-pastille" disabled>' + DUREES_MEA[i] + ' jours<small>à venir</small></button>';
+      }
+      return html + '</div></section>';
+    }
+    return html + formulaireMeaHtml(e[0], d) + '</section>';
+  }
+
+  function carteBientotMeaHtml() {
+    return '<section class="pro-carte pro-m-bientot">' +
+      '<div><h2>La mise en avant arrive bientôt</h2>' +
+        '<p>Vous pourrez réserver l’un de ces deux emplacements pour 7, 14 ou 30 jours. Les associations disposeront d’une mise en avant offerte chaque mois, pour 7 jours. Rien n’est à régler aujourd’hui et aucune demande n’est encore ouverte.</p></div>' +
+      '<div><label class="pro-case pro-m-case"><input type="checkbox" id="pro-m-prevenir" />' +
+        '<span><strong>Me prévenir à l’ouverture</strong><small id="pro-m-prevenir-aide"></small></span></label>' +
+        '<p class="pro-message" id="pro-m-prevenir-message" role="status" aria-live="polite"></p></div>' +
+    '</section>';
+  }
+
+  function onChangePrevenir(caseEl) {
+    var messageEl = document.getElementById('pro-m-prevenir-message');
+    caseEl.disabled = true;
+    definirMessage(messageEl, 'Enregistrement…', false);
+    appelApi('update_preferences', { featured_notify_opening: caseEl.checked }, true).then(function (resultat) {
+      caseEl.disabled = false;
+      if (resultat.ok && resultat.data && resultat.data.ok) {
+        if (miseEnAvantCache) miseEnAvantCache.notify_opening = resultat.data.featured_notify_opening === true;
+        definirMessage(messageEl, caseEl.checked ? 'C’est noté\u00a0: nous vous écrirons à l’ouverture.' : 'C’est noté\u00a0: pas d’e-mail à l’ouverture.', false);
+        return;
+      }
+      caseEl.checked = !caseEl.checked;
+      definirMessage(messageEl, 'L’enregistrement n’a pas abouti, réessayez.', true);
+    }).catch(function () {
+      caseEl.disabled = false;
+      caseEl.checked = !caseEl.checked;
+      definirMessage(messageEl, 'L’enregistrement n’a pas abouti, réessayez.', true);
+    });
+  }
+
+  // ── Formulaire (ouvert pour ce compte) ───────────────────────────────
+  function formulaireMeaHtml(cle, d) {
+    var sorties = d.eligible_activities || [];
+    if (sorties.length === 0) {
+      return '<p class="pro-note" style="margin:0">Aucune sortie publiée et à venir à mettre en avant pour le moment.</p>';
+    }
+    var options = '<option value="">Choisir une sortie…</option>';
+    for (var i = 0; i < sorties.length; i++) {
+      options += '<option value="' + ech(sorties[i].id) + '">' + ech(sorties[i].title) +
+        (sorties[i].next_occurrence_at ? ' — ' + ech(jourCourtFr(sorties[i].next_occurrence_at)) : '') + '</option>';
+    }
+    var durees = '';
+    for (var k = 0; k < DUREES_MEA.length; k++) {
+      durees += '<button type="button" class="pro-pastille" data-duree="' + DUREES_MEA[k] + '" aria-pressed="' + (k === 0 ? 'true' : 'false') + '">' + DUREES_MEA[k] + ' jours</button>';
+    }
+    var tranches = '';
+    for (var t = 0; t < TRANCHES_MEA.length; t++) {
+      tranches += '<label class="pro-case pro-m-tranche"><input type="checkbox" data-tranche="' + TRANCHES_MEA[t][0] + '" />' +
+        '<span><strong>' + TRANCHES_MEA[t][1] + '</strong> <small>' + TRANCHES_MEA[t][2] + '</small></span></label>';
+    }
+    return '<form id="pro-m-form-' + cle + '" novalidate>' +
+      '<div class="pro-m-champ"><label class="pro-label" for="pro-m-sortie-' + cle + '">Sortie</label>' +
+        '<select class="pro-input" id="pro-m-sortie-' + cle + '">' + options + '</select></div>' +
+      '<fieldset class="pro-m-champ pro-m-tranches"><legend class="pro-label">Tranches d’âge visées</legend>' +
+        '<p class="pro-note-champ" style="margin:0 0 8px">Une place est prise dans chaque tranche cochée. Pré-cochées selon l’âge de la sortie.</p>' +
+        tranches + '</fieldset>' +
+      '<div class="pro-m-champ"><span class="pro-label" id="pro-m-duree-titre-' + cle + '">Durée</span>' +
+        '<div class="pro-m-durees" role="group" aria-labelledby="pro-m-duree-titre-' + cle + '">' + durees + '</div></div>' +
+      '<div class="pro-m-champ"><span class="pro-label">Jour de début</span>' +
+        '<input type="hidden" id="pro-m-debut-' + cle + '" value="" />' +
+        '<div id="pro-m-cal-' + cle + '"></div></div>' +
+      '<p class="pro-m-aide" id="pro-m-offre-' + cle + '" role="status" aria-live="polite"></p>' +
+      '<button type="submit" class="pro-bouton-primaire" id="pro-m-envoyer-' + cle + '">Envoyer la demande</button>' +
+      '<p class="pro-message" id="pro-m-message-' + cle + '" role="status" aria-live="polite"></p>' +
+      '<div id="pro-m-libre-' + cle + '"></div>' +
+    '</form>' +
+    '<div id="pro-m-confirmation-' + cle + '"></div>';
+  }
+
+  // ── Offre association (v3) ─────────────────────────────────────────
+  // Une annonce : le serveur recalcule l'offre. Pour une association, la mention dit
+  // TOUJOURS où en est l'offre, mois par mois (featured_status.association_offer_months,
+  // repli sur association_offer_available_for pour un serveur d'avant la v3).
+  function moisOffreMea(d) {
+    if (d.association_offer_months && d.association_offer_months.length) return d.association_offer_months;
+    var libres = d.association_offer_available_for || [];
+    var premier = (d.min_start || '').slice(0, 7);
+    if (!premier) return [];
+    var suivant = ajouteJoursCal(premier + '-28', 7).slice(0, 7);
+    return [{ month: premier, available: libres.indexOf(premier) !== -1 }, { month: suivant, available: libres.indexOf(suivant) !== -1 }];
+  }
+
+  function offreLibreMea(d, mois) {
+    var liste = moisOffreMea(d);
+    for (var i = 0; i < liste.length; i++) { if (liste[i].month === mois) return liste[i].available === true; }
+    return false;
+  }
+
+  /** Premier mois libre à partir de depuis (inclus si inclus vaut vrai), sinon null. */
+  function prochainMoisLibreMea(d, depuis, inclus) {
+    var liste = moisOffreMea(d);
+    for (var i = 0; i < liste.length; i++) {
+      if ((inclus ? liste[i].month >= depuis : liste[i].month > depuis) && liste[i].available === true) return liste[i].month;
+    }
+    return null;
+  }
+
+  /** « de septembre », « d’octobre » (élision devant voyelle). */
+  function deMoisMea(mois) {
+    var nom = MOIS_LONGS_CAL[Number(mois.slice(5, 7)) - 1] || mois;
+    return (/^[aeiouy]/.test(nom) ? 'd’' : 'de ') + nom;
+  }
+
+  /** L'offre s'applique : association, jour choisi, mois libre, une seule tranche. */
+  function offreMeaApplicable(d, debut, nbTranches) {
+    return d.structure_kind === 'association' && !!debut && nbTranches === 1 && offreLibreMea(d, debut.slice(0, 7));
+  }
+
+  function mentionOffreMea(d, debut, nb) {
+    if (d.structure_kind !== 'association') return 'À régler — Urson vous recontacte après validation.';
+    var regle = ' (une seule tranche, 7 jours)';
+    if (debut) {
+      var mois = debut.slice(0, 7);
+      if (offreLibreMea(d, mois)) {
+        return nb === 1
+          ? 'Offerte — une seule tranche, votre mise en avant ' + deMoisMea(mois) + ' (7 jours).'
+          : 'À régler — plusieurs tranches cochées. Votre mise en avant offerte ' + deMoisMea(mois) + ' reste disponible\u00a0: cochez une seule tranche (7 jours).';
+      }
+      var suivant = prochainMoisLibreMea(d, mois, false);
+      return 'À régler — votre mise en avant offerte ' + deMoisMea(mois) + ' est déjà utilisée' +
+        (suivant ? '\u00a0; celle ' + deMoisMea(suivant) + ' reste disponible' + regle + '.' : ', et aucune autre n’est disponible sur les mois à venir.');
+    }
+    var premier = (d.min_start || '').slice(0, 7);
+    var libre = prochainMoisLibreMea(d, premier, true);
+    if (!libre) return 'Vos mises en avant offertes des prochains mois sont déjà utilisées\u00a0: la demande sera à régler.';
+    var phrase = libre === premier
+      ? 'Votre mise en avant offerte ' + deMoisMea(libre) + ' est disponible' + regle + '.'
+      : 'Votre mise en avant offerte ' + deMoisMea(premier) + ' est déjà utilisée\u00a0; celle ' + deMoisMea(libre) + ' reste disponible' + regle + '.';
+    return phrase + (nb > 1 ? ' Avec plusieurs tranches cochées, la demande sera à régler.' : '') + ' Choisissez un jour de début.';
+  }
+
+  function tranchesCocheesMea(cle) {
+    var cases = document.getElementById('pro-m-form-' + cle).querySelectorAll('[data-tranche]');
+    var out = [];
+    for (var i = 0; i < cases.length; i++) { if (cases[i].checked) out.push(cases[i].getAttribute('data-tranche')); }
+    return out;
+  }
+
+  /** Coche les tranches de la sortie choisie (toutes sans sortie ni âge connu). */
+  function preCocheTranchesMea(cle, d) {
+    var id = document.getElementById('pro-m-sortie-' + cle).value;
+    var sorties = d.eligible_activities || [];
+    var groupes = null;
+    for (var i = 0; i < sorties.length; i++) { if (sorties[i].id === id) groupes = sorties[i].age_groups || null; }
+    var cases = document.getElementById('pro-m-form-' + cle).querySelectorAll('[data-tranche]');
+    for (var k = 0; k < cases.length; k++) {
+      cases[k].checked = !groupes || groupes.length === 0 || groupes.indexOf(cases[k].getAttribute('data-tranche')) !== -1;
+    }
+  }
+
+  function cableFormulaireMea(cle, d, idPreselection) {
+    var form = document.getElementById('pro-m-form-' + cle);
+    if (!form) return;
+    var select = document.getElementById('pro-m-sortie-' + cle);
+    if (idPreselection) {
+      for (var i = 0; i < select.options.length; i++) {
+        if (select.options[i].value === idPreselection) { select.value = idPreselection; break; }
+      }
+    }
+    calendriersMea[cle] = { mois: (d.min_start || '').slice(0, 7), debut: null };
+    select.addEventListener('change', function () { preCocheTranchesMea(cle, d); majOffreMea(cle, d); });
+    var cases = form.querySelectorAll('[data-tranche]');
+    for (var c = 0; c < cases.length; c++) cases[c].addEventListener('change', function () { majOffreMea(cle, d); });
+    var boutons = form.querySelectorAll('[data-duree]');
+    for (var k = 0; k < boutons.length; k++) {
+      boutons[k].addEventListener('click', function (event) {
+        if (event.currentTarget.disabled) return;
+        for (var m = 0; m < boutons.length; m++) boutons[m].setAttribute('aria-pressed', boutons[m] === event.currentTarget ? 'true' : 'false');
+        majOffreMea(cle, d);
+      });
+    }
+    preCocheTranchesMea(cle, d);
+    majOffreMea(cle, d);
+    form.addEventListener('submit', function (event) { event.preventDefault(); onEnvoieDemandeMea(cle, d); });
+  }
+
+  /** Recalcule l'offre annoncée, la durée permise et redessine le calendrier. */
+  function majOffreMea(cle, d) {
+    var etat = calendriersMea[cle];
+    var nb = tranchesCocheesMea(cle).length;
+    var offerte = offreMeaApplicable(d, etat.debut, nb);
+    var boutons = document.getElementById('pro-m-form-' + cle).querySelectorAll('[data-duree]');
+    for (var i = 0; i < boutons.length; i++) {
+      var sept = boutons[i].getAttribute('data-duree') === '7';
+      boutons[i].disabled = offerte && !sept;
+      if (offerte) boutons[i].setAttribute('aria-pressed', sept ? 'true' : 'false');
+    }
+    var debutAvant = etat.debut;
+    dessineCalendrierMea(cle, d);
+    // Le dessin retire un début devenu impossible : on recalcule alors durée et mention.
+    if (etat.debut !== debutAvant) { majOffreMea(cle, d); return; }
+    document.getElementById('pro-m-offre-' + cle).textContent = mentionOffreMea(d, etat.debut, nb);
+  }
+
+  function dessineCalendrierMea(cle, d) {
+    var etat = calendriersMea[cle];
+    var champ = document.getElementById('pro-m-debut-' + cle);
+    var cal = {
+      dispo: d.availability || {}, capacite: d.capacity || 3, emplacement: cle,
+      tranches: tranchesCocheesMea(cle), duree: dureeChoisieMea(cle),
+      min: d.min_start || '', max: d.max_start || '', mois: etat.mois, debut: etat.debut,
+      change: function () { etat.mois = cal.mois; dessineCalendrierMea(cle, d); },
+      choisit: function (jour) { etat.debut = jour; champ.value = jour; majOffreMea(cle, d); }
+    };
+    // Un début devenu impossible (tranche ou durée changée) est retiré, jamais gardé en silence.
+    if (etat.debut && raisonRefusCal(cal, etat.debut)) { etat.debut = null; cal.debut = null; }
+    champ.value = etat.debut || '';
+    rendCalendrierMea(document.getElementById('pro-m-cal-' + cle), cal);
+  }
+
+  function dureeChoisieMea(cle) {
+    var actif = document.getElementById('pro-m-form-' + cle).querySelector('[data-duree][aria-pressed="true"]');
+    return actif ? Number(actif.getAttribute('data-duree')) : 7;
+  }
+
+  function messageErreurMea(code) {
+    var messages = {
+      not_open: 'La mise en avant n’est pas encore ouverte pour votre espace.',
+      not_granted: 'Cette sortie n’est plus rattachée à votre espace.',
+      activity_not_eligible: 'Cette sortie n’est plus publiée ou est déjà passée.',
+      too_soon: 'Choisissez un jour de début à partir de demain.',
+      too_far: 'Choisissez un jour de début dans les 120 prochains jours.',
+      invalid_date: 'Choisissez un jour de début dans le calendrier.',
+      invalid_age_groups: 'Cochez au moins une tranche d’âge.',
+      already_pending: 'Une demande est déjà en relecture pour cette sortie et cet emplacement.',
+      rate_limited: 'Trop de demandes d’un coup, réessayez dans une heure.',
+      invalid_body: 'Choisissez une sortie, une durée et un jour de début.'
+    };
+    return messages[code] || 'L’envoi n’a pas abouti, réessayez.';
+  }
+
+  function onEnvoieDemandeMea(cle, d) {
+    var messageEl = document.getElementById('pro-m-message-' + cle);
+    var libre = document.getElementById('pro-m-libre-' + cle);
+    var bouton = document.getElementById('pro-m-envoyer-' + cle);
+    var sortieId = document.getElementById('pro-m-sortie-' + cle).value;
+    var debut = document.getElementById('pro-m-debut-' + cle).value;
+    var tranches = tranchesCocheesMea(cle);
+    libre.innerHTML = '';
+    if (!sortieId) { definirMessage(messageEl, 'Choisissez une sortie.', true); return; }
+    if (tranches.length === 0) { definirMessage(messageEl, messageErreurMea('invalid_age_groups'), true); return; }
+    if (!debut) { definirMessage(messageEl, messageErreurMea('invalid_date'), true); return; }
+    bouton.disabled = true;
+    definirMessage(messageEl, 'Envoi en cours…', false);
+    appelApi('request_featured', {
+      activity_id: sortieId, placement: cle, duration_days: dureeChoisieMea(cle), starts_on: debut, age_groups: tranches
+    }, true).then(function (resultat) {
+      bouton.disabled = false;
+      var data = resultat.data || {};
+      if (resultat.ok && data.ok && data.request) {
+        oublieDonnees();
+        var r = data.request;
+        document.getElementById('pro-m-form-' + cle).hidden = true;
+        document.getElementById('pro-m-confirmation-' + cle).innerHTML = carteConfirmationHtml('pro-m-confirm-' + cle, 'Demande envoyée',
+          ech(r.activity_title || 'Votre sortie') + ', ' + ech(tranchesMeaTexte(r.age_groups)) + ', ' + ech(periodeMea(r.starts_on, r.ends_on)) + '. ' +
+          (r.offer === 'association_monthly' ? 'Offerte, votre mise en avant du mois. ' : 'À régler — Urson vous recontacte après validation. ') +
+          'Un relecteur Urson la valide sous un à deux jours\u00a0; vous recevrez un e-mail.', null, '');
+        focaliseConfirmation('pro-m-confirm-' + cle);
+        rechargeDemandesMea();
+        return;
+      }
+      if (data.error === 'slot_taken') {
+        if (data.next_free_on) {
+          definirMessage(messageEl, 'Plus de place sur cette période pour ces tranches, prochaine date libre\u00a0: ' + jourCourtFr(data.next_free_on) + '.', true);
+          libre.innerHTML = '<button type="button" class="pro-lien-retour pro-m-lien" id="pro-m-prendre-' + cle + '">Prendre cette date</button>';
+          var prochaine = data.next_free_on;
+          document.getElementById('pro-m-prendre-' + cle).addEventListener('click', function () {
+            calendriersMea[cle].debut = prochaine;
+            calendriersMea[cle].mois = prochaine.slice(0, 7);
+            majOffreMea(cle, d);
+            libre.innerHTML = '';
+            definirMessage(messageEl, 'Date reprise\u00a0: vérifiez, puis envoyez la demande.', false);
+            bouton.focus();
+          });
+        } else {
+          definirMessage(messageEl, 'Plus de place sur cette période, et aucune date n’est libre dans les 120 prochains jours pour ces tranches et cette durée.', true);
+        }
+        return;
+      }
+      definirMessage(messageEl, messageErreurMea(data.error), true);
+    }).catch(function () {
+      bouton.disabled = false;
+      definirMessage(messageEl, 'L’envoi n’a pas abouti, réessayez.', true);
+    });
+  }
+
+  // ── Vos demandes ─────────────────────────────────────────────────────
+  function carteDemandesMeaHtml(d) {
+    return '<section class="pro-carte"><h2>Vos demandes</h2><div id="pro-m-demandes">' + demandesMeaHtml(d.requests || []) + '</div></section>';
+  }
+
+  function demandesMeaHtml(demandes) {
+    if (demandes.length === 0) return '<p class="pro-note" style="margin:6px 0 0">Aucune demande pour le moment.</p>';
+    var html = '';
+    for (var i = 0; i < demandes.length; i++) {
+      var r = demandes[i];
+      html += '<div class="pro-m-demande">' +
+        '<strong>' + ech(r.activity_title || 'Sortie') + '</strong>' +
+        '<p>' + ech(libelleEmplacementMea(r.placement)) + ' \u00b7 ' + ech(tranchesMeaTexte(r.age_groups)) + ' \u00b7 ' + ech(periodeMea(r.starts_on, r.ends_on)) + '</p>' +
+        pastillesDemandeMea(r) +
+        (r.status === 'refused' && r.refusal_reason ? '<p>Motif\u00a0: ' + ech(r.refusal_reason) + '</p>' : '') +
+        (r.status === 'pending'
+          ? '<p><button type="button" class="pro-lien-retour pro-m-lien" data-annuler-mea="' + ech(r.id) + '">Annuler</button></p><div class="pro-m-annulation"></div>'
+          : '') +
+      '</div>';
+    }
+    return html;
+  }
+
+  function cableDemandesMea(racine) {
+    var boutons = racine.querySelectorAll('[data-annuler-mea]');
+    for (var i = 0; i < boutons.length; i++) {
+      boutons[i].addEventListener('click', function (event) {
+        var bouton = event.currentTarget;
+        ouvreAnnulationMea(bouton.parentNode.nextSibling, bouton.getAttribute('data-annuler-mea'), bouton);
+      });
+    }
+  }
+
+  function ouvreAnnulationMea(conteneur, id, bouton) {
+    conteneur.innerHTML = '<div class="pro-a-panneau">' +
+      '<p><strong>Annuler cette demande\u00a0?</strong></p>' +
+      '<p class="pro-a-aide">Elle ne sera pas relue. Vous pourrez en envoyer une autre.</p>' +
+      '<div class="pro-a-actions">' +
+        '<button type="button" class="pro-bouton-secondaire" data-mea-garder>Garder</button>' +
+        '<button type="button" class="pro-bouton-secondaire pro-a-danger" data-mea-confirmer>Annuler la demande</button>' +
+      '</div>' +
+      '<p class="pro-message" role="status" aria-live="polite"></p>' +
+    '</div>';
+    conteneur.querySelector('[data-mea-garder]').addEventListener('click', function () { conteneur.innerHTML = ''; bouton.focus(); });
+    conteneur.querySelector('[data-mea-confirmer]').addEventListener('click', function () { onConfirmeAnnulationMea(conteneur, id); });
+  }
+
+  function onConfirmeAnnulationMea(conteneur, id) {
+    var confirmer = conteneur.querySelector('[data-mea-confirmer]');
+    var messageEl = conteneur.querySelector('.pro-message');
+    confirmer.disabled = true;
+    definirMessage(messageEl, 'Annulation…', false);
+    appelApi('cancel_featured', { id: id }, true).then(function (resultat) {
+      if (resultat.ok && resultat.data && resultat.data.ok) {
+        oublieDonnees();
+        rechargeDemandesMea();
+        return;
+      }
+      confirmer.disabled = false;
+      definirMessage(messageEl, resultat.data && resultat.data.error === 'not_pending'
+        ? 'Cette demande n’est plus en relecture\u00a0: elle a déjà été traitée.'
+        : 'L’annulation n’a pas abouti, réessayez.', true);
+    }).catch(function () {
+      confirmer.disabled = false;
+      definirMessage(messageEl, 'L’annulation n’a pas abouti, réessayez.', true);
+    });
+  }
+
+  /** Relit le serveur et redessine « Vos demandes » seulement (le formulaire garde sa confirmation). */
+  function rechargeDemandesMea() {
+    var jeton = jetonEcran;
+    chargeMiseEnAvant(true).then(function (d) {
+      if (!ecranCourant(jeton) || !d) return;
+      var liste = document.getElementById('pro-m-demandes');
+      if (!liste) return;
+      liste.innerHTML = demandesMeaHtml(d.requests || []);
+      cableDemandesMea(liste);
+    });
+  }
+
+  // ── Cartes « Mise en avant » du tableau de bord et d'une sortie ──────
+  var PHRASE_A_VENIR_MEA = 'Bientôt, vous pourrez placer une sortie en tête de l’accueil ou des résultats pour une durée choisie.';
+
+  function carteAvenirMeaHtml(phrase) {
+    return '<div class="pro-t-entete-carte"><h2>Mise en avant</h2><span class="pro-pastille-etat">À venir</span></div>' +
+      '<p class="pro-sous-titre" style="margin:6px 0 0">' + phrase + '</p>';
+  }
+
+  /** La demande à montrer : en ligne d'abord, puis la plus proche en relecture ou validée. */
+  function demandeProcheMea(demandes, idSortie) {
+    var ordre = { live: 0, pending: 1, approved_upcoming: 2, activity_finished: 3 };
+    var retenue = null;
+    for (var i = 0; i < demandes.length; i++) {
+      var r = demandes[i];
+      if (idSortie && r.activity_id !== idSortie) continue;
+      if (!Object.prototype.hasOwnProperty.call(ordre, r.display_state)) continue;
+      if (!retenue || ordre[r.display_state] < ordre[retenue.display_state] ||
+          (ordre[r.display_state] === ordre[retenue.display_state] && r.starts_on < retenue.starts_on)) retenue = r;
+    }
+    return retenue;
+  }
+
+  /** Tableau de bord : « à venir » tant que fermé ; sinon la demande la plus proche. */
+  function carteMeaTableauHtml() {
+    if (!miseEnAvantOuverte()) return carteAvenirMeaHtml(PHRASE_A_VENIR_MEA);
+    var r = demandeProcheMea(miseEnAvantCache.requests || [], null);
+    return '<div class="pro-t-entete-carte"><h2>Mise en avant</h2>' +
+      '<a class="pro-lien-retour" href="' + ROUTE_MISE_EN_AVANT + '" data-route="' + ROUTE_MISE_EN_AVANT + '">Gérer</a></div>' +
+      (r
+        ? '<p style="margin:6px 0 0"><strong>' + ech(r.activity_title || 'Sortie') + '</strong></p>' +
+          '<p class="pro-sous-titre" style="margin:2px 0 6px">' + ech(libelleEmplacementMea(r.placement)) + ' \u00b7 ' + ech(tranchesMeaTexte(r.age_groups)) + ' \u00b7 ' + ech(periodeMea(r.starts_on, r.ends_on)) + '</p>' +
+          pastillesDemandeMea(r)
+        : '<p class="pro-sous-titre" style="margin:6px 0 0">Aucune mise en avant en cours. Placez une sortie en tête de l’accueil ou des résultats.</p>');
+  }
+
+  /** Remplit la carte du tableau de bord une fois l'état connu. */
+  function poseCarteMeaTableau(jeton) {
+    chargeMiseEnAvant(false).then(function () {
+      if (!ecranCourant(jeton)) return;
+      var carte = document.getElementById('pro-t-avant');
+      if (!carte) return;
+      carte.innerHTML = carteMeaTableauHtml();
+      cableLiensRoute(carte);
+    });
+  }
+
+  /** Fiche d'une sortie : « à venir » tant que fermé ; sinon l'état de sa demande. */
+  function carteMeaSortieHtml(a) {
+    var phrase = 'Bientôt\u00a0: placer cette sortie en tête de l’accueil ou des résultats, pour une durée choisie.';
+    if (!miseEnAvantOuverte()) return carteAvenirMeaHtml(phrase);
+    var r = demandeProcheMea(miseEnAvantCache.requests || [], a.id);
+    var html = '<div class="pro-t-entete-carte"><h2>Mise en avant</h2></div>';
+    if (r) {
+      html += '<p class="pro-sous-titre" style="margin:6px 0 6px">' + ech(libelleEmplacementMea(r.placement)) + ' \u00b7 ' + ech(tranchesMeaTexte(r.age_groups)) + ' \u00b7 ' + ech(periodeMea(r.starts_on, r.ends_on)) + '</p>' + pastillesDemandeMea(r);
+    } else {
+      html += '<p class="pro-sous-titre" style="margin:6px 0 0">Aucune demande pour cette sortie.</p>';
+    }
+    if (a.state === 'upcoming') {
+      html += '<p style="margin:10px 0 0"><a class="pro-lien-retour" href="' + ech(routeMiseEnAvant(a.id)) + '" data-route="' + ech(routeMiseEnAvant(a.id)) + '">Mettre en avant</a></p>';
+    }
+    return html;
+  }
+
+
+  // ── Calendrier des places (mise en avant) ────────────────────────────
+  var MOIS_LONGS_CAL = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+  var SEMAINE_CAL = ['lun.', 'mar.', 'mer.', 'jeu.', 'ven.', 'sam.', 'dim.'];
+
+  function partiesIsoCal(iso) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || '');
+    return m ? { a: Number(m[1]), m: Number(m[2]), j: Number(m[3]) } : null;
+  }
+
+  function isoDeUtcCal(ms) {
+    var d = new Date(ms);
+    var mm = String(d.getUTCMonth() + 1);
+    var jj = String(d.getUTCDate());
+    return d.getUTCFullYear() + '-' + (mm.length < 2 ? '0' + mm : mm) + '-' + (jj.length < 2 ? '0' + jj : jj);
+  }
+
+  /** iso + n jours, par composants (un jour UTC fait toujours 24 h). */
+  function ajouteJoursCal(iso, n) {
+    var p = partiesIsoCal(iso);
+    return p ? isoDeUtcCal(Date.UTC(p.a, p.m - 1, p.j + n)) : null;
+  }
+
+  /** Places prises un jour pour les tranches cochées : la pire des tranches. */
+  function prisesCal(dispo, emplacement, tranches, jour) {
+    var parTranche = dispo && dispo[emplacement] ? dispo[emplacement] : {};
+    var pire = 0;
+    for (var i = 0; i < tranches.length; i++) {
+      var n = parTranche[tranches[i]] && parTranche[tranches[i]][jour] ? parTranche[tranches[i]][jour] : 0;
+      if (n > pire) pire = n;
+    }
+    return pire;
+  }
+
+  /** Premier jour complet de la période qui commence le debut, sinon null. */
+  function premierCompletCal(etat, debut) {
+    for (var i = 0; i < etat.duree; i++) {
+      var jour = ajouteJoursCal(debut, i);
+      if (prisesCal(etat.dispo, etat.emplacement, etat.tranches, jour) >= etat.capacite) return jour;
+    }
+    return null;
+  }
+
+  /** Pourquoi ce jour ne peut pas être un début, ou null s'il le peut. */
+  function raisonRefusCal(etat, jour) {
+    if (etat.tranches.length === 0) return 'Cochez au moins une tranche d’âge.';
+    if (jour < etat.min) return 'Le début se choisit à partir de demain.';
+    if (jour > etat.max) return 'Le début se choisit dans les 120 prochains jours.';
+    var complet = premierCompletCal(etat, jour);
+    if (complet) return 'La période touche un jour complet (' + jourCourtFr(complet) + ').';
+    return null;
+  }
+
+  function etiquetteJourCal(reste, capacite) {
+    if (reste <= 0) return 'complet';
+    if (reste >= capacite) return 'libre';
+    return reste + ' pl.';
+  }
+
+  /** Dessine le mois etat.mois ('AAAA-MM') dans le conteneur. etat.choisit(jour) est
+   *  appelé au clic sur un début possible ; etat.change() redessine après navigation. */
+  function rendCalendrierMea(conteneur, etat) {
+    conteneur.textContent = '';
+    var racine = document.createElement('div');
+    racine.className = 'pro-cal';
+
+    var p = partiesIsoCal(etat.mois + '-01');
+    var tete = document.createElement('div');
+    tete.className = 'pro-cal-tete';
+    var precedent = document.createElement('button');
+    precedent.type = 'button';
+    precedent.className = 'pro-cal-nav';
+    precedent.textContent = '\u2039';
+    precedent.setAttribute('aria-label', 'Mois précédent');
+    precedent.disabled = etat.mois <= etat.min.slice(0, 7);
+    var titre = document.createElement('p');
+    titre.className = 'pro-cal-mois';
+    titre.setAttribute('aria-live', 'polite');
+    titre.textContent = MOIS_LONGS_CAL[p.m - 1] + ' ' + p.a;
+    var suivant = document.createElement('button');
+    suivant.type = 'button';
+    suivant.className = 'pro-cal-nav';
+    suivant.textContent = '\u203a';
+    suivant.setAttribute('aria-label', 'Mois suivant');
+    suivant.disabled = etat.mois >= etat.max.slice(0, 7);
+    precedent.addEventListener('click', function () { etat.mois = ajouteJoursCal(etat.mois + '-01', -1).slice(0, 7); etat.change(); });
+    suivant.addEventListener('click', function () { etat.mois = ajouteJoursCal(etat.mois + '-28', 7).slice(0, 7); etat.change(); });
+    tete.appendChild(precedent);
+    tete.appendChild(titre);
+    tete.appendChild(suivant);
+    racine.appendChild(tete);
+
+    var grille = document.createElement('div');
+    grille.className = 'pro-cal-grille';
+    grille.setAttribute('role', 'group');
+    grille.setAttribute('aria-label', 'Jours de début, ' + titre.textContent);
+    for (var s = 0; s < SEMAINE_CAL.length; s++) {
+      var entete = document.createElement('span');
+      entete.className = 'pro-cal-semaine';
+      entete.setAttribute('aria-hidden', 'true');
+      entete.textContent = SEMAINE_CAL[s];
+      grille.appendChild(entete);
+    }
+    // Lundi en premier : getUTCDay rend 0 pour dimanche.
+    var decalage = (new Date(Date.UTC(p.a, p.m - 1, 1)).getUTCDay() + 6) % 7;
+    for (var v = 0; v < decalage; v++) {
+      var vide = document.createElement('span');
+      vide.className = 'pro-cal-vide';
+      grille.appendChild(vide);
+    }
+    var finPeriode = etat.debut ? ajouteJoursCal(etat.debut, etat.duree - 1) : null;
+    for (var jour = etat.mois + '-01'; jour && jour.slice(0, 7) === etat.mois; jour = ajouteJoursCal(jour, 1)) {
+      grille.appendChild(celluleJourCal(etat, jour, finPeriode));
+    }
+    racine.appendChild(grille);
+
+    var legende = document.createElement('p');
+    legende.className = 'pro-cal-legende';
+    legende.textContent = 'Places restantes par jour pour les tranches cochées (' + etat.capacite + ' par tranche)\u00a0: « libre », « 2 pl. », « 1 pl. » ou « complet ». Choisissez le premier jour.';
+    racine.appendChild(legende);
+
+    var choix = document.createElement('p');
+    choix.className = 'pro-cal-choix';
+    choix.setAttribute('role', 'status');
+    choix.textContent = etat.debut ? 'Du ' + jourCourtFr(etat.debut) + ' au ' + jourCourtFr(finPeriode) + '.' : 'Aucun jour de début choisi.';
+    racine.appendChild(choix);
+
+    conteneur.appendChild(racine);
+  }
+
+  function celluleJourCal(etat, jour, finPeriode) {
+    var bouton = document.createElement('button');
+    bouton.type = 'button';
+    bouton.className = 'pro-cal-jour';
+    var numero = document.createElement('strong');
+    numero.textContent = String(Number(jour.slice(8, 10)));
+    bouton.appendChild(numero);
+    var horsBornes = jour < etat.min || jour > ajouteJoursCal(etat.max, etat.duree - 1);
+    var reste = etat.capacite - prisesCal(etat.dispo, etat.emplacement, etat.tranches, jour);
+    var libelle = jourCourtFr(jour);
+    if (!horsBornes && etat.tranches.length > 0) {
+      var etatJour = document.createElement('small');
+      etatJour.textContent = etiquetteJourCal(reste, etat.capacite);
+      bouton.appendChild(etatJour);
+      if (reste <= 0) bouton.className += ' pro-cal-jour--complet';
+      else if (reste < etat.capacite) bouton.className += ' pro-cal-jour--peu';
+      libelle += ', ' + (reste <= 0 ? 'complet' : reste >= etat.capacite ? 'libre' : (reste === 1 ? '1 place restante' : reste + ' places restantes'));
+    }
+    if (etat.debut && jour >= etat.debut && jour <= finPeriode) bouton.className += ' pro-cal-jour--periode';
+    var raison = raisonRefusCal(etat, jour);
+    if (raison) {
+      bouton.setAttribute('aria-disabled', 'true');
+      bouton.title = raison;
+      libelle += '. Début impossible\u00a0: ' + raison;
+    } else {
+      bouton.setAttribute('aria-pressed', etat.debut === jour ? 'true' : 'false');
+      libelle += '. Choisir comme jour de début.';
+    }
+    bouton.setAttribute('aria-label', libelle);
+    bouton.addEventListener('click', function () {
+      if (raisonRefusCal(etat, jour)) return;
+      etat.choisit(jour);
+    });
+    return bouton;
   }
 
 
