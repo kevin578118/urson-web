@@ -630,8 +630,6 @@
     .pro-coque-lien:focus-visible { outline: 2px solid var(--coral-deep); outline-offset: 1px; }
     .pro-coque-contenu { flex: 1; min-width: 0; }
     .pro-coque-tabs { display: none; }
-    .pro-coque-carte-avenir { text-align: center; padding: 48px 24px; }
-    .pro-coque-carte-avenir .pro-pastille-etat { margin: 14px auto 0; }
     .pro-pastille-etat {
       display: inline-block; padding: 4px 12px; border-radius: 999px; font-size: 12px;
       font-weight: 700; background: var(--bg-soft); color: var(--fg-1);
@@ -653,6 +651,19 @@
         justify-content: center;
       }
       .pro-coque-tab[aria-current="page"] { color: var(--fg-1); box-shadow: inset 0 3px 0 var(--coral); }
+      button.pro-coque-tab { border: none; background: none; font-family: inherit; cursor: pointer; }
+      .pro-coque-tab:focus-visible, .pro-coque-plus-lien:focus-visible { outline: 2px solid var(--coral-deep); outline-offset: 1px; }
+      .pro-coque-plus-menu {
+        position: absolute; right: 8px; bottom: calc(100% + 6px); min-width: 180px; padding: 6px;
+        background: var(--bg-surface); border: 1px solid var(--line-soft); border-radius: 14px;
+        box-shadow: 0 8px 24px rgba(68, 44, 46, 0.12);
+      }
+      .pro-coque-plus-menu[hidden] { display: none; }
+      .pro-coque-plus-lien {
+        display: flex; align-items: center; min-height: 44px; padding: 0 12px; border-radius: 10px;
+        font-size: 15px; font-weight: 600; color: var(--fg-1); text-decoration: none;
+      }
+      .pro-coque-plus-lien[aria-current="page"] { background: var(--bg-soft); }
     }
 
     .pro-t-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 16px; }
@@ -1029,6 +1040,112 @@
       .pro-a-demande { gap: 16px; }
     }
 
+    .pro-l-tete { display: flex; align-items: flex-start; gap: 16px; flex-wrap: wrap; }
+    .pro-l-tete > div { flex: 1; min-width: 240px; }
+    .pro-l-badge {
+      display: inline-flex; align-items: center; min-height: 32px; padding: 0 14px; border-radius: 999px;
+      font-size: 13px; font-weight: 700; background: var(--bg-soft); color: var(--fg-1);
+    }
+    .pro-l-badge--refus { background: rgba(232, 77, 77, 0.12); }
+    .pro-l-bandeau {
+      display: flex; gap: 10px; align-items: flex-start; background: var(--bg-soft); color: var(--fg-1);
+      border-radius: 14px; padding: 14px 16px; margin: 0 0 18px; font-size: 14px; line-height: 1.5;
+    }
+    .pro-l-bandeau p { margin: 0; }
+    .pro-l-grille { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+    .pro-l-colonne { display: flex; flex-direction: column; gap: 0; }
+    .pro-l-situe { margin-left: 6px; }
+    .pro-l-situe[hidden] { display: none; }
+    .pro-l-aide { margin: 6px 0 0; font-size: 13px; line-height: 1.5; color: var(--fg-1); }
+    .pro-l-horaires { background: var(--bg-soft); border-radius: 14px; padding: 14px 16px; }
+    .pro-l-jour { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--line-soft); }
+    .pro-l-jour:last-of-type { border-bottom: none; }
+    .pro-l-jour select.pro-input { width: 140px; height: 44px; }
+    .pro-l-jour input[type="time"] { width: 118px; height: 44px; }
+    .pro-l-jour .pro-l-ferme { display: flex; gap: 6px; align-items: center; font-size: 14px; color: var(--fg-1); min-height: 44px; }
+    .pro-l-horaires .pro-lien-retour, .pro-l-jour .pro-lien-retour { min-height: 44px; }
+    .pro-l-photos { display: flex; flex-wrap: wrap; gap: 12px; margin: 0 0 8px; }
+    .pro-l-photo { position: relative; width: 132px; height: 100px; border-radius: 16px; overflow: hidden; background: var(--bg-soft); }
+    .pro-l-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .pro-l-photo-etat {
+      position: absolute; left: 6px; top: 6px; padding: 2px 8px; border-radius: 999px;
+      background: var(--bg-surface); color: var(--fg-1); font-size: 11px; font-weight: 700;
+    }
+    .pro-l-photo-retirer {
+      position: absolute; right: 4px; bottom: 4px; min-height: 44px; min-width: 44px; padding: 0 10px; border-radius: 999px;
+      border: 1px solid var(--line-medium); background: var(--bg-surface); color: var(--fg-1);
+      font-family: inherit; font-size: 12px; font-weight: 700; cursor: pointer;
+    }
+    .pro-l-photo--retiree { opacity: .45; }
+    .pro-l-ajout {
+      width: 132px; height: 100px; border-radius: 16px; border: 1px dashed var(--line-medium);
+      background: var(--bg-surface); color: var(--fg-1); font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer;
+    }
+    .pro-l-ajout:disabled { opacity: .5; cursor: default; }
+    .pro-l-photo-retirer:focus-visible, .pro-l-ajout:focus-visible { outline: 2px solid var(--coral-deep); outline-offset: 1px; }
+    .pro-l-envoi { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+    .pro-l-envoi .pro-bouton-primaire { width: auto; padding: 0 22px; }
+    .pro-l-sortie { display: flex; gap: 10px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line-soft); }
+    .pro-l-sortie:last-child { border-bottom: none; }
+    .pro-l-sortie > div { flex: 1; min-width: 0; }
+    .pro-l-sortie p { margin: 2px 0 0; font-size: 13px; color: var(--fg-2); }
+    .pro-l-soft { background: var(--bg-soft); box-shadow: none; }
+    .pro-l-soft p { color: var(--fg-1); font-size: 14px; line-height: 1.5; margin: 0; }
+    .pro-l-cheznous { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin: 0 0 14px; }
+    .pro-l-cheznous .pro-pastille[disabled] { opacity: .5; cursor: default; }
+    @media (max-width: 720px) {
+      .pro-l-grille { grid-template-columns: minmax(0, 1fr); }
+      .pro-l-jour select.pro-input, .pro-l-jour input[type="time"] { width: 100%; }
+    }
+
+    /* Cadre téléphone sobre, ~320 px — une colonne sous le formulaire en mobile. */
+    .pro-l-tel {
+      width: 320px; max-width: 100%; margin: 0 auto; border-radius: 36px; overflow: hidden;
+      border: 1px solid var(--line-medium); background: var(--bg-app);
+      box-shadow: 0 4px 20px rgba(255, 107, 107, 0.08);
+    }
+    /* Bandeau : 360 px dans l'app sur un écran de ~390, ramené à l'échelle du cadre. */
+    .pro-l-hero { position: relative; height: 296px; overflow: hidden; }
+    .pro-l-hero-fond { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+    .pro-l-hero-fond img.pro-l-hero-icone { width: 54%; height: auto; max-height: 54%; object-fit: contain; }
+    .pro-l-hero-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+    .pro-l-disque { position: absolute; border-radius: 999px; background: rgba(255, 255, 255, 0.15); }
+    .pro-l-disque--haut { top: -33px; right: -25px; width: 115px; height: 115px; }
+    .pro-l-disque--bas { bottom: -41px; left: -16px; width: 90px; height: 90px; background: rgba(255, 255, 255, 0.10); }
+    .pro-l-hero-pastille {
+      position: absolute; left: 16px; bottom: 31px; display: inline-flex; align-items: center; gap: 5px;
+      background: rgba(255, 255, 255, 0.95); border-radius: 999px; padding: 6px 12px;
+      font-size: 11px; font-weight: 800; color: var(--fg-1);
+    }
+    .pro-l-hero-pastille img { width: 14px; height: 14px; }
+    .pro-l-feuille {
+      position: relative; margin-top: -20px; background: var(--bg-app);
+      border-radius: 26px 26px 0 0; padding: 20px 20px 24px;
+    }
+    .pro-l-titre { margin: 0; font-size: 22px; line-height: 1.15; font-weight: 800; letter-spacing: -0.4px; color: var(--fg-1); overflow-wrap: anywhere; }
+    .pro-l-desc { margin: 18px 0 0; font-size: 12.5px; line-height: 1.5; color: var(--fg-1); white-space: pre-line; overflow-wrap: anywhere; }
+    .pro-l-section { margin-top: 18px; }
+    .pro-l-section-titre { margin: 0 0 8px; font-size: 14px; font-weight: 800; color: var(--fg-1); }
+    .pro-l-jour-titre { margin: 0 0 6px; font-size: 11px; font-weight: 700; color: var(--fg-2); }
+    .pro-l-rail { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 12px; }
+    .pro-l-rail-carte {
+      flex: 0 0 116px; background: var(--bg-surface); border: 1px solid var(--line-soft);
+      border-radius: 13px; padding: 7px;
+    }
+    .pro-l-rail-couv { height: 72px; border-radius: 11px; overflow: hidden; position: relative; display: flex; align-items: center; justify-content: center; }
+    .pro-l-rail-couv img { width: 54%; height: auto; }
+    .pro-l-rail-titre { margin: 6px 0 0; font-size: 10.5px; line-height: 1.3; font-weight: 700; color: var(--fg-1); overflow-wrap: anywhere; }
+    .pro-l-rail-heure { margin: 2px 0 0; font-size: 10px; font-weight: 700; color: var(--coral); }
+    .pro-l-infos { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 8px; }
+    .pro-l-tuile {
+      width: calc(50% - 4px); box-sizing: border-box; background: var(--bg-surface);
+      border: 1px solid var(--line-soft); border-radius: 12px; padding: 10px;
+    }
+    .pro-l-tuile--large { width: 100%; }
+    .pro-l-tuile-cle { display: flex; align-items: center; gap: 5px; font-size: 9px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; color: var(--fg-2); }
+    .pro-l-tuile-cle img { width: 14px; height: 14px; }
+    .pro-l-tuile-val { margin: 4px 0 0; font-size: 12.5px; line-height: 1.3; font-weight: 800; color: var(--fg-1); overflow-wrap: anywhere; }
+
   </style>
 </head>
 <body>
@@ -1211,7 +1328,9 @@
         form.append(c, String(corps[c]));
       }
     }
-    if (fichier) form.append('file', fichier);
+    // Un fichier, ou plusieurs (« Mon lieu » : jusqu'à 5 photos, le même champ répété).
+    var fichiers = Array.isArray(fichier) ? fichier : fichier ? [fichier] : [];
+    for (var f = 0; f < fichiers.length; f++) form.append('file', fichiers[f]);
 
     return sb.auth.getSession().then(function (r) {
       var session = r.data && r.data.session;
@@ -3146,6 +3265,9 @@
   var CARTE_ZOOM_MIN = 12;
   var CARTE_ZOOM_MAX = 18;
   var CARTE_ZOOM_DEFAUT = 16;
+  // Carte d'attente de « Mon lieu » (sans repere) : la ville entiere.
+  var CARTE_ZOOM_VILLE = 13;
+  var CARTE_NOTE_SANS_REPERE = 'Choisissez une adresse proposée pour placer le lieu sur la carte.';
   var CARTE_TUILES_URL = 'https://tile.openstreetmap.org/';
 
   // Etat de la carte montee, ou null. Une seule carte a la fois sur la page.
@@ -3186,16 +3308,20 @@
   function carteEstMontee() { return carte !== null; }
 
   /** Monte la carte sous le champ d'adresse, centree sur le point d'une
-   *  suggestion retenue. Ne fait rien si le conteneur n'est pas la. */
-  function monteCarte(lat, lon) {
+   *  suggestion retenue. Ne fait rien si le conteneur n'est pas la.
+   *  sansRepere (« Mon lieu » seulement) : carte d'attente, sans epingle ni
+   *  « Utiliser ce point », a un zoom de ville. */
+  function monteCarte(lat, lon, sansRepere) {
     var zone = document.getElementById('pro-depot-carte');
     if (!zone) return;
-    demonteCarte();
+    demonteCarte(true);
 
     carte = {
       lat: lat, lon: lon,
       centreLat: lat, centreLon: lon,
-      zoom: CARTE_ZOOM_DEFAUT,
+      zoom: sansRepere ? CARTE_ZOOM_VILLE : CARTE_ZOOM_DEFAUT,
+      sansRepere: sansRepere === true,
+      permanente: zone.getAttribute('data-carte-permanente') === '1',
       deplace: false,
       glisse: null,
       // Cumul de molette normalise, et les pointeurs tactiles poses.
@@ -3208,17 +3334,19 @@
       '<div class="pro-c-cadre" id="pro-c-cadre" tabindex="0" role="application" ' +
         'aria-label="Carte du point retenu. Faites glisser pour deplacer.">' +
         '<div class="pro-c-tuiles" id="pro-c-tuiles"></div>' +
-        '<svg class="pro-c-epingle" viewBox="0 0 28 36" aria-hidden="true">' +
+        (sansRepere ? '' :
+        '<svg class="pro-c-epingle" id="pro-c-epingle" viewBox="0 0 28 36" aria-hidden="true">' +
           '<path class="pro-c-epingle-corps" d="M14 36C14 36 26 22.5 26 14A12 12 0 1 0 2 14c0 8.5 12 22 12 22z"/>' +
           '<circle class="pro-c-epingle-centre" cx="14" cy="14" r="4.5"/>' +
-        '</svg>' +
+        '</svg>') +
         '<div class="pro-c-zooms">' +
           '<button type="button" class="pro-c-zoom" data-c="zoomplus" aria-label="Zoomer">+</button>' +
           '<button type="button" class="pro-c-zoom" data-c="zoommoins" aria-label="Dezoomer">\u2212</button>' +
         '</div>' +
         '<p class="pro-c-attribution">\u00a9 <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors</p>' +
       '</div>' +
-      '<p class="pro-c-note" id="pro-c-note">Le point vient de l\u2019adresse choisie. Faites glisser la carte si vous voulez l\u2019ajuster.</p>';
+      '<p class="pro-c-note" id="pro-c-note">' + (sansRepere ? CARTE_NOTE_SANS_REPERE :
+        'Le point vient de l\u2019adresse choisie. Faites glisser la carte si vous voulez l\u2019ajuster.') + '</p>';
 
     cableCarte();
     dessineCarte();
@@ -3241,7 +3369,13 @@
   /** Retire la carte et tout ce qui y pend. Appelee par toute frappe dans
    *  « Adresse » OU « Ville » — les DEUX champs qui oublient les coordonnees —
    *  et par le demontage du formulaire. */
-  function demonteCarte() {
+  function demonteCarte(force) {
+    // Carte permanente (« Mon lieu ») encore affichee : une frappe retire le
+    // repere, la carte reste. monteCarte passe force pour tout reconstruire.
+    if (force !== true && carte && carte.permanente && document.getElementById('pro-c-cadre')) {
+      retireRepere();
+      return;
+    }
     // En tete, et sans condition : ce chemin est parcouru alors que carte vaut
     // deja null (monteCarte appelle demonteCarte en premier).
     if (carteObservateur) { carteObservateur.disconnect(); carteObservateur = null; }
@@ -3249,6 +3383,17 @@
     var zone = document.getElementById('pro-depot-carte');
     if (zone) zone.innerHTML = '';
     carte = null;
+  }
+
+  /** Carte permanente : l'adresse a change, le point ne vaut plus. On retire
+   *  l'epingle et on remet la note d'aide, sans rien demonter. */
+  function retireRepere() {
+    poseInverse(null);
+    carte.sansRepere = true;
+    carte.deplace = false;
+    var epingle = document.getElementById('pro-c-epingle');
+    if (epingle && epingle.parentNode) epingle.parentNode.removeChild(epingle);
+    ditNoteCarte(CARTE_NOTE_SANS_REPERE);
   }
 
   function cableCarte() {
@@ -3416,7 +3561,8 @@
    */
   function majNoteCarte() {
     var note = document.getElementById('pro-c-note');
-    if (!note || !carte.deplace) return;
+    // Sans repere, rien a retenir : pas de « Utiliser ce point ».
+    if (!note || !carte.deplace || carte.sansRepere) return;
     poseInverse(null);
     note.innerHTML =
       '<button type="button" class="pro-c-valider" data-a-carte="valider">Utiliser ce point</button>' +
@@ -3660,7 +3806,7 @@
     if (route.nom === 'sortie') { afficheUneSortie(route.id); return; }
     if (route.nom === 'sorties') { afficheMesSorties(); return; }
     if (route.nom === 'stats') { afficheStatistiques(route.id); return; }
-    if (route.nom === 'lieu') { afficheAVenir(route.nom); return; }
+    if (route.nom === 'lieu') { afficheLieu(); return; }
     if (route.nom === 'avant') { afficheMiseEnAvant(route.id || null); return; }
     if (route.nom === 'parametres') { afficheParametres(); return; }
     afficheTableauDeBord();
@@ -3728,16 +3874,6 @@
 
   function erreurChargementHtml() {
     return '<p class="pro-note">Impossible de charger votre espace pour le moment. Rechargez la page dans un instant.</p>';
-  }
-
-  // ── Écrans « à venir » ───────────────────────────────────────────────
-  var TEXTES_A_VENIR = {
-    lieu: ['Mon lieu', 'Bientôt, vous pourrez présenter votre lieu (adresse, horaires, photos) et y rattacher vos sorties.'],
-  };
-
-  function afficheAVenir(section) {
-    var t = TEXTES_A_VENIR[section];
-    envelopeCoque(section, carteAVenirHtml(t[0], t[1]));
   }
 
   // ── Dépôt et correction ──────────────────────────────────────────────
@@ -4119,6 +4255,8 @@
     ['avant', ROUTE_MISE_EN_AVANT, 'Mise en avant'],
     ['parametres', ROUTE_PARAMETRES, 'Plus']
   ];
+  // Sous 720 px, « Plus » ouvre un petit menu : Mon lieu (lot 5) et Paramètres.
+  var MENU_PLUS_COQUE = [['lieu', ROUTE_LIEU, 'Mon lieu'], ['parametres', ROUTE_PARAMETRES, 'Paramètres']];
 
   function initialesStructure(nom) {
     var mots = (nom || '').trim().split(/\s+/).filter(function (m) { return m.length > 0; });
@@ -4161,7 +4299,12 @@
   }
 
   function coqueTabsHtml(sectionActive) {
-    return '<nav class="pro-coque-tabs" aria-label="Navigation">' + coqueLiensHtml(TABS_BAS_COQUE, 'pro-coque-tab', sectionActive) + '</nav>';
+    var dansPlus = sectionActive === 'lieu' || sectionActive === 'parametres';
+    return '<nav class="pro-coque-tabs" aria-label="Navigation">' + coqueLiensHtml(TABS_BAS_COQUE.slice(0, 4), 'pro-coque-tab', sectionActive) +
+      '<button type="button" class="pro-coque-tab" id="pro-coque-plus" aria-expanded="false" aria-controls="pro-coque-plus-menu"' +
+        (dansPlus ? ' aria-current="page"' : '') + '>Plus</button>' +
+      '<div class="pro-coque-plus-menu" id="pro-coque-plus-menu" hidden>' + coqueLiensHtml(MENU_PLUS_COQUE, 'pro-coque-plus-lien', sectionActive) + '</div>' +
+    '</nav>';
   }
 
   /** Point d'entrée unique des écrans vérifiés : pose la coque autour du
@@ -4183,13 +4326,20 @@
   }
 
   function cableCoqueBarre() {
-    var liens = document.querySelectorAll('.pro-coque-lien[data-route], .pro-coque-tab[data-route]');
+    var liens = document.querySelectorAll('.pro-coque-lien[data-route], .pro-coque-tab[data-route], .pro-coque-plus-lien[data-route]');
     for (var i = 0; i < liens.length; i++) {
       liens[i].addEventListener('click', function (event) {
         event.preventDefault();
         vaVers(event.currentTarget.getAttribute('data-route'));
       });
     }
+    var plus = document.getElementById('pro-coque-plus');
+    var menuPlus = document.getElementById('pro-coque-plus-menu');
+    plus.addEventListener('click', function () {
+      var ouvert = plus.getAttribute('aria-expanded') === 'true';
+      plus.setAttribute('aria-expanded', ouvert ? 'false' : 'true');
+      menuPlus.hidden = ouvert;
+    });
     document.getElementById('pro-coque-deposer').addEventListener('click', function () {
       sortieACorriger = null;
       brouillonDepot = null;
@@ -4212,16 +4362,6 @@
     });
   }
 
-  /** Carte sobre pour l'écran « à venir » (Mon lieu ; les statistiques et la mise
-   *  en avant ont leur écran, ./pro-stats.mjs et ./pro-mise-en-avant.mjs) — titre,
-   *  une phrase, pastille « À venir », rien de plus. */
-  function carteAVenirHtml(titre, phrase) {
-    return '<div class="pro-carte pro-coque-carte-avenir">' +
-      '<h1 style="margin:0 0 8px">' + ech(titre) + '</h1>' +
-      '<p class="pro-sous-titre" style="margin:0">' + ech(phrase) + '</p>' +
-      '<span class="pro-pastille-etat">À venir</span>' +
-    '</div>';
-  }
 
 
   // ── Tableau de bord ──────────────────────────────────────────────────
@@ -4273,10 +4413,9 @@
         '<a class="pro-lien-retour" href="' + ROUTE_SORTIES + '" data-route="' + ROUTE_SORTIES + '">Toutes mes sorties</a></div>' +
         '<div id="pro-t-prochaines">' + prochainesHtml(aVenir, null) + '</div>' +
       '</div></div><div>' +
-      aTraiterHtml(counts, sansAffiche) +
+      aTraiterHtml(counts, sansAffiche, d.place, c.declared_place) +
       '<div class="pro-carte" id="pro-t-avant">' + carteMeaTableauHtml() + '</div>' +
-      '<div class="pro-carte"><div class="pro-t-entete-carte"><h2>Mon lieu</h2><span class="pro-pastille-etat">À venir</span></div>' +
-        '<p class="pro-sous-titre" style="margin:6px 0 0">Présenter votre lieu et y rattacher vos sorties.</p></div>' +
+      carteLieuTableauHtml(d.place) +
       '<div class="pro-carte pro-t-recap"><h2>Recevoir un récapitulatif chaque lundi</h2>' +
         '<p style="margin:0 0 10px">Consultations, favoris et « j’y vais » de la semaine, par e-mail. Réglable dans les paramètres.</p>' +
         '<a class="pro-lien-retour" href="' + ROUTE_PARAMETRES + '" data-route="' + ROUTE_PARAMETRES + '">' +
@@ -4362,8 +4501,9 @@
     return html;
   }
 
-  function aTraiterHtml(counts, sansAffiche) {
-    var lignes = '';
+  function aTraiterHtml(counts, sansAffiche, lieu, declareLieu) {
+    // Lot 5 : « déclaré un lieu » vient du lot 6 (account.declared_place) ; absent = faux.
+    var lignes = ligneLieuATraiterHtml(lieu, declareLieu === true);
     if (counts.review > 0) {
       lignes += '<div class="pro-t-traiter"><strong>' + nombreFr(counts.review) + '</strong><div>' +
         '<a class="pro-lien-retour" href="' + ROUTE_SORTIES + '" data-route="' + ROUTE_SORTIES + '" data-onglet="review">' +
@@ -6829,6 +6969,732 @@
   }
 
 
+  // ── Mon lieu ─────────────────────────────────────────────────────────
+  var JOURS_LIEU = [['MO', 'Lundi'], ['TU', 'Mardi'], ['WE', 'Mercredi'], ['TH', 'Jeudi'], ['FR', 'Vendredi'], ['SA', 'Samedi'], ['SU', 'Dimanche']];
+  var lieuDonnees = null;
+  var lieuHoraires = [];
+  var lieuAutresFermes = false;
+  var lieuPhotosNeuves = [];
+  var lieuPhotosRetirees = {};
+  var lieuConfirmation = null;
+  // « Chez nous » : vrai tant que les champs du lieu viennent du bouton, faux dès
+  // qu'une frappe les modifie (le lien tombe, décision 10).
+  var chezNousActif = false;
+  // Centre de la carte d'attente de « Mon lieu » : Bourges.
+  var LIEU_CARTE_ATTENTE = [47.0810, 2.3988];
+
+  function afficheLieu() {
+    var jeton = jetonEcran;
+    envelopeCoque('lieu', '<p class="pro-etat">Un instant…</p>');
+    appelApi('place_get', {}, true).then(function (resultat) {
+      if (!ecranCourant(jeton)) return;
+      if (!resultat.ok || !resultat.data) { contenuCoque().innerHTML = erreurChargementHtml(); return; }
+      lieuDonnees = resultat.data;
+      rendLieu(resultat.data);
+    }).catch(function () {
+      if (ecranCourant(jeton)) contenuCoque().innerHTML = erreurChargementHtml();
+    });
+  }
+
+  function lieuSource(d) { return d.proposal || d.published || null; }
+
+  function libelleCategorieLieu(d, valeur) {
+    var cats = d.categories || [];
+    for (var i = 0; i < cats.length; i++) { if (cats[i].value === valeur) return cats[i].label; }
+    return '';
+  }
+
+  function badgeLieuHtml(d) {
+    if (d.state === 'pending') return '<span class="pro-l-badge">En relecture depuis le ' + ech(dateCourteFr(d.pending_since)) + '</span>';
+    if (d.state === 'published' && d.pending_since) return '<span class="pro-l-badge">Modification en relecture</span>';
+    if (d.state === 'published') return '<span class="pro-l-badge">Publié</span>';
+    if (d.state === 'refused') return '<span class="pro-l-badge pro-l-badge--refus">Refusé</span>';
+    return '';
+  }
+
+  function bandeauLieuHtml(d) {
+    var texte;
+    if (d.state === 'pending') {
+      texte = 'Un relecteur Urson vérifie la fiche et situe le lieu sur la carte. Vous pouvez encore modifier ci-dessous\u00a0: la relecture repart sur la dernière version.';
+    } else if (d.state === 'published' && d.pending_since) {
+      texte = 'Votre modification du ' + ech(dateCourteFr(d.pending_since)) + ' est en relecture. La version en ligne reste affichée jusque-là.';
+    } else if (d.refusal) {
+      texte = (d.state === 'refused' ? 'Votre lieu n’a pas été retenu.' : 'Votre dernière modification n’a pas été retenue.') +
+        ' Motif\u00a0: ' + ech(d.refusal.reason || 'non précisé') + '. Corrigez la fiche et enregistrez\u00a0: elle repart en relecture.';
+    } else if (d.state === 'published') {
+      texte = 'Votre lieu est en ligne. Toute modification est relue avant de remplacer la version publiée.';
+    } else {
+      texte = 'Présentez votre lieu\u00a0: il paraît dans le catalogue avec sa fiche, ses horaires et ses photos.';
+    }
+    return '<div class="pro-l-bandeau" role="status"><p>' + texte +
+      ' <strong>Facultatif</strong>\u00a0: sans lieu, vous continuez à déposer des sorties à n’importe quelle adresse.</p></div>';
+  }
+
+  function rendLieu(d) {
+    var s = lieuSource(d) || {};
+    lieuHoraires = horairesDepuis(s.opening_hours);
+    lieuAutresFermes = !!(s.opening_hours && s.opening_hours.closed_on && s.opening_hours.closed_on.length > 0 && lieuHoraires.filter(function (l) { return l.ferme; }).length === 0);
+    lieuPhotosNeuves = [];
+    lieuPhotosRetirees = {};
+    coordonneesRetenues = typeof s.latitude === 'number' && typeof s.longitude === 'number' ? { lat: s.latitude, lon: s.longitude } : null;
+
+    var optionsType = '<option value="">Choisir…</option>';
+    var cats = d.categories || [];
+    for (var i = 0; i < cats.length; i++) {
+      optionsType += '<option value="' + ech(cats[i].value) + '"' + (cats[i].value === s.category ? ' selected' : '') + '>' + ech(cats[i].label) + '</option>';
+    }
+    var val = function (v) { return v === null || v === undefined ? '' : String(v); };
+    var aUnLieu = d.state !== 'none' && d.state !== 'refused' || !!d.activity_id;
+
+    var html =
+      (lieuConfirmation ? carteConfirmationHtml('pro-l-confirm', lieuConfirmation[0], lieuConfirmation[1], null, '') : '') +
+      '<div class="pro-l-tete"><div>' +
+        '<p class="pro-eyebrow">Mon lieu</p>' +
+        '<h1>' + ech(s.title || 'Votre lieu') + '</h1>' +
+        '<p class="pro-sous-titre">Un lieu par espace. Il paraît dans le catalogue comme n’importe quel lieu, avec sa fiche, ses horaires et ses photos — et vos sorties s’y rattachent en un clic.</p>' +
+      '</div>' + badgeLieuHtml(d) + '</div>' +
+      bandeauLieuHtml(d) +
+      '<div class="pro-l-grille"><div class="pro-l-colonne">' +
+        '<form class="pro-carte" id="pro-l-form" novalidate>' +
+          '<h2>La fiche du lieu</h2>' +
+          '<div class="pro-champ pro-ligne-deux">' +
+            '<div><label class="pro-label" for="pro-l-nom">Nom du lieu</label>' +
+              '<input class="pro-input" type="text" id="pro-l-nom" maxlength="200" value="' + ech(val(s.title)) + '" /></div>' +
+            '<div><label class="pro-label" for="pro-l-type">Type de lieu</label>' +
+              '<select class="pro-input" id="pro-l-type">' + optionsType + '</select></div>' +
+          '</div>' +
+          '<div class="pro-champ pro-champ--adresse">' +
+            '<label class="pro-label" for="pro-depot-adresse">Adresse</label>' +
+            '<input class="pro-input" type="text" id="pro-depot-adresse" maxlength="300" autocomplete="off" role="combobox" aria-expanded="false" aria-autocomplete="list" aria-controls="pro-depot-suggestions" value="' + ech(val(s.address)) + '" />' +
+            '<ul class="pro-suggestions" id="pro-depot-suggestions" role="listbox" aria-label="Adresses proposées" hidden></ul>' +
+            '<p class="pro-l-aide">Choisissez une adresse proposée pendant la frappe\u00a0: c’est elle qui place le lieu sur la carte.' +
+              '<span class="pro-s-pastille pro-s-pastille--ok pro-l-situe" id="pro-l-situe" hidden>Situé sur la carte</span></p>' +
+            '<div id="pro-depot-carte" data-carte-permanente="1"></div>' +
+          '</div>' +
+          '<div class="pro-champ"><label class="pro-label" for="pro-depot-ville">Ville</label>' +
+            '<input class="pro-input" type="text" id="pro-depot-ville" maxlength="100" value="' + ech(val(s.city)) + '" /></div>' +
+          '<div class="pro-champ"><label class="pro-label" for="pro-l-desc">Ce qu’on y fait, en quelques lignes</label>' +
+            '<textarea class="pro-input" id="pro-l-desc" rows="4" maxlength="5000">' + ech(val(s.description)) + '</textarea></div>' +
+          '<div class="pro-champ pro-ligne-deux">' +
+            '<div><label class="pro-label" for="pro-l-age-min">À partir de (ans)</label>' +
+              '<input class="pro-input" type="number" min="0" max="18" id="pro-l-age-min" value="' + ech(val(s.age_min)) + '" /></div>' +
+            '<div><label class="pro-label" for="pro-l-age-max">Jusqu’à (ans)</label>' +
+              '<input class="pro-input" type="number" min="0" max="18" id="pro-l-age-max" value="' + ech(val(s.age_max)) + '" /></div>' +
+          '</div>' +
+          '<div class="pro-champ"><span class="pro-label">Tarif habituel</span><div id="pro-depot-tarifs"></div></div>' +
+          '<div class="pro-champ"><span class="pro-label">Horaires d’ouverture</span>' +
+            '<div class="pro-l-horaires" id="pro-l-horaires"></div></div>' +
+          '<div class="pro-champ pro-ligne-deux">' +
+            '<div><label class="pro-label" for="pro-l-site">Site web</label>' +
+              '<input class="pro-input" type="url" id="pro-l-site" maxlength="300" placeholder="https://" value="' + ech(val(s.website_url)) + '" /></div>' +
+            '<div><label class="pro-label" for="pro-l-tel">Téléphone (affiché aux parents)</label>' +
+              '<input class="pro-input" type="tel" id="pro-l-tel" maxlength="40" value="' + ech(val(s.phone)) + '" /></div>' +
+          '</div>' +
+          '<div class="pro-champ"><span class="pro-label">Photos du lieu (jusqu’à ' + nombreFr(d.photos_max || 5) + ')</span>' +
+            '<div class="pro-l-photos" id="pro-l-photos"></div>' +
+            '<input type="file" id="pro-l-fichier" accept="image/jpeg,image/png,image/webp" multiple hidden />' +
+            '<label class="pro-case" style="margin-top:6px"><input type="checkbox" id="pro-l-clause" /><span id="pro-l-clause-texte"></span></label>' +
+          '</div>' +
+          '<div class="pro-l-envoi">' +
+            '<button type="submit" class="pro-bouton-primaire" id="pro-depot-envoyer">Enregistrer les modifications</button>' +
+            '<span class="pro-note" style="margin:0">Relues avant publication, comme vos sorties.</span>' +
+          '</div>' +
+          '<p class="pro-message" id="pro-l-message" role="status" aria-live="polite"></p>' +
+        '</form>' +
+      '</div><div class="pro-l-colonne">' +
+        '<section class="pro-carte"><h2>Aperçu dans l’app</h2><p class="pro-l-aide" style="margin:0 0 12px">Le haut de la fiche telle que les familles la verront, mis à jour pendant la saisie.</p><div id="pro-l-apercu"></div></section>' +
+        '<section class="pro-carte"><h2>Vos sorties dans ce lieu</h2>' + sortiesDuLieuHtml(d) +
+          '<p class="pro-l-aide">Au dépôt d’une sortie, «\u00a0Chez nous\u00a0» remplit l’adresse et rattache la sortie au lieu. Une fois le lieu publié, sa fiche liste vos prochaines sorties.</p></section>' +
+        '<section class="pro-carte pro-l-soft"><h2>Ce lieu existe déjà dans Urson\u00a0?</h2>' +
+          '<p>Si un relecteur trouve une fiche existante pour la même adresse, il la rattache à votre espace au lieu d’en créer une seconde. Vous en êtes prévenu·e par e-mail.</p></section>' +
+        (aUnLieu ? '<div id="pro-l-retrait"><button type="button" class="pro-bouton-secondaire pro-a-danger" id="pro-l-retirer">' +
+          (d.activity_id ? 'Retirer mon lieu du catalogue' : 'Retirer ma proposition de lieu') + '</button></div>' : '') +
+      '</div></div>';
+
+    var zone = contenuCoque();
+    zone.innerHTML = html;
+    document.getElementById('pro-l-clause-texte').textContent = d.photo_clause ? d.photo_clause.text : '';
+    cableLiensRoute(zone);
+    cableAutocompletionAdresse();
+    // Carte toujours visible (retour navigateur de Kevin, 2026-09-27) : centrée sur le lieu
+    // s'il est situé, sinon sur Bourges sans repère (./pro-carte.mjs, carte permanente).
+    if (coordonneesRetenues) monteCarte(coordonneesRetenues.lat, coordonneesRetenues.lon);
+    else monteCarte(LIEU_CARTE_ATTENTE[0], LIEU_CARTE_ATTENTE[1], true);
+    tInitialiser(s.price || null);
+    rendHoraires();
+    rendPhotosLieu();
+    majSitue();
+    majApercuLieu();
+    var form = document.getElementById('pro-l-form');
+    // Une suggestion retenue (mousedown) ne déclenche aucun « input » : le badge suit
+    // aussi les clics et les touches ; l'aperçu, lui, ne suit que la saisie.
+    ['input', 'change'].forEach(function (evt) {
+      form.addEventListener(evt, function () { majSitue(); majApercuLieu(); });
+    });
+    ['click', 'keyup'].forEach(function (evt) { form.addEventListener(evt, majSitue); });
+    form.addEventListener('submit', function (event) { event.preventDefault(); onEnvoiLieu(); });
+    var retirer = document.getElementById('pro-l-retirer');
+    if (retirer) retirer.addEventListener('click', function () { ouvreRetraitLieu(); });
+    if (lieuConfirmation) { lieuConfirmation = null; focaliseConfirmation('pro-l-confirm'); }
+  }
+
+  function majSitue() {
+    var badge = document.getElementById('pro-l-situe');
+    if (badge) badge.hidden = !coordonneesRetenues;
+  }
+
+  function sortiesDuLieuHtml(d) {
+    var ev = d.events || [];
+    if (ev.length === 0) return '<p class="pro-note" style="margin:0">Aucune sortie rattachée pour l’instant.</p>';
+    var html = '';
+    for (var i = 0; i < ev.length; i++) {
+      var e = ev[i];
+      var quand = e.next_starts_at ? jourCourtFr(e.next_starts_at) : 'aucune date à venir';
+      if (e.upcoming_count > 1) quand += ' \u00b7 ' + pluriel(e.upcoming_count, 'date', 'dates');
+      html += '<div class="pro-l-sortie"><div>' +
+        '<a class="pro-lien-retour" href="' + ech(routeSortie(e.id)) + '" data-route="' + ech(routeSortie(e.id)) + '">' + ech(e.title) + '</a>' +
+        '<p>' + ech(quand) + '</p></div><span class="pro-s-pastille pro-s-pastille--ok">Publiée</span></div>';
+    }
+    return html;
+  }
+
+  // ── Horaires : une ligne par jour renseigné ─────────────────────────────
+  function horairesDepuis(oh) {
+    var lignes = [];
+    if (!oh || typeof oh !== 'object') return lignes;
+    var slots = Array.isArray(oh.slots) ? oh.slots : [];
+    for (var i = 0; i < JOURS_LIEU.length; i++) {
+      var code = JOURS_LIEU[i][0];
+      var plages = [];
+      for (var k = 0; k < slots.length; k++) {
+        if (slots[k] && slots[k].day === code) plages.push([slots[k].open, slots[k].close]);
+      }
+      if (plages.length > 0) lignes.push({ jour: code, ferme: false, plages: plages });
+    }
+    return lignes;
+  }
+
+  function rendHoraires() {
+    var zone = document.getElementById('pro-l-horaires');
+    if (!zone) return;
+    var html = '';
+    for (var i = 0; i < lieuHoraires.length; i++) {
+      var l = lieuHoraires[i];
+      var opts = '';
+      for (var j = 0; j < JOURS_LIEU.length; j++) {
+        opts += '<option value="' + JOURS_LIEU[j][0] + '"' + (JOURS_LIEU[j][0] === l.jour ? ' selected' : '') + '>' + JOURS_LIEU[j][1] + '</option>';
+      }
+      html += '<div class="pro-l-jour">' +
+        '<select class="pro-input" data-h-jour="' + i + '" aria-label="Jour">' + opts + '</select>';
+      for (var p = 0; p < l.plages.length; p++) {
+        html += '<input class="pro-input" type="time" data-h-plage="' + i + '-' + p + '-0" value="' + ech(l.plages[p][0] || '') + '" aria-label="Ouverture" />' +
+          '<input class="pro-input" type="time" data-h-plage="' + i + '-' + p + '-1" value="' + ech(l.plages[p][1] || '') + '" aria-label="Fermeture" />';
+      }
+      if (l.plages.length < 3) html += '<button type="button" class="pro-lien-retour" data-h-ajout-plage="' + i + '">+ plage</button>';
+      html += '<button type="button" class="pro-lien-retour" data-h-retire="' + i + '">Retirer</button></div>';
+    }
+    html += '<button type="button" class="pro-lien-retour" id="pro-l-ajout-jour">+ Ajouter un jour</button>' +
+      '<label class="pro-l-ferme"><input type="checkbox" id="pro-l-autres-fermes"' + (lieuAutresFermes ? ' checked' : '') + ' /> Les autres jours, fermé au public</label>';
+    zone.innerHTML = html;
+    majApercuLieu();
+
+    zone.onchange = zone.oninput = function (event) {
+      var t = event.target;
+      if (t.id === 'pro-l-autres-fermes') { lieuAutresFermes = t.checked; return; }
+      var j = t.getAttribute('data-h-jour');
+      if (j !== null) { lieuHoraires[Number(j)].jour = t.value; return; }
+      var pl = t.getAttribute('data-h-plage');
+      if (pl !== null) {
+        var b = pl.split('-');
+        lieuHoraires[Number(b[0])].plages[Number(b[1])][Number(b[2])] = t.value;
+      }
+    };
+    zone.onclick = function (event) {
+      var t = event.target;
+      if (t.id === 'pro-l-ajout-jour') {
+        lieuHoraires.push({ jour: premierJourLibre(), ferme: false, plages: [['10:00', '18:00']] });
+        rendHoraires();
+        return;
+      }
+      var a = t.getAttribute('data-h-ajout-plage');
+      if (a !== null) { lieuHoraires[Number(a)].plages.push(['', '']); rendHoraires(); return; }
+      var r = t.getAttribute('data-h-retire');
+      if (r !== null) { lieuHoraires.splice(Number(r), 1); rendHoraires(); }
+    };
+  }
+
+  function premierJourLibre() {
+    for (var j = 0; j < JOURS_LIEU.length; j++) {
+      var pris = false;
+      for (var i = 0; i < lieuHoraires.length; i++) { if (lieuHoraires[i].jour === JOURS_LIEU[j][0]) pris = true; }
+      if (!pris) return JOURS_LIEU[j][0];
+    }
+    return 'MO';
+  }
+
+  // Le format lu par la fiche de l'app ; le serveur le revalide de toute façon.
+  function lireHoraires() {
+    var slots = [];
+    var avecHoraires = {};
+    for (var i = 0; i < lieuHoraires.length; i++) {
+      var l = lieuHoraires[i];
+      for (var p = 0; p < l.plages.length; p++) {
+        var o = l.plages[p][0], f = l.plages[p][1];
+        if (!o && !f) continue;
+        if (!o || !f || o >= f) return null;
+        slots.push({ day: l.jour, open: o, close: f });
+        avecHoraires[l.jour] = true;
+      }
+    }
+    var fermes = [];
+    if (lieuAutresFermes && slots.length > 0) {
+      for (var j = 0; j < JOURS_LIEU.length; j++) { if (!avecHoraires[JOURS_LIEU[j][0]]) fermes.push(JOURS_LIEU[j][0]); }
+    }
+    return { slots: slots, closed_on: fermes, notes: null };
+  }
+
+  // ── Photos ─────────────────────────────────────────────────────────────
+  function nombrePhotosLieu() {
+    var d = lieuDonnees || {};
+    var ph = d.photos || { published: [], pending: [] };
+    var gardees = 0;
+    for (var i = 0; i < ph.pending.length; i++) { if (!lieuPhotosRetirees[ph.pending[i].id]) gardees += 1; }
+    return ph.published.length + gardees + lieuPhotosNeuves.length;
+  }
+
+  function rendPhotosLieu() {
+    var zone = document.getElementById('pro-l-photos');
+    if (!zone) return;
+    var d = lieuDonnees || {};
+    var ph = d.photos || { published: [], pending: [] };
+    var max = d.photos_max || 5;
+    var html = '';
+    var urls = [];
+    for (var i = 0; i < ph.published.length; i++) {
+      html += '<div class="pro-l-photo"><img alt="Photo publiée du lieu" data-l-img="' + urls.length + '" /><span class="pro-l-photo-etat">En ligne</span></div>';
+      urls.push(ph.published[i].url);
+    }
+    for (var k = 0; k < ph.pending.length; k++) {
+      var retiree = !!lieuPhotosRetirees[ph.pending[k].id];
+      html += '<div class="pro-l-photo' + (retiree ? ' pro-l-photo--retiree' : '') + '"><img alt="Photo en relecture" data-l-img="' + urls.length + '" />' +
+        '<span class="pro-l-photo-etat">' + (retiree ? 'Retirée' : 'En relecture') + '</span>' +
+        '<button type="button" class="pro-l-photo-retirer" data-l-attente="' + ech(ph.pending[k].id) + '">' + (retiree ? 'Garder' : 'Retirer') + '</button></div>';
+      urls.push(ph.pending[k].url);
+    }
+    for (var n = 0; n < lieuPhotosNeuves.length; n++) {
+      html += '<div class="pro-l-photo"><img alt="Nouvelle photo" data-l-neuve="' + n + '" /><span class="pro-l-photo-etat">À envoyer</span>' +
+        '<button type="button" class="pro-l-photo-retirer" data-l-neuve-retire="' + n + '">Retirer</button></div>';
+    }
+    html += '<button type="button" class="pro-l-ajout" id="pro-l-ajout-photo"' + (nombrePhotosLieu() >= max ? ' disabled' : '') + '>+ Ajouter</button>';
+    zone.innerHTML = html;
+
+    var imgs = zone.querySelectorAll('[data-l-img]');
+    for (var a = 0; a < imgs.length; a++) imgs[a].setAttribute('src', urls[Number(imgs[a].getAttribute('data-l-img'))]);
+    var neuves = zone.querySelectorAll('[data-l-neuve]');
+    for (var b = 0; b < neuves.length; b++) neuves[b].setAttribute('src', URL.createObjectURL(lieuPhotosNeuves[Number(neuves[b].getAttribute('data-l-neuve'))]));
+
+    zone.onclick = function (event) {
+      var t = event.target;
+      if (t.id === 'pro-l-ajout-photo') { document.getElementById('pro-l-fichier').click(); return; }
+      var id = t.getAttribute('data-l-attente');
+      if (id) { lieuPhotosRetirees[id] = !lieuPhotosRetirees[id]; rendPhotosLieu(); majApercuLieu(); return; }
+      var nr = t.getAttribute('data-l-neuve-retire');
+      if (nr !== null) { lieuPhotosNeuves.splice(Number(nr), 1); rendPhotosLieu(); majApercuLieu(); }
+    };
+    document.getElementById('pro-l-fichier').onchange = function (event) {
+      var liste = event.target.files || [];
+      for (var f = 0; f < liste.length && nombrePhotosLieu() < max; f++) lieuPhotosNeuves.push(liste[f]);
+      event.target.value = '';
+      rendPhotosLieu();
+      majApercuLieu();
+    };
+  }
+
+  function nombreOuNul(v) {
+    var n = Number(v);
+    return v === '' || !isFinite(n) ? null : n;
+  }
+
+  // ── Enregistrer ────────────────────────────────────────────────────────
+  function messageErreurLieu(code) {
+    var m = {
+      not_verified: 'Votre espace n’est plus vérifié.',
+      rate_limited: 'Trop d’envois, réessayez dans une heure.',
+      invalid_name: 'Le nom du lieu est invalide.',
+      invalid_category: 'Choisissez un type de lieu.',
+      invalid_address: 'L’adresse est invalide.',
+      invalid_city: 'La ville est invalide.',
+      missing_coordinates: 'Choisissez une adresse proposée\u00a0: c’est elle qui place le lieu sur la carte.',
+      invalid_description: 'La description est trop longue.',
+      invalid_ages: 'Les âges ne sont pas cohérents (de 0 à 18 ans).',
+      invalid_website: 'Le site doit commencer par https://',
+      invalid_phone: 'Le téléphone n’est pas lisible.',
+      invalid_opening_hours: 'Un horaire n’est pas complet\u00a0: une ouverture avant une fermeture, pour chaque plage.',
+      too_many_photos: 'Au plus ' + ((lieuDonnees && lieuDonnees.photos_max) || 5) + ' photos pour un lieu.',
+      place_unavailable: 'Votre lieu n’est plus disponible. Rechargez la page.',
+      rights_required: 'Cochez la case de droits pour envoyer des photos.',
+      rights_version_mismatch: 'Nos conditions ont changé. Rechargez la page et renvoyez.',
+      too_large: 'Au total, vos photos dépassent 10 Mo\u00a0: envoyez-en moins à la fois.',
+      pdf_not_supported: 'Les PDF ne sont pas acceptés ici. Envoyez une image.',
+      unsupported_type: 'Formats acceptés\u00a0: JPEG, PNG ou WebP.'
+    };
+    return m[code] || 'L’envoi n’a pas abouti, réessayez.';
+  }
+
+  function onEnvoiLieu() {
+    var message = document.getElementById('pro-l-message');
+    var bouton = document.getElementById('pro-depot-envoyer');
+    if (!coordonneesRetenues) { definirMessage(message, messageErreurLieu('missing_coordinates'), true); return; }
+    var horaires = lireHoraires();
+    if (!horaires) { definirMessage(message, messageErreurLieu('invalid_opening_hours'), true); return; }
+    var refusTarifs = messageSaisieTarifs();
+    if (refusTarifs) { definirMessage(message, refusTarifs, true); return; }
+    var tarifs = lireCorpsTarifs();
+    var corps = {
+      name: document.getElementById('pro-l-nom').value,
+      category: document.getElementById('pro-l-type').value,
+      address: document.getElementById('pro-depot-adresse').value,
+      city: document.getElementById('pro-depot-ville').value,
+      latitude: coordonneesRetenues.lat,
+      longitude: coordonneesRetenues.lon,
+      description: document.getElementById('pro-l-desc').value,
+      age_min: document.getElementById('pro-l-age-min').value,
+      age_max: document.getElementById('pro-l-age-max').value,
+      website: document.getElementById('pro-l-site').value,
+      phone: document.getElementById('pro-l-tel').value,
+      opening_hours: JSON.stringify(horaires),
+      price: tarifs.price
+    };
+    if (tarifs.tiers) corps.tiers = tarifs.tiers;
+    if (tarifs.conditions) corps.conditions = tarifs.conditions;
+    var retirees = Object.keys(lieuPhotosRetirees).filter(function (k) { return lieuPhotosRetirees[k]; });
+    if (retirees.length > 0) corps.remove_photo_ids = JSON.stringify(retirees);
+
+    var envoi;
+    if (lieuPhotosNeuves.length > 0) {
+      var clause = document.getElementById('pro-l-clause');
+      if (!clause.checked) { definirMessage(message, messageErreurLieu('rights_required'), true); return; }
+      corps.rights = 'yes';
+      corps.rights_version = lieuDonnees && lieuDonnees.photo_clause ? lieuDonnees.photo_clause.version : '';
+      envoi = function () { return appelApiFichier('place_submit', corps, lieuPhotosNeuves.slice()); };
+    } else {
+      envoi = function () { return appelApi('place_submit', corps, true); };
+    }
+    bouton.disabled = true;
+    definirMessage(message, 'Envoi en cours…', false);
+    envoi().then(function (resultat) {
+      if (resultat.ok && resultat.data && resultat.data.ok) {
+        oublieDonnees();
+        lieuConfirmation = ['Fiche enregistrée', 'Un relecteur Urson la vérifie avant publication. Vous serez prévenu par e-mail.'];
+        rendEcran();
+        return;
+      }
+      bouton.disabled = false;
+      definirMessage(message, messageErreurLieu(resultat.data && resultat.data.error), true);
+    }).catch(function () {
+      bouton.disabled = false;
+      definirMessage(message, messageErreurLieu(null), true);
+    });
+  }
+
+  // ── Retirer (deux temps, jamais window.confirm) ─────────────────────────
+  function ouvreRetraitLieu() {
+    var d = lieuDonnees || {};
+    var zone = document.getElementById('pro-l-retrait');
+    var texte = !d.activity_id
+      ? 'Votre proposition de lieu est abandonnée. Rien n’a encore paru dans le catalogue.'
+      : d.origin === 'created'
+        ? 'Votre lieu quitte le catalogue sans délai. Vos sorties gardent leur adresse et ne sont plus rattachées au lieu.'
+        : 'La fiche reste dans le catalogue d’Urson, elle n’est simplement plus rattachée à votre espace. Vos sorties gardent leur adresse.';
+    zone.innerHTML = '<div class="pro-a-panneau">' +
+      '<p><strong>' + (d.activity_id ? 'Retirer votre lieu\u00a0?' : 'Retirer votre proposition\u00a0?') + '</strong></p>' +
+      '<p class="pro-a-aide">' + texte + '</p>' +
+      '<div class="pro-a-actions">' +
+        '<button type="button" class="pro-bouton-secondaire" id="pro-l-retrait-annuler">Annuler</button>' +
+        '<button type="button" class="pro-bouton-secondaire pro-a-danger" id="pro-l-retrait-confirmer">Confirmer le retrait</button>' +
+      '</div><p class="pro-message" id="pro-l-retrait-message" role="status" aria-live="polite"></p></div>';
+    document.getElementById('pro-l-retrait-annuler').addEventListener('click', function () { rendLieu(lieuDonnees); });
+    document.getElementById('pro-l-retrait-confirmer').addEventListener('click', function () { onConfirmeRetraitLieu(); });
+    document.getElementById('pro-l-retrait-annuler').focus();
+  }
+
+  function onConfirmeRetraitLieu() {
+    var bouton = document.getElementById('pro-l-retrait-confirmer');
+    var message = document.getElementById('pro-l-retrait-message');
+    bouton.disabled = true;
+    definirMessage(message, 'Retrait en cours…', false);
+    appelApi('place_withdraw', {}, true).then(function (resultat) {
+      if (resultat.ok && resultat.data && resultat.data.ok) {
+        oublieDonnees();
+        var o = resultat.data.outcome;
+        lieuConfirmation = [
+          o === 'proposal_cancelled' ? 'Proposition retirée' : 'Lieu retiré',
+          o === 'archived' ? 'Votre lieu a quitté le catalogue.' : o === 'detached' ? 'La fiche reste au catalogue, elle n’est plus rattachée à votre espace.' : 'Vous pourrez présenter votre lieu à nouveau quand vous voudrez.'
+        ];
+        rendEcran();
+        return;
+      }
+      bouton.disabled = false;
+      definirMessage(message, 'Le retrait n’a pas abouti, réessayez.', true);
+    }).catch(function () {
+      bouton.disabled = false;
+      definirMessage(message, 'Le retrait n’a pas abouti, réessayez.', true);
+    });
+  }
+
+  // ── Tableau de bord : carte « Mon lieu » et ligne de « À traiter » ──────
+  function carteLieuTableauHtml(p) {
+    var lieu = p || { state: 'none' };
+    if (lieu.state === 'none') {
+      return '<div class="pro-carte"><h2>Mon lieu</h2>' +
+        '<p class="pro-sous-titre" style="margin:6px 0 10px">Présentez votre lieu et rattachez-y vos sorties.</p>' +
+        '<a class="pro-lien-retour" href="' + ROUTE_LIEU + '" data-route="' + ROUTE_LIEU + '">Présenter votre lieu</a></div>';
+    }
+    var etat = lieu.state === 'pending' || lieu.pending_since ? 'En relecture' : lieu.state === 'refused' ? 'Refusé' : 'Publié';
+    var adresse = [lieu.address, lieu.city].filter(function (x) { return x; }).join(', ');
+    return '<div class="pro-carte"><div class="pro-t-entete-carte"><h2>Mon lieu</h2><span class="pro-pastille-etat' + (lieu.state === 'refused' && etat === 'Refusé' ? ' pro-l-badge--refus' : '') + '">' + etat + '</span></div>' +
+      '<p style="margin:6px 0 2px"><a class="pro-lien-retour" href="' + ROUTE_LIEU + '" data-route="' + ROUTE_LIEU + '">' + ech(lieu.name || 'Votre lieu') + '</a></p>' +
+      (adresse ? '<p class="pro-sous-titre" style="margin:0">' + ech(adresse) + '</p>' : '') + '</div>';
+  }
+
+  /** La ligne lieu de « À traiter », ou '' (décision 12). */
+  function ligneLieuATraiterHtml(p, declareLieu) {
+    var lieu = p || { state: 'none' };
+    var titre = null, detail = '';
+    if (lieu.state === 'pending') { titre = 'Votre lieu est en relecture'; detail = (lieu.name || '') + (lieu.pending_since ? ' — déposé le ' + dateCourteFr(lieu.pending_since) : ''); }
+    else if (lieu.state === 'refused') { titre = 'Votre lieu a été refusé\u00a0: voir le motif'; detail = lieu.name || ''; }
+    else if (lieu.state === 'none' && declareLieu === true) { titre = 'Présentez votre lieu'; detail = 'Il paraîtra dans le catalogue, vos sorties s’y rattachent.'; }
+    if (!titre) return '';
+    return '<div class="pro-t-traiter"><strong>1</strong><div>' +
+      '<a class="pro-lien-retour" href="' + ROUTE_LIEU + '" data-route="' + ROUTE_LIEU + '">' + titre + '</a>' +
+      (detail ? '<p>' + ech(detail) + '</p>' : '') + '</div></div>';
+  }
+
+  // ── « Chez nous » au dépôt d'une sortie (décision 10) ───────────────────
+  // Placé sous « Ça se passe où ? ». Sans lieu, rien ne s'affiche (décision 1) ;
+  // avant la publication, le bouton est désactivé.
+  function montreChezNous(activite) {
+    chezNousActif = false;
+    var zone = document.getElementById('pro-l-cheznous-zone');
+    if (!zone) return;
+    chargeTableauDeBord(false).then(function (d) {
+      var lieu = d && d.place ? d.place : null;
+      if (!lieu || lieu.state === 'none' || !document.getElementById('pro-l-cheznous-zone')) return;
+      var publie = lieu.state === 'published';
+      zone.innerHTML = '<div class="pro-l-cheznous">' +
+        '<button type="button" class="pro-pastille" id="pro-l-cheznous" aria-pressed="false"' + (publie ? '' : ' disabled') + '>Chez nous</button>' +
+        '<span class="pro-note" style="margin:0">' + (publie ? 'Remplit l’adresse de ' + ech(lieu.name || 'votre lieu') + ' et y rattache la sortie.' : 'Disponible dès que votre lieu est publié.') + '</span></div>';
+      if (!publie) return;
+      var bouton = document.getElementById('pro-l-cheznous');
+      var champs = ['pro-depot-lieu-nom', 'pro-depot-adresse', 'pro-depot-ville'];
+      var poseEtat = function (actif) { chezNousActif = actif; bouton.setAttribute('aria-pressed', actif ? 'true' : 'false'); };
+      bouton.addEventListener('click', function () {
+        document.getElementById('pro-depot-lieu-nom').value = lieu.name || '';
+        document.getElementById('pro-depot-adresse').value = lieu.address || '';
+        document.getElementById('pro-depot-ville').value = lieu.city || '';
+        coordonneesRetenues = null;
+        demonteCarte();
+        poseEtat(true);
+      });
+      for (var i = 0; i < champs.length; i++) {
+        document.getElementById(champs[i]).addEventListener('input', function () { poseEtat(false); });
+      }
+      if (activite && activite.place_id && activite.place_id === lieu.activity_id) poseEtat(true);
+    });
+  }
+
+  // ── Aperçu fidèle de la fiche d'un lieu (voir ./pro-lieu-apercu.mjs) ──────
+  // Recopie de lib/categoryGradients.ts (app) — le test pytest vérifie l'égalité.
+  var DEGRADES_CATEGORIE = {
+    culture: ['#E8B22E', '#F4D997'], nature: ['#7FB069', '#BFD8B4'], parc: ['#7FB069', '#BFD8B4'],
+    sport: ['#3D9DF2', '#9ECEF9'], creative: ['#9B72CB', '#CDB9E5'], spectacle: ['#E84D8A', '#F4A6C5'],
+    atelier: ['#FF8B6B', '#FFC5B5'], lecture: ['#C84B31', '#E4A598'], jeux: ['#A3E635', '#D1F39A'],
+    autre: ['#94A3B8', '#CAD1DC'], restaurant: ['#7F2534', '#C4808D'], boutique: ['#5C63C9', '#BEC4F0'],
+    fete: ['#1FB8C9', '#A2E6EE']
+  };
+  // lib/ageEstimation.ts#AGE_FLOOR_BY_CATEGORY — « Dès N ans (estimé) » sans âge saisi.
+  var PLANCHERS_AGE = { culture: 3, spectacle: 3, lecture: 3, jeux: 4, sport: 4, atelier: 5, creative: 5 };
+  // Copies réduites des icônes illustrées de l'app (assets/categories, assets/infos).
+  var ICONES_CATEGORIE = '/assets/categories/';
+  var ICONES_INFOS = '/assets/infos/';
+  var JOURS_ISO = { Mon: 'MO', Tue: 'TU', Wed: 'WE', Thu: 'TH', Fri: 'FR', Sat: 'SA', Sun: 'SU' };
+
+  /** Clé de catégorie validée contre la table, jamais une chaîne brute. */
+  function categorieSure(c) {
+    return Object.prototype.hasOwnProperty.call(DEGRADES_CATEGORIE, c) ? c : 'autre';
+  }
+
+  function fondCategorieHtml(categorie, avecDisques) {
+    var c = categorieSure(categorie);
+    var g = DEGRADES_CATEGORIE[c];
+    return '<div class="pro-l-hero-fond" style="background:linear-gradient(135deg,' + g[0] + ',' + g[1] + ')">' +
+      (avecDisques ? '<span class="pro-l-disque pro-l-disque--haut"></span><span class="pro-l-disque pro-l-disque--bas"></span>' : '') +
+      '<img class="pro-l-hero-icone" src="' + ICONES_CATEGORIE + c + '.png" alt="" /></div>';
+  }
+
+  // lib/formatters.ts#formatAge / formatResolvedAge
+  function apercuAge(min, max, categorie) {
+    if (min === null && max === null) {
+      var plancher = PLANCHERS_AGE[categorieSure(categorie)];
+      return plancher ? 'Dès ' + plancher + ' ans (estimé)' : 'Âge non précisé';
+    }
+    if (min === 0 && max === null) return 'Tout âge';
+    if (min !== null && max !== null) return min + ' à ' + max + ' ans';
+    if (min !== null) return min + '+ ans';
+    return "Jusqu'à " + max + ' ans';
+  }
+
+  // lib/priceTiers.ts#formatAmount
+  function apercuMontant(v) {
+    var cents = Math.round(v * 100);
+    if (cents % 100 === 0) return String(cents / 100);
+    return Math.floor(cents / 100) + ',' + String(cents % 100).padStart(2, '0');
+  }
+
+  // lib/formatters.ts#formatPriceDetail — fourchette des lignes « par personne »
+  // de la grille ; jamais un total pour une famille.
+  function apercuPrix(tarifs) {
+    if (tarifs.price === 'Gratuit') return 'Gratuit';
+    var lignes = [];
+    try { lignes = tarifs.tiers ? JSON.parse(tarifs.tiers) : []; } catch (e) { lignes = []; }
+    var montants = [];
+    for (var i = 0; i < lignes.length; i++) {
+      if (lignes[i] && lignes[i].per_person !== false && typeof lignes[i].amount === 'number') montants.push(lignes[i].amount);
+    }
+    if (montants.length === 0) return 'Tarif non communiqué';
+    var min = Math.min.apply(null, montants);
+    var max = Math.max.apply(null, montants);
+    if (min === 0 && max === 0) return 'Gratuit';
+    if (min === 0) return 'Gratuit à ' + apercuMontant(max) + ' \u20ac';
+    if (min === max) return apercuMontant(min) + ' \u20ac';
+    return apercuMontant(min) + '–' + apercuMontant(max) + ' \u20ac';
+  }
+
+  // lib/dateHelpers.ts#formatTimePart : « 9h30 », « 14h ».
+  function apercuHeure(hhmm) {
+    var p = String(hhmm || '').split(':');
+    var h = Number(p[0]), m = Number(p[1] || 0);
+    if (!isFinite(h) || !isFinite(m)) return null;
+    return m > 0 ? h + 'h' + String(m).padStart(2, '0') : h + 'h';
+  }
+
+  // lib/openingHours.ts#formatPlaceHoursValue, sur le jour d'aujourd'hui (Paris).
+  function apercuHoraires(horaires) {
+    var inconnu = 'Horaires non renseignés';
+    if (!horaires) return inconnu;
+    var jour = JOURS_ISO[new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Paris', weekday: 'short' }).format(Date.now())];
+    if (horaires.closed_on.indexOf(jour) !== -1) return 'Fermé aujourd’hui';
+    if (horaires.slots.length === 0) return inconnu;
+    var plages = [];
+    for (var i = 0; i < horaires.slots.length; i++) {
+      var s = horaires.slots[i];
+      if (s.day !== jour) continue;
+      var o = s.open.split(':'), f = s.close.split(':');
+      plages.push({ o: s.open, f: s.close, om: Number(o[0]) * 60 + Number(o[1]), fm: Number(f[0]) * 60 + Number(f[1]) });
+    }
+    if (plages.length === 0) return 'Fermé aujourd’hui';
+    plages.sort(function (a, b) { return a.om - b.om || a.fm - b.fm; });
+    var fusion = [];
+    for (var k = 0; k < plages.length; k++) {
+      var der = fusion[fusion.length - 1];
+      if (der && plages[k].om <= der.fm) { if (plages[k].fm > der.fm) { der.fm = plages[k].fm; der.f = plages[k].f; } }
+      else fusion.push({ o: plages[k].o, f: plages[k].f, om: plages[k].om, fm: plages[k].fm });
+    }
+    return fusion.map(function (x) { return apercuHeure(x.o) + '-' + apercuHeure(x.f); }).join(' \u00b7 ');
+  }
+
+  // « samedi 26 septembre » (EventGroupSection#formatDayHeader), en fuseau Paris.
+  function apercuJour(iso) {
+    return new Intl.DateTimeFormat('fr-FR', { timeZone: 'Europe/Paris', weekday: 'long', day: 'numeric', month: 'long' }).format(Date.parse(iso));
+  }
+
+  /** « Prochaines sorties ici » : une carte par date à venir, regroupées par jour. */
+  function apercuSortiesHtml(evenements) {
+    var parJour = {};
+    var jours = [];
+    for (var i = 0; i < evenements.length; i++) {
+      var e = evenements[i];
+      var dates = e.upcoming || (e.next_starts_at ? [e.next_starts_at] : []);
+      for (var k = 0; k < dates.length; k++) {
+        var ms = Date.parse(dates[k]);
+        if (isNaN(ms)) continue;
+        var cle = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Paris' }).format(ms);
+        if (!parJour[cle]) { parJour[cle] = []; jours.push(cle); }
+        parJour[cle].push({ e: e, iso: dates[k], ms: ms });
+      }
+    }
+    if (jours.length === 0) return '';
+    jours.sort();
+    var html = '<div class="pro-l-section"><p class="pro-l-section-titre">Prochaines sorties ici</p>';
+    for (var j = 0; j < jours.length; j++) {
+      var entrees = parJour[jours[j]].sort(function (a, b) { return a.ms - b.ms; });
+      html += '<p class="pro-l-jour-titre">' + ech(apercuJour(entrees[0].iso)) + '</p><div class="pro-l-rail">';
+      for (var n = 0; n < entrees.length; n++) {
+        var c = categorieSure(entrees[n].e.category);
+        var g = DEGRADES_CATEGORIE[c];
+        var h = heureFr(entrees[n].iso);
+        html += '<div class="pro-l-rail-carte"><div class="pro-l-rail-couv" style="background:linear-gradient(135deg,' + g[0] + ',' + g[1] + ')">' +
+          '<img src="' + ICONES_CATEGORIE + c + '.png" alt="" /></div>' +
+          '<p class="pro-l-rail-titre">' + ech(entrees[n].e.title) + '</p>' +
+          (h ? '<p class="pro-l-rail-heure">' + ech(apercuHeure(h)) + '</p>' : '') + '</div>';
+      }
+      html += '</div>';
+    }
+    return html + '</div>';
+  }
+
+  function tuileApercuHtml(icone, cle, valeur, large) {
+    return '<div class="pro-l-tuile' + (large ? ' pro-l-tuile--large' : '') + '">' +
+      '<p class="pro-l-tuile-cle" style="margin:0"><img src="' + ICONES_INFOS + icone + '.png" alt="" />' + cle + '</p>' +
+      '<p class="pro-l-tuile-val">' + ech(valeur) + '</p></div>';
+  }
+
+  /** La première photo : publiée, sinon la première nouvelle, sinon une en relecture. */
+  function premierePhotoLieu(d) {
+    var ph = d.photos || { published: [], pending: [] };
+    if (ph.published.length > 0) return ph.published[0].url;
+    if (lieuPhotosNeuves.length > 0) return URL.createObjectURL(lieuPhotosNeuves[0]);
+    for (var i = 0; i < ph.pending.length; i++) { if (!lieuPhotosRetirees[ph.pending[i].id]) return ph.pending[i].url; }
+    return null;
+  }
+
+  // Mise à jour en direct, depuis les champs du formulaire.
+  function majApercuLieu() {
+    var zone = document.getElementById('pro-l-apercu');
+    if (!zone || !lieuDonnees) return;
+    var d = lieuDonnees;
+    var source = lieuSource(d) || {};
+    var nom = document.getElementById('pro-l-nom').value.trim() || 'Nom du lieu';
+    var categorie = categorieSure(document.getElementById('pro-l-type').value || source.category);
+    var libelle = libelleCategorieLieu(d, categorie) || 'Autre';
+    var ville = document.getElementById('pro-depot-ville').value.trim();
+    var desc = document.getElementById('pro-l-desc').value.trim();
+    var age = apercuAge(nombreOuNul(document.getElementById('pro-l-age-min').value), nombreOuNul(document.getElementById('pro-l-age-max').value), categorie);
+    var photo = premierePhotoLieu(d);
+
+    zone.innerHTML =
+      '<div class="pro-l-tel" aria-label="Aperçu de la fiche dans l’app">' +
+        '<div class="pro-l-hero">' +
+          (photo ? '<img class="pro-l-hero-photo" id="pro-l-apercu-photo" alt="" />' : fondCategorieHtml(categorie, true)) +
+          '<span class="pro-l-hero-pastille"><img src="' + ICONES_CATEGORIE + categorie + '.png" alt="" />' + ech(libelle) + '</span>' +
+        '</div>' +
+        '<div class="pro-l-feuille">' +
+          '<p class="pro-l-titre">' + ech(nom) + '</p>' +
+          (desc ? '<p class="pro-l-desc">' + ech(desc) + '</p>' : '') +
+          apercuSortiesHtml(d.events || []) +
+          '<div class="pro-l-infos">' +
+            tuileApercuHtml('distance', 'Distance', ville || 'Ville', false) +
+            tuileApercuHtml('horaires', 'Horaires', apercuHoraires(lireHoraires()), false) +
+            tuileApercuHtml('age', 'Âge', age, false) +
+            tuileApercuHtml(source.indoor ? 'abri' : 'exterieur', 'Météo', source.indoor ? 'Intérieur' : 'Extérieur', false) +
+            tuileApercuHtml('prix', 'Prix', apercuPrix(lireCorpsTarifs()), true) +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    if (photo) document.getElementById('pro-l-apercu-photo').setAttribute('src', photo);
+  }
+
+
   // ── Déposer / modifier une sortie ────────────────────────────────────
   // Un seul formulaire pour les deux gestes (retour de Kevin, en-tête) :
   // 'create' envoie create_event (activity_id absent), 'update' envoie
@@ -6892,6 +7758,7 @@
             '<span class="pro-q-num">3</span>' +
           '</div>' +
           '<p class="pro-q-sous">L’adresse exacte : c’est elle qui place l’activité sur la carte des familles.</p>' +
+          '<div id="pro-l-cheznous-zone"></div>' +
           '<div class="pro-champ">' +
             '<label class="pro-label" for="pro-depot-lieu-nom">Le lieu qui accueille l’activité</label>' +
             '<p class="pro-note-champ" style="margin:0 0 8px">La salle, le parc, le bâtiment.</p>' +
@@ -6970,6 +7837,7 @@
     cablePhoto();
     if (estEdition) cableAfficheActuelle(activite);
     cableCategories();
+    montreChezNous(estEdition ? activite : null);
 
     // Les dates viennent des occurrences RÉELLES de la fiche (dashboard), pas
     // du seul starts_at : sans elles, enregistrer une correction rabattrait la
@@ -7167,6 +8035,7 @@
       invalid_activity_id: 'Sélection invalide.',
       activity_not_found: "Cette sortie n'est plus disponible.",
       activity_not_event: "Cette sortie est un lieu, elle ne se modifie pas depuis ce formulaire.",
+      place_not_published: "Votre lieu n'est pas encore publié : saisissez l'adresse à la main.",
       // Refus propres au visuel joint. rights_version_mismatch : la clause a
       // changé pendant que le formulaire était ouvert — recharger la page suffit,
       // et c'est ce qu'on dit, plutôt que d'évoquer une « version ».
@@ -7219,6 +8088,7 @@
     if (partTarifs.tiers) corps.tiers = partTarifs.tiers;
     if (partTarifs.conditions) corps.conditions = partTarifs.conditions;
     if (mode === 'update') corps.activity_id = activityId;
+    if (chezNousActif) corps.at_place = true;
 
     // Un des trois états du contrat de dates, jamais deux : keep_dates (rien
     // ne bouge à l'agenda), event_dates (la liste), ou — jamais produit par
