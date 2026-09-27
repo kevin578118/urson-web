@@ -938,6 +938,97 @@
     .pro-cal-legende { margin: 8px 0 0; font-size: 13px; color: var(--fg-2); line-height: 1.5; }
     .pro-cal-choix { margin: 8px 0 0; font-size: 14px; color: var(--fg-1); font-weight: 600; }
 
+    body.pro-accueil-actif .enveloppe { max-width: 1180px; }
+    .pro-a-entete-connexion {
+      min-height: 44px; padding: 0 16px; border-radius: 999px; cursor: pointer;
+      background: var(--bg-surface); border: 1px solid var(--line-medium);
+      color: var(--fg-1); font-family: inherit; font-size: 15px; font-weight: 700;
+    }
+    .pro-a-heros {
+      display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 48px;
+      align-items: center; padding: 24px 0 48px;
+    }
+    .pro-a-heros h1 { font-size: 44px; line-height: 1.15; letter-spacing: -0.03em; margin: 0 0 16px; }
+    .pro-a-chapeau { font-size: 18px; line-height: 1.55; color: var(--fg-2); margin: 0 0 24px; }
+    .pro-a-actions { display: flex; flex-wrap: wrap; gap: 12px; margin: 0 0 14px; }
+    .pro-a-bouton {
+      display: inline-flex; align-items: center; justify-content: center; min-height: 48px;
+      padding: 0 22px; border-radius: 999px; font-family: inherit; font-size: 15px;
+      font-weight: 800; cursor: pointer; text-decoration: none;
+    }
+    .pro-a-bouton--principal { background: var(--coral); border: 1px solid var(--coral); color: var(--fg-1); }
+    .pro-a-bouton--secondaire { background: var(--bg-surface); border: 1px solid var(--line-medium); color: var(--fg-1); }
+    .pro-a-bouton:focus-visible, .pro-a-entete-connexion:focus-visible, .pro-a-case input:focus-visible {
+      outline: 2px solid var(--coral-deep); outline-offset: 1px;
+    }
+    .pro-a-meta { font-size: 14px; color: var(--fg-2); margin: 0; }
+
+    /* Captures de l'app : l'accueil devant, la fiche décalée derrière — largeurs
+       relatives, la même composition tient du bureau au téléphone. */
+    .pro-a-visuel {
+      display: flex; align-items: flex-start; justify-content: center;
+      padding: 28px 16px 36px; border-radius: 28px;
+      background: linear-gradient(135deg, var(--bg-soft), var(--bg-app));
+    }
+    .pro-a-capture {
+      display: block; height: auto; border-radius: 24px; border: 1px solid var(--line-soft);
+      background: var(--bg-surface);
+      box-shadow: 0 1px 2px rgba(68, 44, 46, 0.04), 0 18px 44px -26px rgba(232, 77, 77, 0.45);
+    }
+    .pro-a-capture--principale { width: 56%; max-width: 280px; position: relative; z-index: 2; }
+    .pro-a-capture--seconde { width: 48%; max-width: 240px; margin: 14% 0 0 -10%; position: relative; z-index: 1; }
+
+    .pro-a-atouts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; margin: 0 0 48px; }
+    .pro-a-atout {
+      background: var(--bg-surface); border: 1px solid var(--line-soft); border-radius: 20px;
+      padding: 24px; box-shadow: 0 1px 2px rgba(31, 41, 55, 0.04), 0 6px 20px rgba(232, 77, 77, 0.06);
+    }
+    .pro-a-atout h2 { font-size: 17px; line-height: 1.35; margin: 14px 0 6px; }
+    .pro-a-atout p { font-size: 15px; line-height: 1.5; color: var(--fg-2); margin: 0; }
+    .pro-a-atout .pro-pastille-etat { margin-left: 6px; vertical-align: middle; }
+    .pro-a-vignette {
+      width: 52px; height: 52px; border-radius: 14px; background: var(--bg-soft);
+      display: flex; align-items: center; justify-content: center; color: var(--coral-deep);
+    }
+    .pro-a-vignette svg { width: 22px; height: 22px; }
+
+    .pro-a-section-titre { font-size: 22px; line-height: 1.3; margin: 0 0 20px; }
+    .pro-a-etapes { list-style: none; padding: 0; margin: 0 0 48px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+    .pro-a-etape { margin: 0; }
+    .pro-a-etape h3 { font-size: 17px; margin: 12px 0 6px; }
+    .pro-a-etape p { font-size: 15px; line-height: 1.5; color: var(--fg-2); margin: 0; }
+    .pro-a-num {
+      width: 38px; height: 38px; border-radius: 12px; background: var(--bg-soft); color: var(--fg-1);
+      display: flex; align-items: center; justify-content: center; font-weight: 800;
+    }
+
+    .pro-a-demande {
+      display: grid; grid-template-columns: 380px minmax(0, 1fr); gap: 48px; align-items: start;
+      scroll-margin-top: 88px;
+    }
+    .pro-a-demande-intro p { font-size: 15px; line-height: 1.55; color: var(--fg-2); }
+    .pro-a-encart { background: var(--bg-soft); border-radius: 14px; padding: 12px 15px; color: var(--fg-1); }
+    .pro-a-grille2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .pro-a-grille2 .pro-champ { margin-bottom: 16px; }
+    .pro-a-case { min-height: 44px; }
+    .pro-a-envoyer {
+      min-height: 48px; padding: 0 24px; border-radius: 999px; border: 1px solid var(--coral);
+      background: var(--coral); color: var(--fg-1); font-family: inherit; font-size: 15px;
+      font-weight: 800; cursor: pointer;
+    }
+    .pro-a-envoyer:disabled { opacity: .5; cursor: default; }
+    .pro-a-envoyer:focus-visible { outline: 2px solid var(--coral-deep); outline-offset: 1px; }
+
+    @media (max-width: 720px) {
+      .pro-a-heros, .pro-a-atouts, .pro-a-etapes, .pro-a-demande, .pro-a-grille2 { grid-template-columns: minmax(0, 1fr); }
+      .pro-a-heros { gap: 28px; padding-top: 8px; }
+      .pro-a-heros h1 { font-size: 32px; }
+      .pro-a-actions { flex-direction: column; }
+      .pro-a-bouton, .pro-a-envoyer { width: 100%; }
+      .pro-a-grille2 { gap: 0; }
+      .pro-a-demande { gap: 16px; }
+    }
+
   </style>
 </head>
 <body>
@@ -1249,74 +1340,202 @@
     }
   }
 
-  // ── Demande (formulaire public) ─────────────────────────────────────
-  // La clause (texte + version) est lue depuis 'ownership_clause' (sans JWT)
-  // AVANT de rendre le formulaire — plus aucune recopie en dur (voir
-  // en-tête) : le jour où le texte serveur change, cette page reste
-  // synchronisée d'elle-même, sans divergence silencieuse.
+  // ── Demande (formulaire public) et accueil public : ./pro-accueil.mjs (lot 6).
 
-  function afficheDemande() {
-    // Écran hors-route : on normalise le fragment, sinon l'URL continue
-    // d'afficher #/depot alors qu'on rend la connexion — elle mentirait,
-    // durablement.
+  // ── Accueil public et demande d'espace (lot 6, ./pro-accueil.mjs) ──────
+
+  // Clause lue AVANT tout rendu : sans elle, pas de formulaire (divergence silencieuse
+  // sinon, voir l'en-tête de pro.mjs). Échec → l'écran d'erreur réseau existant.
+  function chargeClauseDemande(suite) {
     quitteRoutes();
+    quitteAccueil();
     afficheChargement();
     appelApi('ownership_clause', {}, false).then(function (resultat) {
       if (!resultat.ok || !resultat.data) { afficheErreurReseau(); return; }
       clauseVersionCourante = resultat.data.version;
-      rendDemande(resultat.data.text);
+      suite(resultat.data.text);
     }).catch(function () { afficheErreurReseau(); });
   }
 
-  function rendDemande(clauseTexte) {
+  function afficheAccueil(opts) {
+    var versFormulaire = !!(opts && opts.versFormulaire);
+    chargeClauseDemande(function (clauseTexte) { rendAccueil(clauseTexte, versFormulaire); });
+  }
+
+  function afficheDemande() {
+    sb.auth.getSession().then(function (r) {
+      if (r.data && r.data.session) { chargeClauseDemande(rendDemandeSeule); return; }
+      afficheAccueil({ versFormulaire: true });
+    }).catch(function () { afficheAccueil({ versFormulaire: true }); });
+  }
+
+  // Le bouton « Se connecter » de la barre du site n'existe que sur l'accueil : tout
+  // geste qui quitte l'accueil passe par ici.
+  function quitteAccueil() {
+    document.body.classList.remove('pro-accueil-actif');
+    var bouton = document.getElementById('pro-a-entete-connexion');
+    if (bouton && bouton.parentNode) bouton.parentNode.removeChild(bouton);
+  }
+
+  function versConnexion() {
+    quitteAccueil();
+    afficheConnexion({});
+  }
+
+  function poseBoutonConnexionEntete() {
+    var barre = document.querySelector('.entete .enveloppe');
+    if (!barre || document.getElementById('pro-a-entete-connexion')) return;
+    var bouton = document.createElement('button');
+    bouton.type = 'button';
+    bouton.id = 'pro-a-entete-connexion';
+    bouton.className = 'pro-a-entete-connexion';
+    bouton.textContent = 'Se connecter';
+    bouton.addEventListener('click', versConnexion);
+    barre.appendChild(bouton);
+  }
+
+  function rendAccueil(clauseTexte, versFormulaire) {
+    document.body.classList.add('pro-accueil-actif');
+    poseBoutonConnexionEntete();
+    app.innerHTML =
+      herosAccueilHtml() +
+      atoutsAccueilHtml() +
+      etapesAccueilHtml() +
+      '<section class="pro-a-demande" id="pro-demande" aria-labelledby="pro-a-titre-demande">' +
+        '<div class="pro-a-demande-intro">' +
+          '<h2 class="pro-a-section-titre" id="pro-a-titre-demande">Demander un espace</h2>' +
+          '<p>Nous répondons sous deux jours ouvrés. L’adresse e-mail devient votre identifiant : choisissez celle que vous lisez.</p>' +
+          '<p class="pro-a-encart">Vous avez reçu un lien « Votre événement est dans Urson » ? Il continue de fonctionner, sans compte.</p>' +
+        '</div>' +
+        formulaireDemandeHtml(clauseTexte) +
+      '</section>';
+
+    document.getElementById('pro-a-vers-demande').addEventListener('click', function () { versFormulaireDemande(); });
+    document.getElementById('pro-a-deja-espace').addEventListener('click', versConnexion);
+    cableFormulaireDemande();
+    if (versFormulaire) versFormulaireDemande();
+    else window.scrollTo(0, 0);
+  }
+
+  // Pas de fragment d'URL : la page route déjà par fragment une fois connecté.
+  function versFormulaireDemande() {
+    var section = document.getElementById('pro-demande');
+    if (!section) return;
+    section.scrollIntoView({ block: 'start' });
+    var premier = document.getElementById('pro-structure-nom');
+    if (premier) premier.focus({ preventScroll: true });
+  }
+
+  function herosAccueilHtml() {
+    return '<section class="pro-a-heros" aria-labelledby="pro-a-titre">' +
+      '<div>' +
+        '<p class="pro-eyebrow">Espace pro / asso</p>' +
+        '<h1 id="pro-a-titre">Vos sorties, devant les familles du Cher.</h1>' +
+        '<p class="pro-a-chapeau">Urson est l’application que les parents de Bourges et des alentours ouvrent pour choisir leur week-end. Publiez vos activités, votre lieu et suivez qui les regarde — sans passer par nous à chaque fois.</p>' +
+        '<div class="pro-a-actions">' +
+          '<button type="button" class="pro-a-bouton pro-a-bouton--principal" id="pro-a-vers-demande">Demander un espace</button>' +
+          '<button type="button" class="pro-a-bouton pro-a-bouton--secondaire" id="pro-a-deja-espace">J’ai déjà un espace</button>' +
+        '</div>' +
+        '<p class="pro-a-meta">Gratuit pour publier, pour tout le monde.</p>' +
+      '</div>' +
+      maquetteAppHtml() +
+    '</section>';
+  }
+
+  // Captures App Store (vitrine factice) — dimensions posées pour réserver la place.
+  function maquetteAppHtml() {
+    return '<div class="pro-a-visuel">' +
+      '<img class="pro-a-capture pro-a-capture--principale" src="/assets/pro-capture-accueil.jpg" width="640" height="1387" loading="eager" decoding="async" ' +
+        'alt="L’accueil de l’app Urson : idées de sorties du week-end près de Bourges, avec la météo du samedi et du dimanche." />' +
+      '<img class="pro-a-capture pro-a-capture--seconde" src="/assets/pro-capture-fiche-sortie.jpg" width="640" height="1387" loading="lazy" decoding="async" ' +
+        'alt="La fiche d’une sortie dans l’app Urson : le lieu, les familles qui y vont et le bouton « J’y vais »." />' +
+    '</div>';
+  }
+
+  function atoutsAccueilHtml() {
+    var ico = function (chemins) {
+      return '<span class="pro-a-vignette" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + chemins + '</svg></span>';
+    };
+    return '<section class="pro-a-atouts" aria-label="Ce que l’espace permet">' +
+      '<div class="pro-a-atout">' + ico('<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>') +
+        '<h2>Publiez en cinq questions</h2>' +
+        '<p>Une date ou plusieurs, une photo ou une affiche. Un relecteur Urson vérifie la fiche sous un à deux jours, puis elle paraît dans l’app.</p></div>' +
+      '<div class="pro-a-atout">' + ico('<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>') +
+        '<h2>Suivez ce que ça donne</h2>' +
+        '<p>Consultations, favoris, familles qui ont dit « j’y vais » — sortie par sortie, semaine après semaine.</p></div>' +
+      '<div class="pro-a-atout">' + ico('<path d="M3 11v2a1 1 0 0 0 1 1h2l5 4V6L6 10H4a1 1 0 0 0-1 1z"/><path d="M15 9a4 4 0 0 1 0 6M18 6a8 8 0 0 1 0 12"/>') +
+        '<h2>Mettez une sortie en avant <span class="pro-pastille-etat">À venir</span></h2>' +
+        '<p>Pour un événement qui compte, vous pourrez bientôt réserver la première place de l’accueil ou des résultats, pour une semaine ou un mois.</p></div>' +
+    '</section>';
+  }
+
+  function etapesAccueilHtml() {
+    var etape = function (n, titre, texte) {
+      return '<li class="pro-a-etape"><span class="pro-a-num" aria-hidden="true">' + n + '</span><h3>' + titre + '</h3><p>' + texte + '</p></li>';
+    };
+    return '<section aria-labelledby="pro-a-titre-etapes">' +
+      '<h2 class="pro-a-section-titre" id="pro-a-titre-etapes">Comment ça marche</h2>' +
+      '<ol class="pro-a-etapes">' +
+        etape('1', 'Vous demandez un espace', 'Le nom de votre structure, une adresse e-mail. Nous vérifions à la main que vous êtes bien l’organisateur.') +
+        etape('2', 'Vous recevez votre accès', 'Un lien pour choisir votre mot de passe. Ensuite, e-mail et mot de passe suffisent — ou un code par e-mail si vous préférez.') +
+        etape('3', 'Vous publiez et vous suivez', 'Vos sorties, votre lieu, vos affiches, vos chiffres. Tout ce que vous déposez est relu avant de paraître.') +
+      '</ol>' +
+    '</section>';
+  }
+
+  // Formulaire seul — visiteur connecté (compte refusé, aucun espace trouvé) :
+  // comportement d'avant le lot 6, avec le formulaire enrichi.
+  function rendDemandeSeule(clauseTexte) {
     app.innerHTML =
       '<p class="pro-eyebrow">Espace pro / asso</p>' +
-      '<h1>Faites connaître vos sorties sur Urson</h1>' +
-      "<p>Vous organisez des sorties pour les familles autour de Bourges ? Demandez un espace pour gérer vos fiches et en proposer de nouvelles.</p>" +
-      '<div class="pro-carte">' +
-        '<form id="pro-form-demande">' +
-          '<div class="pro-champ">' +
-            '<label class="pro-label" for="pro-structure-nom">Nom de la structure</label>' +
-            '<input class="pro-input" type="text" id="pro-structure-nom" required maxlength="200" />' +
-          '</div>' +
-          '<div class="pro-champ">' +
-            '<label class="pro-label" for="pro-structure-type">Type de structure</label>' +
-            '<select class="pro-input" id="pro-structure-type" required>' + optionsHtml(STRUCTURE_KINDS, 'Choisir…') + '</select>' +
-          '</div>' +
-          '<div class="pro-champ">' +
-            '<label class="pro-label" for="pro-email">E-mail</label>' +
-            '<input class="pro-input" type="email" id="pro-email" required maxlength="254" />' +
-          '</div>' +
-          '<div class="pro-champ">' +
-            '<label class="pro-label" for="pro-site">Site web (facultatif)</label>' +
-            '<input class="pro-input" type="text" id="pro-site" maxlength="300" placeholder="https://" />' +
-          '</div>' +
-          '<div class="pro-champ pro-ligne-deux">' +
-            '<div>' +
-              '<label class="pro-label" for="pro-contact-nom">Nom du contact (facultatif)</label>' +
-              '<input class="pro-input" type="text" id="pro-contact-nom" maxlength="120" />' +
-            '</div>' +
-            '<div>' +
-              '<label class="pro-label" for="pro-telephone">Téléphone (facultatif)</label>' +
-              '<input class="pro-input" type="tel" id="pro-telephone" maxlength="40" />' +
-            '</div>' +
-          '</div>' +
-          '<div class="pro-champ">' +
-            '<label class="pro-label" for="pro-message">Ce que vous organisez (facultatif)</label>' +
-            '<textarea class="pro-input" id="pro-message" rows="3" maxlength="2000" placeholder="Quelques mots sur vos sorties habituelles"></textarea>' +
-          '</div>' +
-          '<label class="pro-case">' +
-            '<input type="checkbox" id="pro-clause-case" required />' +
-            '<span>' + ech(clauseTexte) + '</span>' +
-          '</label>' +
-          '<button type="submit" class="pro-bouton-primaire">Envoyer la demande</button>' +
-          '<p class="pro-message" id="pro-message-demande"></p>' +
-        '</form>' +
-      '</div>' +
+      '<h1>Demander un espace</h1>' +
+      '<p>Nous répondons sous deux jours ouvrés. L’adresse e-mail devient votre identifiant : choisissez celle que vous lisez.</p>' +
+      formulaireDemandeHtml(clauseTexte) +
       '<p><button type="button" class="pro-lien-retour" id="pro-lien-connexion">Vous avez déjà un espace ? Se connecter</button></p>';
+    document.getElementById('pro-lien-connexion').addEventListener('click', versConnexion);
+    cableFormulaireDemande();
+  }
 
+  // Libellés et ordre de la planche ; champs, plafonds et identifiants d'avant.
+  function formulaireDemandeHtml(clauseTexte) {
+    return '<form class="pro-carte pro-a-form" id="pro-form-demande">' +
+      '<div class="pro-a-grille2">' +
+        '<div class="pro-champ"><label class="pro-label" for="pro-structure-nom">Nom de la structure</label>' +
+          '<input class="pro-input" type="text" id="pro-structure-nom" required maxlength="200" /></div>' +
+        '<div class="pro-champ"><label class="pro-label" for="pro-structure-type">Type de structure</label>' +
+          '<select class="pro-input" id="pro-structure-type" required>' + optionsHtml(STRUCTURE_KINDS, 'Choisir…') + '</select></div>' +
+      '</div>' +
+      '<div class="pro-a-grille2">' +
+        '<div class="pro-champ"><label class="pro-label" for="pro-email">E-mail</label>' +
+          '<input class="pro-input" type="email" id="pro-email" required maxlength="254" placeholder="contact@votre-structure.fr" /></div>' +
+        '<div class="pro-champ"><label class="pro-label" for="pro-site">Site web (facultatif)</label>' +
+          '<input class="pro-input" type="text" id="pro-site" maxlength="300" placeholder="https://" /></div>' +
+      '</div>' +
+      '<div class="pro-a-grille2">' +
+        '<div class="pro-champ"><label class="pro-label" for="pro-contact-nom">Nom du contact (facultatif)</label>' +
+          '<input class="pro-input" type="text" id="pro-contact-nom" maxlength="120" /></div>' +
+        '<div class="pro-champ"><label class="pro-label" for="pro-telephone">Téléphone (facultatif)</label>' +
+          '<input class="pro-input" type="tel" id="pro-telephone" maxlength="40" /></div>' +
+      '</div>' +
+      '<div class="pro-champ">' +
+        '<label class="pro-label" for="pro-message">Ce que vous organisez (facultatif)</label>' +
+        '<textarea class="pro-input" id="pro-message" rows="3" maxlength="2000" placeholder="Quelques mots sur vos sorties habituelles"></textarea>' +
+      '</div>' +
+      '<label class="pro-case pro-a-case">' +
+        '<input type="checkbox" id="pro-lieu-case" />' +
+        '<span>Nous accueillons du public dans un lieu que nous aimerions voir dans le catalogue (vous pourrez le décrire ensuite).</span>' +
+      '</label>' +
+      '<label class="pro-case pro-a-case">' +
+        '<input type="checkbox" id="pro-clause-case" required />' +
+        '<span>' + ech(clauseTexte) + '</span>' +
+      '</label>' +
+      '<button type="submit" class="pro-a-envoyer">Envoyer la demande</button>' +
+      '<p class="pro-message" id="pro-message-demande" role="status" aria-live="polite"></p>' +
+    '</form>';
+  }
+
+  function cableFormulaireDemande() {
     document.getElementById('pro-form-demande').addEventListener('submit', onEnvoiDemande);
-    document.getElementById('pro-lien-connexion').addEventListener('click', function () { afficheConnexion({}); });
   }
 
   function onEnvoiDemande(event) {
@@ -1331,16 +1550,18 @@
       contact_name: document.getElementById('pro-contact-nom').value,
       phone: document.getElementById('pro-telephone').value,
       message: document.getElementById('pro-message').value,
+      declared_place: document.getElementById('pro-lieu-case').checked === true,
       clause_accepted: document.getElementById('pro-clause-case').checked,
       clause_version: clauseVersionCourante
     };
     bouton.disabled = true;
     definirMessage(messageEl, 'Envoi en cours…', false);
     appelApi('request_account', corps, false).then(function () {
+      quitteAccueil();
       afficheEnAttente();
     }).catch(function () {
       bouton.disabled = false;
-      definirMessage(messageEl, "L'envoi n'a pas abouti, réessayez dans un instant.", true);
+      definirMessage(messageEl, 'L’envoi n’a pas abouti, réessayez dans un instant.', true);
     });
   }
 
@@ -6006,7 +6227,7 @@
   function carteBientotMeaHtml() {
     return '<section class="pro-carte pro-m-bientot">' +
       '<div><h2>La mise en avant arrive bientôt</h2>' +
-        '<p>Vous pourrez réserver l’un de ces deux emplacements pour 7, 14 ou 30 jours. Les associations disposeront d’une mise en avant offerte chaque mois, pour 7 jours. Rien n’est à régler aujourd’hui et aucune demande n’est encore ouverte.</p></div>' +
+        '<p>Vous pourrez réserver l’un de ces deux emplacements pour 7, 14 ou 30 jours. Aucune demande n’est encore ouverte.</p></div>' +
       '<div><label class="pro-case pro-m-case"><input type="checkbox" id="pro-m-prevenir" />' +
         '<span><strong>Me prévenir à l’ouverture</strong><small id="pro-m-prevenir-aide"></small></span></label>' +
         '<p class="pro-message" id="pro-m-prevenir-message" role="status" aria-live="polite"></p></div>' +
@@ -7106,7 +7327,7 @@
         });
         return;
       }
-      afficheDemande();
+      afficheAccueil();
     }).catch(function () { afficheErreurReseau(); });
   }
 
