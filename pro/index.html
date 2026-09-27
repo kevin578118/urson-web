@@ -6228,6 +6228,7 @@
       invalid_date: 'Choisissez un jour de début dans le calendrier.',
       invalid_age_groups: 'Cochez au moins une tranche d’âge.',
       already_pending: 'Une demande est déjà en relecture pour cette sortie et cet emplacement.',
+      association_offer_used: 'Votre offre gratuite du mois est déjà utilisée pour ce mois-là.',
       rate_limited: 'Trop de demandes d’un coup, réessayez dans une heure.',
       invalid_body: 'Choisissez une sortie, une durée et un jour de début.'
     };
@@ -6281,6 +6282,14 @@
           definirMessage(messageEl, 'Plus de place sur cette période, et aucune date n’est libre dans les 120 prochains jours pour ces tranches et cette durée.', true);
         }
         return;
+      }
+      if (data.error === 'association_offer_used') {
+        // Course fermée côté serveur (index unique compte/mois) : une autre
+        // demande a consommé l'offre du mois entre le chargement de l'écran
+        // et cet envoi — on relit l'état comme après une demande réussie,
+        // pour que le calendrier ne propose plus l'offre déjà prise.
+        oublieDonnees();
+        rechargeDemandesMea();
       }
       definirMessage(messageEl, messageErreurMea(data.error), true);
     }).catch(function () {
