@@ -306,11 +306,11 @@
 
   // Domaine pas encore branché à l'écriture de cette page (comme
   // organisateur/ et suppression-de-compte/) : les adresses restent en
-  // dur, jamais déduites de window.location. Clé anon PUBLIQUE, déjà
-  // publique dans le bundle de l'app (EXPO_PUBLIC_SUPABASE_ANON_KEY) —
+  // dur, jamais déduites de window.location. Clé publishable PUBLIQUE, déjà
+  // publique dans le bundle de l'app (EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY) —
   // elle ne donne que ce que les policies donnent.
   var BASE = 'https://cvycoezoimrbgpbxzrez.supabase.co';
-  var ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN2eWNvZXpvaW1yYmdwYnh6cmV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1NTg2ODIsImV4cCI6MjA5MzEzNDY4Mn0.hq5fGRpHi6xe07BxXdAYBN6o3m6LZbqPzCCxfLwWWyo';
+  var PUBLISHABLE_KEY = 'sb_publishable_unG8da619oJttOhHXHAMCg_JluofzV4';
   var CONTACT = 'bonjour@ursonapp.fr';
 
   var RECHERCHE_MIN = 2;
@@ -374,7 +374,7 @@
       + '&title=ilike.' + encodeURIComponent('*' + saisie + '*')
       + '&order=title.asc&limit=8';
 
-    fetch(url, { headers: { apikey: ANON_KEY } })
+    fetch(url, { headers: { apikey: PUBLISHABLE_KEY } })
       .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
       .then(afficherResultats)
       .catch(function () {
@@ -480,7 +480,7 @@
     fetch(BASE + '/functions/v1/public-report', {
       method: 'POST',
       signal: borne.signal,
-      headers: { 'Content-Type': 'application/json', apikey: ANON_KEY },
+      headers: { 'Content-Type': 'application/json', apikey: PUBLISHABLE_KEY },
       body: JSON.stringify({
         target_id: ficheId,
         reason: motif,

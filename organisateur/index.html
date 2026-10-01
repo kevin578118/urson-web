@@ -294,10 +294,10 @@
       
         // Domaine pas encore branché à l'écriture de cette page (comme
         // suppression-de-compte/index.html) — l'API reste en dur, jamais
-        // déduite de window.location. Clé anon PUBLIQUE, déjà publique dans
-        // le bundle de l'app (EXPO_PUBLIC_SUPABASE_ANON_KEY).
+        // déduite de window.location. Clé publishable PUBLIQUE, déjà publique dans
+        // le bundle de l'app (EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY).
         var API_URL = 'https://cvycoezoimrbgpbxzrez.supabase.co/functions/v1/organizer-review';
-        var ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN2eWNvZXpvaW1yYmdwYnh6cmV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1NTg2ODIsImV4cCI6MjA5MzEzNDY4Mn0.hq5fGRpHi6xe07BxXdAYBN6o3m6LZbqPzCCxfLwWWyo';
+        var PUBLISHABLE_KEY = 'sb_publishable_unG8da619oJttOhHXHAMCg_JluofzV4';
         var CONTACT = "bonjour@ursonapp.fr";
       
         // Aucun appel ne pend indéfiniment (docs/dette-technique.md
@@ -552,7 +552,7 @@
           var borneCorrections = borneDeTemps();
           fetch(API_URL, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json', apikey: ANON_KEY },
+            headers: { 'Content-Type': 'application/json', apikey: PUBLISHABLE_KEY },
             body: JSON.stringify({ action: 'corrections', t: jeton, fields: champs }),
             signal: borneCorrections.signal
           })
@@ -639,7 +639,7 @@
           var borneRetrait = borneDeTemps();
           fetch(API_URL, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json', apikey: ANON_KEY },
+            headers: { 'Content-Type': 'application/json', apikey: PUBLISHABLE_KEY },
             body: JSON.stringify({ action: 'withdraw', t: jeton, reason: motif === '' ? null : motif }),
             signal: borneRetrait.signal
           })
@@ -977,7 +977,7 @@
           form.append('file', fichierChoisi);
       
           var borneAffiche = borneDeTemps();
-          fetch(API_URL, { method: 'POST', headers: { apikey: ANON_KEY }, body: form, signal: borneAffiche.signal })
+          fetch(API_URL, { method: 'POST', headers: { apikey: PUBLISHABLE_KEY }, body: form, signal: borneAffiche.signal })
             .then(litReponse)
             .then(function (resultat) {
               borneAffiche.fini();
@@ -1026,7 +1026,7 @@
           var borneReprise = borneDeTemps();
           fetch(API_URL, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json', apikey: ANON_KEY },
+            headers: { 'Content-Type': 'application/json', apikey: PUBLISHABLE_KEY },
             body: JSON.stringify({ action: 'adopt_held_visual', t: jeton, rights: 'yes', rights_version: versionClause }),
             signal: borneReprise.signal
           })
@@ -1086,7 +1086,7 @@
           var borneRetraitAffiche = borneDeTemps();
           fetch(API_URL, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json', apikey: ANON_KEY },
+            headers: { 'Content-Type': 'application/json', apikey: PUBLISHABLE_KEY },
             body: JSON.stringify({ action: 'remove_visual', t: jeton }),
             signal: borneRetraitAffiche.signal
           })
@@ -1137,7 +1137,7 @@
         } else {
           afficheChargement();
           var borneChargement = borneDeTemps();
-          fetch(API_URL + '?t=' + encodeURIComponent(jeton), { headers: { apikey: ANON_KEY }, signal: borneChargement.signal })
+          fetch(API_URL + '?t=' + encodeURIComponent(jeton), { headers: { apikey: PUBLISHABLE_KEY }, signal: borneChargement.signal })
             .then(function (reponse) {
               borneChargement.fini();
               return reponse.json().catch(function () { return null; }).then(function (data) {

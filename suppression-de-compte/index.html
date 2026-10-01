@@ -22,8 +22,8 @@
       - Le jeton n'est JAMAIS réinjecté dans le document (ni attribut, ni
         texte) — il ne vit qu'en mémoire JS, le temps du clic.
 
-    La clé `apikey` ci-dessous est la clé anon PUBLIQUE du projet Supabase —
-    déjà publique dans le bundle de l'app (EXPO_PUBLIC_SUPABASE_ANON_KEY),
+    La clé `apikey` ci-dessous est la clé publishable PUBLIQUE du projet Supabase —
+    déjà publique dans le bundle de l'app (EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY),
     aucune fuite nouvelle à l'inscrire ici en dur.
   -->
   <meta name="description" content="Supprimer ton compte Urson depuis un navigateur, sans avoir l'application installée." />
@@ -168,7 +168,7 @@
     // Domaine pas encore branché au moment où ce fichier est écrit — l'API
     // reste en dur ici, jamais déduite de `window.location`.
     var API_URL = 'https://cvycoezoimrbgpbxzrez.supabase.co/functions/v1/supprimer-mon-compte';
-    var ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN2eWNvZXpvaW1yYmdwYnh6cmV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1NTg2ODIsImV4cCI6MjA5MzEzNDY4Mn0.hq5fGRpHi6xe07BxXdAYBN6o3m6LZbqPzCCxfLwWWyo';
+    var PUBLISHABLE_KEY = 'sb_publishable_unG8da619oJttOhHXHAMCg_JluofzV4';
 
     var card = document.getElementById('card');
 
@@ -266,7 +266,7 @@
 
       fetch(API_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', apikey: ANON_KEY },
+        headers: { 'Content-Type': 'application/json', apikey: PUBLISHABLE_KEY },
         body: JSON.stringify({ action: 'request', email: email })
       })
         .catch(function () {
@@ -286,7 +286,7 @@
 
       fetch(API_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', apikey: ANON_KEY },
+        headers: { 'Content-Type': 'application/json', apikey: PUBLISHABLE_KEY },
         body: JSON.stringify({ action: 'confirm', token: token })
       })
         .then(function (response) {
