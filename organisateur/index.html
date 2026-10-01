@@ -710,6 +710,22 @@
           document.getElementById('org-affiche-en-ligne-legende').textContent = legende;
         }
       
+        // Champ « Crédit photo » (facultatif) : texte brut court, envoyé TOUJOURS (vide = aucune
+        // mention exigée). La règle de fond (longueur, ni lien, ni e-mail, ni téléphone) est
+        // appliquée par le serveur ; maxlength n'est qu'un confort de saisie.
+        function champCreditHtml(idInput) {
+          return '<div class="org-champ">' +
+            '<label class="org-label" for="' + idInput + '">Crédit photo (facultatif)</label>' +
+            '<input class="org-input" type="text" id="' + idInput + '" maxlength="120" autocomplete="off" placeholder="© Prénom Nom" />' +
+            '<p class="org-affiche-aide" style="margin: 6px 0 0">Affiché avec votre visuel partout où il paraît. Laissez vide si aucune mention n' + APO + 'est exigée.</p>' +
+          '</div>';
+        }
+      
+        function valeurCredit(idInput) {
+          var champ = document.getElementById(idInput);
+          return champ ? champ.value : '';
+        }
+      
         // Le bloc de dépôt : zone de fichier, clause (texte serveur, posé en
         // textContent par rendCarteAffiche), bouton. `cache` = replié derrière
         // « Remplacer l'affiche » quand une affiche est en ligne.
@@ -730,6 +746,7 @@
               '</div>' +
               '<input type="file" id="org-fichier-input" accept="image/jpeg,image/png,image/webp,application/pdf" aria-label="Choisir un fichier d' + APO + 'affiche" />' +
             '</div>' +
+            champCreditHtml('org-credit-input') +
             '<label class="org-case">' +
               '<input type="checkbox" id="org-droits-case" />' +
               '<span id="org-droits-texte"></span>' +
@@ -745,6 +762,7 @@
           if (!clauseDroits) return '';
           return '<div class="org-affiche-panneau" id="org-reprise">' +
             '<label class="org-case"><input type="checkbox" id="org-reprise-case" /><span>Reprendre le visuel déjà reçu</span></label>' +
+            champCreditHtml('org-reprise-credit-input') +
             '<label class="org-case"><input type="checkbox" id="org-reprise-droits-case" /><span id="org-reprise-droits-texte"></span></label>' +
             '<button type="button" class="org-bouton-primaire" id="org-bouton-reprendre" disabled>Reprendre ce visuel</button>' +
             '<p class="org-affiche-aide" style="margin: 8px 0 0">Ou déposez un autre fichier ci-dessous.</p>' +
@@ -945,6 +963,8 @@
           var messages = {
             rights_required: 'Cochez la case des droits pour continuer.',
             rights_version_mismatch: 'La déclaration a été mise à jour, rechargez la page avant de déposer.',
+            credit_required: 'La page n' + APO + 'est plus à jour, rechargez-la avant de déposer.',
+            credit_invalid: 'Le crédit doit être un nom court, sans lien, adresse e-mail ni numéro de téléphone.',
             too_large: 'Le fichier dépasse 10 Mo.',
             pdf_not_supported: "Le fichier est arrivé en PDF : réessayez, la conversion n'a pas eu lieu.",
             unsupported_type: 'Format non reconnu : JPG, PNG ou WebP.',
@@ -974,6 +994,7 @@
           form.append('t', jeton);
           form.append('rights', 'yes');
           form.append('rights_version', versionClause);
+          form.append('credit', valeurCredit('org-credit-input'));
           form.append('file', fichierChoisi);
       
           var borneAffiche = borneDeTemps();
@@ -1027,7 +1048,7 @@
           fetch(API_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', apikey: PUBLISHABLE_KEY },
-            body: JSON.stringify({ action: 'adopt_held_visual', t: jeton, rights: 'yes', rights_version: versionClause }),
+            body: JSON.stringify({ action: 'adopt_held_visual', t: jeton, rights: 'yes', rights_version: versionClause, credit: valeurCredit('org-reprise-credit-input') }),
             signal: borneReprise.signal
           })
             .then(litReponse)

@@ -4045,6 +4045,7 @@
         '<p class="pro-note-champ">JPEG, PNG ou WebP, 10 Mo maximum. Elle est relue avant d’être publiée.</p>' +
         '<div id="pro-depot-photo-zone" hidden>' +
           '<img class="pro-apercu" id="pro-depot-photo-apercu" alt="Aperçu de la photo choisie" />' +
+          champCreditPhotoHtml('pro-depot-photo-credit') +
           '<label class="pro-case">' +
             '<input type="checkbox" id="pro-depot-photo-clause" />' +
             '<span>' + ech(clauseVisuelCourante.text) + '</span>' +
@@ -4052,6 +4053,32 @@
         '</div>' +
         '<p class="pro-message" id="pro-depot-photo-message" role="status" aria-live="polite"></p>' +
       '</div>';
+  }
+
+  // Crédit photo (facultatif), envoyé TOUJOURS avec la déclaration de droits (vide = aucune
+  // mention exigée). La règle de fond reste au serveur ; maxlength n'est qu'un confort.
+  var MESSAGE_CREDIT_INVALIDE = 'Le crédit doit être un nom court, sans lien, adresse e-mail ni numéro de téléphone.';
+  var MESSAGE_CREDIT_PERIME = 'La page n’est plus à jour, rechargez-la avant de déposer.';
+
+  function champCreditPhotoHtml(idInput) {
+    return '<div style="margin: 12px 0">' +
+      '<label class="pro-label" for="' + idInput + '">Crédit photo (facultatif)</label>' +
+      '<input class="pro-input" type="text" id="' + idInput + '" maxlength="120" autocomplete="off" placeholder="© Prénom Nom" />' +
+      '<p class="pro-note-champ">Affiché avec votre visuel partout où il paraît. Laissez vide si aucune mention n’est exigée.</p>' +
+    '</div>';
+  }
+
+  // Ce que porte un dépôt de photo : droits, version de la clause lue, crédit (chaîne vide si vide ; omis si le champ n'existe pas).
+  function droitsPhoto() {
+    var credit = document.getElementById('pro-depot-photo-credit');
+    var droits = {
+      rights: 'yes',
+      rights_version: clauseVisuelCourante ? clauseVisuelCourante.version : ''
+    };
+    // Champ absent du DOM : on n'envoie rien, le serveur répond credit_required (jamais un
+    // « aucune mention » déclaré à la place de l'organisateur).
+    if (credit) droits.credit = credit.value;
+    return droits;
   }
 
   function cablePhoto() {
@@ -5114,6 +5141,8 @@
     var messages = {
       rights_required: 'Cochez la case de droits pour envoyer l’affiche.',
       rights_version_mismatch: 'Nos conditions ont changé. Rechargez la page et redéposez.',
+      credit_invalid: MESSAGE_CREDIT_INVALIDE,
+      credit_required: MESSAGE_CREDIT_PERIME,
       missing_file: 'Choisissez une image.',
       too_large: 'Cette image dépasse 10 Mo.',
       pdf_not_supported: 'Les PDF ne sont pas acceptés ici. Envoyez une image.',
@@ -5135,9 +5164,7 @@
     if (!caseDroits || !caseDroits.checked) { definirMessage(messageEl, messageErreurAfficheFiche('rights_required'), true); return; }
     bouton.disabled = true;
     definirMessage(messageEl, 'Envoi en cours…', false);
-    appelApiFichier('replace_visual', {
-      activity_id: a.id, rights: 'yes', rights_version: clauseVisuelCourante ? clauseVisuelCourante.version : ''
-    }, fichier).then(function (resultat) {
+    appelApiFichier('replace_visual', Object.assign({ activity_id: a.id }, droitsPhoto()), fichier).then(function (resultat) {
       if (resultat.ok && resultat.data && resultat.data.ok) {
         oublieDonnees();
         a.visual_submission = 'pending';
@@ -7093,6 +7120,9 @@
           '<div class="pro-champ"><span class="pro-label">Photos du lieu (jusqu’à ' + nombreFr(d.photos_max || 5) + ')</span>' +
             '<div class="pro-l-photos" id="pro-l-photos"></div>' +
             '<input type="file" id="pro-l-fichier" accept="image/jpeg,image/png,image/webp" multiple hidden />' +
+            '<label class="pro-label" for="pro-l-credit" style="margin-top:6px">Crédit photo (facultatif, un seul pour ces photos)</label>' +
+            '<input class="pro-input" type="text" id="pro-l-credit" maxlength="120" autocomplete="off" placeholder="© Prénom Nom" />' +
+            '<p class="pro-note-champ">Affiché avec chaque photo partout où elle paraît. Laissez vide si aucune mention n’est exigée.</p>' +
             '<label class="pro-case" style="margin-top:6px"><input type="checkbox" id="pro-l-clause" /><span id="pro-l-clause-texte"></span></label>' +
           '</div>' +
           '<div class="pro-l-envoi">' +
@@ -7334,6 +7364,8 @@
       place_unavailable: 'Votre lieu n’est plus disponible. Rechargez la page.',
       rights_required: 'Cochez la case de droits pour envoyer des photos.',
       rights_version_mismatch: 'Nos conditions ont changé. Rechargez la page et renvoyez.',
+      credit_invalid: MESSAGE_CREDIT_INVALIDE,
+      credit_required: MESSAGE_CREDIT_PERIME,
       too_large: 'Au total, vos photos dépassent 10 Mo\u00a0: envoyez-en moins à la fois.',
       pdf_not_supported: 'Les PDF ne sont pas acceptés ici. Envoyez une image.',
       unsupported_type: 'Formats acceptés\u00a0: JPEG, PNG ou WebP.'
@@ -7376,6 +7408,7 @@
       if (!clause.checked) { definirMessage(message, messageErreurLieu('rights_required'), true); return; }
       corps.rights = 'yes';
       corps.rights_version = lieuDonnees && lieuDonnees.photo_clause ? lieuDonnees.photo_clause.version : '';
+      corps.credit = document.getElementById('pro-l-credit').value;
       envoi = function () { return appelApiFichier('place_submit', corps, lieuPhotosNeuves.slice()); };
     } else {
       envoi = function () { return appelApi('place_submit', corps, true); };
@@ -8041,6 +8074,7 @@
       // et c'est ce qu'on dit, plutôt que d'évoquer une « version ».
       rights_required: 'Cochez la case de droits pour joindre une photo.',
       rights_version_mismatch: 'Nos conditions ont changé. Rechargez la page et redéposez.',
+      credit_invalid: MESSAGE_CREDIT_INVALIDE, credit_required: MESSAGE_CREDIT_PERIME,
       missing_file: "La photo n'est pas arrivée, réessayez.",
       too_large: 'Cette image dépasse 10 Mo.',
       pdf_not_supported: 'Les PDF ne sont pas acceptés ici. Envoyez une image.',
@@ -8121,8 +8155,7 @@
         definirMessage(messageEl, messageErreurDepot('rights_required'), true);
         return;
       }
-      corps.rights = 'yes';
-      corps.rights_version = clauseVisuelCourante ? clauseVisuelCourante.version : '';
+      Object.assign(corps, droitsPhoto());
     }
 
     bouton.disabled = true;
