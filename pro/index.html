@@ -717,14 +717,14 @@
     .pro-s-outils .pro-input { max-width: 320px; }
     .pro-s-outils select.pro-input { max-width: 200px; }
     .pro-s-tete, .pro-s-ligne {
-      display: grid; grid-template-columns: 64px minmax(0, 2.4fr) minmax(0, 1.1fr) minmax(0, 1.3fr) 64px 64px 64px 48px;
+      display: grid; grid-template-columns: 64px minmax(0, 2.4fr) minmax(0, 1.1fr) minmax(0, 1.3fr) 88px 88px 88px 48px;
       gap: 12px; align-items: center;
     }
     .pro-s-tete { font-size: 12px; font-weight: 700; color: var(--fg-2); padding: 0 0 8px; border-bottom: 1px solid var(--line-soft); }
     .pro-s-ligne { padding: 12px 0; border-bottom: 1px solid var(--line-soft); font-size: 14px; position: relative; }
     .pro-s-ligne > span { min-width: 0; }
     .pro-s-meta { display: block; margin-top: 2px; font-size: 13px; color: var(--fg-2); }
-    .pro-s-chiffre { text-align: right; font-variant-numeric: tabular-nums; }
+    .pro-s-chiffre { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
     .pro-s-pastilles { display: flex; flex-wrap: wrap; gap: 4px; }
     .pro-s-pastille {
       display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 700;
@@ -842,6 +842,9 @@
     .pro-st-table tr:last-child td { border-bottom: none; }
     .pro-st-table .pro-st-num { text-align: right; white-space: nowrap; }
     .pro-st-table .pro-s-pastille { margin-left: 8px; }
+    /* « moins de 10 » élargit les colonnes chiffrées : la table « Par sortie » ne tient
+       plus à côté des provenances sous 1100 px, la grille s'empile plus tôt. */
+    @media (max-width: 1100px) { .pro-st-grille { grid-template-columns: minmax(0, 1fr); } }
     .pro-st-source { padding: 10px 0; }
     .pro-st-source-tete { display: flex; justify-content: space-between; gap: 10px; font-size: 14px; color: var(--fg-1); }
     .pro-st-source-tete span:first-child { font-weight: 600; }
@@ -4497,11 +4500,13 @@
 
   function tuilesHtml(stats, counts) {
     var t = stats && stats.total ? stats.total : null;
-    var v = function (n) { return t ? nombreFr(n) : '…'; };
+    var seuil = stSeuil(stats);
+    // Un compte masqué arrive en null : « moins de N », jamais 0.
+    var v = function (n) { return t ? stNombre(n, seuil) : '…'; };
     return tuileHtml('Consultations', v(t && t.views), 'un foyer compté une fois par jour') +
       tuileHtml('Ajouts en favoris', v(t && t.favorites), 'sur la période') +
       tuileHtml('Familles « j’y vais »', v(t && t.attendances), 'sur ' + pluriel(counts.upcoming || 0, 'sortie à venir', 'sorties à venir')) +
-      tuileHtml('Clics vers votre site', t && stats.clicks_measured_since ? nombreFr(t.clicks) : (t ? '—' : '…'), noteClics(stats && stats.clicks_measured_since));
+      tuileHtml('Clics vers votre site', t && stats.clicks_measured_since ? stNombre(t.clicks, seuil) : (t ? '—' : '…'), noteClics(stats && stats.clicks_measured_since));
   }
 
   function tuileHtml(libelle, valeur, note) {
@@ -4522,7 +4527,7 @@
           '<p>' + ech(quandCourtSortie(a)) + (a.locationName ? ' \u00b7 ' + ech(a.locationName) : '') + '</p>' +
           '<div style="margin-top:6px">' + pastillesEtatHtml(a) + '</div>' +
         '</div>' +
-        '<span class="pro-t-vues">' + (stats ? ech(pluriel(st ? st.views : 0, 'vue', 'vues')) : '') + '</span>' +
+        '<span class="pro-t-vues">' + (stats ? ech(stPluriel(st ? st.views : null, 'vue', 'vues', stSeuil(stats))) : '') + '</span>' +
       '</div>';
     }
     return html;
@@ -4649,11 +4654,9 @@
 
   // ── Retrait d'une sortie (espace) ────────────────────────────────────
   function panneauRetraitSortieHtml(a) {
-    var n = a.attendee_households || 0;
     return '<div class="pro-a-panneau">' +
       '<p><strong>Retirer « ' + ech(a.title) + ' »\u00a0?</strong></p>' +
-      '<p class="pro-a-aide">Retirer dépublie la fiche sans délai' +
-        (n === 1 ? ' et prévient la famille inscrite' : n > 1 ? ' et prévient les ' + nombreFr(n) + ' familles inscrites' : '') +
+      '<p class="pro-a-aide">Retirer dépublie la fiche sans délai. Si des familles avaient prévu d’y aller, elles seront prévenues' +
         '. Rien n’est effacé de votre côté\u00a0: elle reste dans «\u00a0Refusées et retirées\u00a0».</p>' +
       '<div class="pro-champ"><label class="pro-label" for="pro-r-motif">Motif (facultatif)</label>' +
         '<textarea class="pro-input" id="pro-r-motif" rows="2" maxlength="500"></textarea></div>' +
@@ -4665,7 +4668,7 @@
     '</div>';
   }
 
-  /** conteneur : où ouvrir le panneau ; apres(n) : succès, n familles prévenues. */
+  /** conteneur : où ouvrir le panneau ; apres() : succès (aucun nombre de familles : jamais un total exact). */
   function ouvreRetraitSortie(conteneur, a, apres) {
     conteneur.innerHTML = panneauRetraitSortieHtml(a);
     document.getElementById('pro-r-annuler').addEventListener('click', function () { conteneur.innerHTML = ''; });
@@ -4684,12 +4687,11 @@
       var erreur = resultat.data && resultat.data.error;
       if ((resultat.ok && resultat.data && resultat.data.ok) || erreur === 'already_withdrawn') {
         oublieDonnees();
-        var n = resultat.data && typeof resultat.data.notified_households === 'number' ? resultat.data.notified_households : null;
         conteneur.innerHTML = carteConfirmationHtml('pro-r-confirm', 'Sortie retirée',
-          (n ? ech(pluriel(n, 'famille inscrite a été prévenue.', 'familles inscrites ont été prévenues.')) + ' ' : '') +
+          'Si des familles avaient prévu d’y aller, elles ont été prévenues. ' +
           'Elle reste dans «\u00a0Refusées et retirées\u00a0».', null, '');
         focaliseConfirmation('pro-r-confirm');
-        if (apres) apres(n);
+        if (apres) apres();
         return;
       }
       bouton.disabled = false;
@@ -4842,8 +4844,9 @@
     });
     lignes.sort(function (x, y) {
       if (triSorties === 'vues') {
-        var vx = x.sortie && parSortie[x.sortie.id] ? parSortie[x.sortie.id].views : -1;
-        var vy = y.sortie && parSortie[y.sortie.id] ? parSortie[y.sortie.id].views : -1;
+        // Masqué (null) = sous le seuil : classé avec les sorties sans chiffre.
+        var vx = x.sortie && parSortie[x.sortie.id] && typeof parSortie[x.sortie.id].views === 'number' ? parSortie[x.sortie.id].views : -1;
+        var vy = y.sortie && parSortie[y.sortie.id] && typeof parSortie[y.sortie.id].views === 'number' ? parSortie[y.sortie.id].views : -1;
         return vy - vx;
       }
       var dx = x.sortie ? (x.sortie.next_occurrence_at || x.sortie.last_occurrence_at || '') : (x.depot.createdAt || '');
@@ -4859,14 +4862,14 @@
     }
     var html = '<div class="pro-s-tete" aria-hidden="true"><span></span><span>Sortie</span><span>Quand</span><span>État</span>' +
       '<span class="pro-s-chiffre">Vues 30\u00a0j</span><span class="pro-s-chiffre">Favoris</span><span class="pro-s-chiffre">J’y vais</span><span></span></div>';
-    for (var i = 0; i < lignes.length; i++) html += ligneSortieHtml(lignes[i], parSortie, i);
+    for (var i = 0; i < lignes.length; i++) html += ligneSortieHtml(lignes[i], parSortie, i, stSeuil(stats));
     liste.innerHTML = html;
     poseVignettes(liste, sortiesConnues);
     cableLiensRoute(liste);
     cableMenusSorties(liste, lignes);
   }
 
-  function ligneSortieHtml(l, parSortie, i) {
+  function ligneSortieHtml(l, parSortie, i, seuil) {
     if (l.depot) {
       var e = l.depot;
       return '<div class="pro-s-ligne" data-ligne="' + i + '">' +
@@ -4882,7 +4885,7 @@
     }
     var a = l.sortie;
     var st = parSortie[a.id];
-    var chiffre = function (n) { return st ? nombreFr(n) : '—'; };
+    var chiffre = function (n) { return st ? stNombre(n, seuil) : '—'; };
     var entrees = [];
     if (a.kind === 'event' && a.state === 'upcoming') entrees.push(['modifier', 'Modifier', false]);
     entrees.push(['affiche', 'Affiche…', false]);
@@ -5025,6 +5028,7 @@
 
   function rendCorpsFiche(a, st) {
     var corps = document.getElementById('pro-f-corps');
+    var seuil30 = stSeuil(statsCache['30d']);
     if (ongletFiche === 'stats') {
       rendBlocStatistiques(corps, a.id);
       return;
@@ -5043,17 +5047,16 @@
           historiqueHtml(a, (a.history || []).slice(0, 5)) + '</div>' +
       '</div><div class="pro-f-colonne">' +
         '<div class="pro-carte"><h2>Cette sortie, 30 jours</h2><div class="pro-f-chiffres">' +
-          chiffreFicheHtml(st ? st.views : null, 'consultations') + chiffreFicheHtml(st ? st.favorites : null, 'favoris') +
-          chiffreFicheHtml(st ? st.attendances : null, 'familles « j’y vais »') +
-          chiffreFicheHtml(st && statsCache['30d'] && statsCache['30d'].clicks_measured_since ? st.clicks : null, 'clics vers l’inscription \u00b7 ' + noteClics(statsCache['30d'] && statsCache['30d'].clicks_measured_since)) +
+          chiffreFicheHtml(st ? stNombre(st.views, seuil30) : null, 'consultations') + chiffreFicheHtml(st ? stNombre(st.favorites, seuil30) : null, 'favoris') +
+          chiffreFicheHtml(st ? stNombre(st.attendances, seuil30) : null, 'familles « j’y vais »') +
+          chiffreFicheHtml(st && statsCache['30d'] && statsCache['30d'].clicks_measured_since ? stNombre(st.clicks, seuil30) : null, 'clics vers l’inscription \u00b7 ' + noteClics(statsCache['30d'] && statsCache['30d'].clicks_measured_since)) +
         '</div></div>' +
         '<div class="pro-carte">' + carteMeaSortieHtml(a) + '</div>' +
         '<div class="pro-carte"><h2>Actions</h2>' +
           (a.kind === 'event' ? '<button type="button" class="pro-bouton-secondaire" id="pro-f-dupliquer">Dupliquer pour une autre date</button>' : '') +
           (a.state !== 'withdrawn'
             ? '<button type="button" class="pro-bouton-secondaire pro-a-danger" id="pro-f-retirer">Retirer la sortie</button>' +
-              '<p class="pro-a-aide" style="margin:0">Retirer dépublie la fiche sans délai' +
-                (a.attendee_households === 1 ? ' et prévient la famille inscrite' : a.attendee_households > 1 ? ' et prévient les ' + nombreFr(a.attendee_households) + ' familles inscrites' : '') +
+              '<p class="pro-a-aide" style="margin:0">Retirer dépublie la fiche sans délai. Si des familles avaient prévu d’y aller, elles seront prévenues' +
                 '. Rien n’est effacé de votre côté\u00a0: elle reste dans «\u00a0Refusées et retirées\u00a0».</p>' +
               '<div id="pro-f-retrait"></div>'
             : '') +
@@ -5076,8 +5079,9 @@
     });
   }
 
-  function chiffreFicheHtml(n, libelle) {
-    return '<div><strong>' + (typeof n === 'number' ? nombreFr(n) : '—') + '</strong><span>' + ech(libelle) + '</span></div>';
+  /** texte : le chiffre déjà écrit (« 20 » ou « moins de 10 »), null = pas de mesure. */
+  function chiffreFicheHtml(texte, libelle) {
+    return '<div><strong>' + (typeof texte === 'string' ? ech(texte) : '—') + '</strong><span>' + ech(libelle) + '</span></div>';
   }
 
   // ── Affiche ──────────────────────────────────────────────────────────
@@ -5538,7 +5542,7 @@
     return '<div class="pro-carte"><h2>E-mails que vous recevez</h2>' +
       '<label class="pro-p-case"><input type="checkbox" checked disabled /><span>Décision sur un dépôt ou une correction<small>Publiée, refusée, appliquée — toujours envoyé.</small></span></label>' +
       '<label class="pro-p-case"><input type="checkbox" id="pro-p-recap" data-preference="weekly_recap"' + (p.weekly_recap ? ' checked' : '') + ' /><span>Récapitulatif du lundi<small>Consultations, favoris, « j’y vais » de la semaine.</small></span></label>' +
-      '<label class="pro-p-case"><input type="checkbox" id="pro-p-rappel" data-preference="event_reminder"' + (p.event_reminder ? ' checked' : '') + ' /><span>Rappel avant une sortie <span class="pro-pastille-etat">Bientôt</span><small>3 jours avant\u00a0: le nombre de familles inscrites, l’affiche manquante s’il y a lieu.</small></span></label>' +
+      '<label class="pro-p-case"><input type="checkbox" id="pro-p-rappel" data-preference="event_reminder"' + (p.event_reminder ? ' checked' : '') + ' /><span>Rappel avant une sortie <span class="pro-pastille-etat">Bientôt</span><small>3 jours avant\u00a0: un rappel, et l’affiche manquante s’il y a lieu.</small></span></label>' +
       '<p class="pro-message" id="pro-p-emails-message" role="status" aria-live="polite"></p>' +
     '</div>';
   }
@@ -5642,7 +5646,6 @@
 
   // ── Statistiques ─────────────────────────────────────────────────────
   var ST_MOIS = ["janv.","févr.","mars","avr.","mai","juin","juil.","août","sept.","oct.","nov.","déc."];
-  var ST_JOURS = ["dim.","lun.","mar.","mer.","jeu.","ven.","sam."];
   function stCelluleCsv(valeur) {
     if (typeof valeur === 'number') return isFinite(valeur) ? String(valeur) : '';
     var t = valeur == null ? '' : String(valeur);
@@ -5657,6 +5660,7 @@
     return titres && titres[id] ? String(titres[id]) : String(id);
   }
   function stCsvStatistiques(stats, titres) {
+    var moins = stMoins(stSeuil(stats));
     var lignes = [['date', 'sortie', 'consultations', 'favoris', "j'y vais", 'clics', 'partages']];
     var serie = stats && stats.series ? stats.series.slice() : [];
     serie.sort(function (a, b) {
@@ -5667,13 +5671,17 @@
     });
     for (var i = 0; i < serie.length; i++) {
       var s = serie[i];
-      lignes.push([s.bucket, stTitreCsv(titres, s.activity_id), s.views, s.favorites, s.attendances, s.clicks, s.shares]);
+      var cellules = [s.views, s.favorites, s.attendances, s.clicks, s.shares];
+      for (var j = 0; j < cellules.length; j++) {
+        if (typeof cellules[j] !== 'number') cellules[j] = moins;
+      }
+      lignes.push([s.bucket, stTitreCsv(titres, s.activity_id)].concat(cellules));
     }
     var texte = '\uFEFF';
     for (var k = 0; k < lignes.length; k++) {
-      var cellules = [];
-      for (var c = 0; c < lignes[k].length; c++) cellules.push(stCelluleCsv(lignes[k][c]));
-      texte += cellules.join(';') + '\r\n';
+      var champs = [];
+      for (var c = 0; c < lignes[k].length; c++) champs.push(stCelluleCsv(lignes[k][c]));
+      texte += champs.join(';') + '\r\n';
     }
     return texte;
   }
@@ -5683,24 +5691,40 @@
     var date = /^\d{4}-\d{2}-\d{2}$/.test(String(jour)) ? String(jour) : 'date';
     return 'urson-statistiques-' + code + '-' + date + '.csv';
   }
-  function stValeursParPeriode(buckets, series) {
+  function stSeuil(stats) {
+    var n = stats ? stats.masked_below : null;
+    return typeof n === 'number' && isFinite(n) && n > 0 ? n : 10;
+  }
+  function stMoins(seuil) {
+    return 'moins de ' + seuil;
+  }
+  function stNombre(n, seuil) {
+    if (typeof n !== 'number' || !isFinite(n)) return stMoins(seuil);
+    var t = String(Math.round(n));
+    var r = '';
+    for (var i = 0; i < t.length; i++) {
+      if (i > 0 && (t.length - i) % 3 === 0) r += '\u202f';
+      r += t.charAt(i);
+    }
+    return r;
+  }
+  function stPluriel(n, un, plusieurs, seuil) {
+    return stNombre(n, seuil) + ' ' + (typeof n === 'number' && n <= 1 ? un : plusieurs);
+  }
+  function stValeursParPeriode(buckets, totaux) {
     var index = {};
+    for (var k = 0; k < totaux.length; k++) index[totaux[k].bucket] = totaux[k].views;
     var valeurs = [];
     for (var i = 0; i < buckets.length; i++) {
-      index[buckets[i]] = i;
-      valeurs.push(0);
-    }
-    for (var k = 0; k < series.length; k++) {
-      if (Object.prototype.hasOwnProperty.call(index, series[k].bucket)) {
-        valeurs[index[series[k].bucket]] += series[k].views;
-      }
+      var v = Object.prototype.hasOwnProperty.call(index, buckets[i]) ? index[buckets[i]] : null;
+      valeurs.push(typeof v === 'number' ? v : null);
     }
     return valeurs;
   }
   function stIndexPic(valeurs) {
     var pic = -1;
     for (var i = 0; i < valeurs.length; i++) {
-      if (valeurs[i] > 0 && (pic < 0 || valeurs[i] > valeurs[pic])) pic = i;
+      if (typeof valeurs[i] === 'number' && valeurs[i] > 0 && (pic < 0 || valeurs[i] > valeurs[pic])) pic = i;
     }
     return pic;
   }
@@ -5710,14 +5734,6 @@
     var j = Number(p[2]);
     if (p.length !== 3 || !m || !j || m > 12) return '';
     return (j === 1 ? '1er' : String(j)) + ' ' + ST_MOIS[m - 1];
-  }
-  function stLibelleJourCle(cle) {
-    var p = String(cle || '').split('-');
-    var a = Number(p[0]);
-    var m = Number(p[1]);
-    var j = Number(p[2]);
-    if (p.length !== 3 || !a || !m || !j || m > 12) return '';
-    return ST_JOURS[new Date(Date.UTC(a, m - 1, j)).getUTCDay()] + ' ' + stLibelleRepere(cle);
   }
   function stDecimaleFr(n) {
     return String(n).replace('.', ',');
@@ -5729,25 +5745,24 @@
     var signe = delta > 0 ? '+' : delta < 0 ? '\u2212' : '';
     return signe + Math.abs(delta) + '\u00a0% vs les ' + n + ' jours précédents';
   }
-  function stDetailPeriode(bucket, series, titres, sortieSeule) {
-    var totaux = { views: 0, favorites: 0, attendances: 0, clicks: 0, shares: 0 };
+  function stDetailPeriode(bucket, totaux, series, titres, sortieSeule) {
+    var vide = { views: null, favorites: null, attendances: null, clicks: null, shares: null };
+    var t = vide;
+    for (var j = 0; j < totaux.length; j++) {
+      if (totaux[j].bucket === bucket) t = totaux[j];
+    }
     var parSortie = [];
     for (var i = 0; i < series.length; i++) {
       var s = series[i];
-      if (s.bucket !== bucket) continue;
-      totaux.views += s.views;
-      totaux.favorites += s.favorites;
-      totaux.attendances += s.attendances;
-      totaux.clicks += s.clicks;
-      totaux.shares += s.shares;
-      if (s.views > 0) parSortie.push({ titre: stTitreCsv(titres, s.activity_id), views: s.views });
+      if (s.bucket === bucket && typeof s.views === 'number') parSortie.push({ titre: stTitreCsv(titres, s.activity_id), views: s.views });
     }
-    if (sortieSeule) return { totaux: totaux, repartition: [], autres: 0 };
+    var totaux5 = { views: t.views, favorites: t.favorites, attendances: t.attendances, clicks: t.clicks, shares: t.shares };
+    if (sortieSeule) return { totaux: totaux5, repartition: [], autres: 0 };
     parSortie.sort(function (a, b) {
       if (a.views !== b.views) return b.views - a.views;
       return a.titre < b.titre ? -1 : a.titre > b.titre ? 1 : 0;
     });
-    return { totaux: totaux, repartition: parSortie.slice(0, 5), autres: Math.max(0, parSortie.length - 5) };
+    return { totaux: totaux5, repartition: parSortie.slice(0, 5), autres: Math.max(0, parSortie.length - 5) };
   }
   function stPlacementBulle(barreGauche, barreDroite, largeurBulle, hauteurBulle, largeurCarte, hautZone, ecart, marge) {
     var droite = barreDroite + ecart;
@@ -5920,29 +5935,30 @@
   function rendZoneStats(ctx) {
     var s = ctx.stats;
     var t = s.totals;
+    var seuil = stSeuil(s);
     var zone = ctx.zone;
     ctx.exporter.disabled = !(s.series && s.series.length > 0);
-    if (!t.views && !t.favorites && !t.attendances) {
-      zone.appendChild(stEl('p', 'pro-note', 'Aucune consultation ' +
-        (ctx.periode === 'all' ? 'pour le moment.' : 'sur les ' + DUREES_STATS[ctx.periode] + ' écoulés. Essayez une période plus longue.')));
+    if (t.views === null && t.favorites === null && t.attendances === null) {
+      zone.appendChild(stEl('p', 'pro-note', 'Moins de ' + seuil + ' consultations sur cette période. Pour qu’aucune famille ne soit reconnaissable, les chiffres s’affichent à partir de ' + seuil + ', arrondis à la dizaine.'));
       if (!s.clicks_measured_since) zone.appendChild(stCarteBientot());
       return;
     }
 
     var tuiles = stEl('div', 'pro-t-tuiles', '');
-    tuiles.appendChild(stTuile('Consultations', nombreFr(t.views), stDeltaTexte(s.delta_views_pct, ctx.periode)));
-    tuiles.appendChild(stTuile('Foyers distincts', nombreFr(t.households),
+    tuiles.appendChild(stTuile('Consultations', stNombre(t.views, seuil), stDeltaTexte(s.delta_views_pct, ctx.periode)));
+    tuiles.appendChild(stTuile('Foyers distincts', stNombre(t.households, seuil),
       typeof s.views_per_household === 'number'
         ? 'soit ' + stDecimaleFr(s.views_per_household) + (s.views_per_household >= 2 ? ' consultations' : ' consultation') + ' par foyer'
         : '\u2014'));
-    tuiles.appendChild(stTuile('Ajouts en favoris', nombreFr(t.favorites),
+    tuiles.appendChild(stTuile('Ajouts en favoris', stNombre(t.favorites, seuil),
       typeof s.favorites_pct === 'number' ? stDecimaleFr(s.favorites_pct) + '\u00a0% des consultations' : 'sur la période'));
-    tuiles.appendChild(stTuile('Familles « j’y vais »', nombreFr(t.attendances),
+    tuiles.appendChild(stTuile('Familles « j’y vais »', stNombre(t.attendances, seuil),
       ctx.sortie ? 'sur la période' : 'sur ' + pluriel(ctx.counts.upcoming || 0, 'sortie à venir', 'sorties à venir')));
     zone.appendChild(tuiles);
+    zone.appendChild(stEl('p', 'pro-note', 'Chiffres arrondis à la dizaine. En dessous de ' + seuil + ', la page affiche « ' + stMoins(seuil) + ' ».'));
 
     zone.appendChild(stEl('p', 'pro-st-clics', s.clicks_measured_since
-      ? 'Clics vers votre site\u00a0: ' + nombreFr(t.clicks) + ' \u00b7 partages de vos fiches\u00a0: ' + nombreFr(t.shares) + ' (' + noteClics(s.clicks_measured_since) + ')'
+      ? 'Clics vers votre site\u00a0: ' + stNombre(t.clicks, seuil) + ' \u00b7 partages de vos fiches\u00a0: ' + stNombre(t.shares, seuil) + ' (' + noteClics(s.clicks_measured_since) + ')'
       : 'Clics vers votre site\u00a0: \u2014 \u00b7 ' + noteClics(null)));
 
     zone.appendChild(stCarteGraphe(s, ctx.periode, stTitresSorties(ctx.acts), !!ctx.sortie));
@@ -5959,17 +5975,14 @@
 
   function stCarteGraphe(s, periode, titres, sortieSeule) {
     var buckets = s.buckets || [];
-    var valeurs = stValeursParPeriode(buckets, s.series || []);
+    var seuil = stSeuil(s);
+    var totaux = s.series_totals || [];
+    var valeurs = stValeursParPeriode(buckets, totaux);
     var pic = stIndexPic(valeurs);
-    var parSemaine = s.bucket === 'week';
     var carte = stEl('section', 'pro-carte', '');
     var entete = stEl('div', 'pro-t-entete-carte', '');
-    entete.appendChild(stEl('h2', '', parSemaine
-      ? 'Consultations par semaine \u2014 depuis le début'
-      : 'Consultations par jour \u2014 ' + DUREES_STATS[periode]));
-    var textePic = pic < 0 ? '' : (parSemaine
-      ? 'Pic la semaine du ' + stLibelleRepere(buckets[pic])
-      : 'Pic le ' + stLibelleJourCle(buckets[pic])) + '\u00a0: ' + pluriel(valeurs[pic], 'consultation', 'consultations');
+    entete.appendChild(stEl('h2', '', 'Consultations par semaine \u2014 ' + (periode === 'all' ? 'depuis le début' : DUREES_STATS[periode])));
+    var textePic = pic < 0 ? '' : 'Pic la semaine du ' + stLibelleRepere(buckets[pic]) + '\u00a0: ' + stPluriel(valeurs[pic], 'consultation', 'consultations', seuil);
     entete.appendChild(stEl('span', 'pro-note', textePic));
     carte.appendChild(entete);
 
@@ -5983,16 +5996,18 @@
     bulle.setAttribute('role', 'tooltip');
     bulle.hidden = true;
     var etat = {
-      carte: carte, batons: batons, bulle: bulle, baton: null, buckets: buckets, series: s.series || [],
-      titres: titres, sortieSeule: sortieSeule, parSemaine: parSemaine, clicsMesures: !!s.clicks_measured_since
+      carte: carte, batons: batons, bulle: bulle, baton: null, buckets: buckets, series: s.series || [], totaux: totaux,
+      titres: titres, sortieSeule: sortieSeule, seuil: seuil, clicsMesures: !!s.clicks_measured_since
     };
     var max = pic < 0 ? 0 : valeurs[pic];
     for (var i = 0; i < valeurs.length; i++) {
-      var baton = stEl('span', valeurs[i] > 0 ? 'pro-st-baton' : 'pro-st-baton pro-st-baton--vide', '');
-      baton.style.height = (max > 0 && valeurs[i] > 0 ? Math.max(2, Math.round(valeurs[i] / max * 100)) : 2) + '%';
+      // Semaine absente ou masquée : barre vide (sa bulle dit « moins de N »).
+      var rendue = typeof valeurs[i] === 'number' && valeurs[i] > 0;
+      var baton = stEl('span', rendue ? 'pro-st-baton' : 'pro-st-baton pro-st-baton--vide', '');
+      baton.style.height = (max > 0 && rendue ? Math.max(2, Math.round(valeurs[i] / max * 100)) : 2) + '%';
       baton.setAttribute('tabindex', '0');
       baton.setAttribute('role', 'img');
-      baton.setAttribute('aria-label', stTitreBulle(etat, buckets[i]) + '\u00a0: ' + pluriel(valeurs[i], 'consultation', 'consultations'));
+      baton.setAttribute('aria-label', stTitreBulle(etat, buckets[i]) + '\u00a0: ' + stPluriel(valeurs[i], 'consultation', 'consultations', seuil));
       stCableBaton(etat, baton, i);
       batons.appendChild(baton);
     }
@@ -6011,7 +6026,7 @@
 
     // Pas de point final : les repères de date finissent souvent par une
     // abréviation (« sept. »), un point de plus se lirait « sept.. ».
-    carte.appendChild(stEl('p', 'pro-st-sr', pluriel(s.totals.views, 'consultation', 'consultations') + ' sur la période' +
+    carte.appendChild(stEl('p', 'pro-st-sr', stPluriel(s.totals.views, 'consultation', 'consultations', seuil) + ' sur la période' +
       (buckets.length ? ', du ' + stLibelleRepere(buckets[0]) + ' au ' + stLibelleRepere(buckets[buckets.length - 1]) : '') +
       (textePic ? ' ; ' + textePic : '')));
     return carte;
@@ -6025,7 +6040,7 @@
   }
 
   function stTitreBulle(etat, cle) {
-    return etat.parSemaine ? 'Semaine du ' + stLibelleRepere(cle) : stLibelleJourCle(cle);
+    return 'Semaine du ' + stLibelleRepere(cle);
   }
 
   function stCableBaton(etat, baton, index) {
@@ -6058,18 +6073,19 @@
       etat.baton.classList.remove('pro-st-baton--visee');
     }
     var cle = etat.buckets[index];
-    var d = stDetailPeriode(cle, etat.series, etat.titres, etat.sortieSeule);
+    var d = stDetailPeriode(cle, etat.totaux, etat.series, etat.titres, etat.sortieSeule);
     var t = d.totaux;
+    var seuil = etat.seuil;
     var bulle = etat.bulle;
     while (bulle.firstChild) bulle.removeChild(bulle.firstChild);
     bulle.appendChild(stEl('p', 'pro-st-bulle-titre', stTitreBulle(etat, cle)));
     var liste = stEl('ul', '', '');
-    liste.appendChild(stEl('li', '', pluriel(t.views, 'consultation', 'consultations')));
-    liste.appendChild(stEl('li', '', nombreFr(t.favorites) + (t.favorites > 1 ? ' ajouts en favoris' : ' ajout en favoris')));
-    liste.appendChild(stEl('li', '', pluriel(t.attendances, 'famille « j’y vais »', 'familles « j’y vais »')));
+    liste.appendChild(stEl('li', '', stPluriel(t.views, 'consultation', 'consultations', seuil)));
+    liste.appendChild(stEl('li', '', stPluriel(t.favorites, 'ajout en favoris', 'ajouts en favoris', seuil)));
+    liste.appendChild(stEl('li', '', stPluriel(t.attendances, 'famille « j’y vais »', 'familles « j’y vais »', seuil)));
     if (etat.clicsMesures) {
-      liste.appendChild(stEl('li', '', pluriel(t.clicks, 'clic vers votre site', 'clics vers votre site')));
-      liste.appendChild(stEl('li', '', pluriel(t.shares, 'partage', 'partages')));
+      liste.appendChild(stEl('li', '', stPluriel(t.clicks, 'clic vers votre site', 'clics vers votre site', seuil)));
+      liste.appendChild(stEl('li', '', stPluriel(t.shares, 'partage', 'partages', seuil)));
     } else {
       liste.appendChild(stEl('li', '', 'Clics et partages\u00a0: bientôt mesurés'));
     }
@@ -6079,7 +6095,7 @@
       detail.appendChild(stEl('p', 'pro-note', 'Par sortie'));
       var repartition = stEl('ul', '', '');
       for (var i = 0; i < d.repartition.length; i++) {
-        repartition.appendChild(stEl('li', '', d.repartition[i].titre + ' \u00b7 ' + nombreFr(d.repartition[i].views)));
+        repartition.appendChild(stEl('li', '', d.repartition[i].titre + ' \u00b7 ' + stNombre(d.repartition[i].views, seuil)));
       }
       if (d.autres > 0) repartition.appendChild(stEl('li', '', 'et ' + nombreFr(d.autres) + (d.autres > 1 ? ' autres' : ' autre')));
       detail.appendChild(repartition);
@@ -6123,6 +6139,7 @@
   }
 
   function stCarteParSortie(s) {
+    var seuil = stSeuil(s);
     var carte = stEl('section', 'pro-carte', '');
     carte.appendChild(stEl('h2', '', 'Par sortie'));
     var table = stEl('table', 'pro-st-table', '');
@@ -6150,8 +6167,8 @@
       if (sortie && sortie.state === 'finished') tdTitre.appendChild(stEl('span', 'pro-s-pastille pro-s-pastille--neutre', 'Terminée'));
       tr.appendChild(tdTitre);
       var cellules = [
-        nombreFr(l.views), nombreFr(l.favorites), nombreFr(l.attendances),
-        s.clicks_measured_since ? nombreFr(l.clicks) : '\u2014',
+        stNombre(l.views, seuil), stNombre(l.favorites, seuil), stNombre(l.attendances, seuil),
+        s.clicks_measured_since ? stNombre(l.clicks, seuil) : '\u2014',
         typeof l.share_pct === 'number' ? l.share_pct + '\u00a0%' : '\u2014'
       ];
       for (var k = 0; k < cellules.length; k++) {
@@ -6171,7 +6188,7 @@
     carte.appendChild(stEl('h2', '', 'D’où viennent les consultations'));
     var lignes = s.sources || [];
     if (lignes.length === 0) {
-      carte.appendChild(stEl('p', 'pro-note', 'Aucune consultation sur cette période.'));
+      carte.appendChild(stEl('p', 'pro-note', 'Chaque provenance compte ' + stMoins(stSeuil(s)) + ' consultations sur cette période.'));
       return carte;
     }
     for (var i = 0; i < lignes.length; i++) {
@@ -6190,7 +6207,9 @@
       } else {
         tete.appendChild(stEl('span', '', pluriel(l.views, 'consultation', 'consultations')));
         bloc.appendChild(tete);
-        bloc.appendChild(stEl('p', 'pro-note', 'Ouvertes depuis une version de l’app antérieure à cette mesure\u00a0: les pourcentages portent sur les autres.'));
+      }
+      if (l.source === null) {
+        bloc.appendChild(stEl('p', 'pro-note', 'Ouvertes depuis une version de l’app antérieure à cette mesure.'));
       }
       carte.appendChild(bloc);
     }
