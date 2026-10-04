@@ -43,6 +43,7 @@
       --coral: #FF6B6B;
       --coral-deep: #E84D4D;
       --bg-app: #FFF8F3;
+      --bg-soft: #FFF1E8;
       --bg-surface: #FFFFFF;
       --fg-1: #1F2937;
       --fg-2: #6B7280;
@@ -115,6 +116,15 @@
     a { color: var(--coral-deep); }
     a:hover { text-decoration-thickness: 2px; }
 
+    .avis-fin {
+      background: var(--bg-soft);
+      border-bottom: 1px solid var(--line-medium);
+      color: var(--fg-1);
+      padding: 12px 0;
+      font-size: 15px;
+    }
+    .avis-fin a { color: var(--coral-deep); text-decoration: underline; }
+
     .pied {
       margin-top: 56px;
       border-top: 1px solid var(--line-medium);
@@ -143,6 +153,10 @@
       </a>
     </div>
   </header>
+
+  <div class="avis-fin" role="region" aria-label="Fin du service">
+    <div class="enveloppe"><strong>Urson s'arrête le 18 octobre 2026.</strong> <a href="/fin-du-service/">Ce que ça change pour toi</a></div>
+  </div>
 
   <main>
     <div class="card" id="card"></div>

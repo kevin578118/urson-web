@@ -3,19 +3,18 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Confirmer votre demande — Urson</title>
-  <meta name="description" content="Confirmer, par e-mail, une demande ou un signalement déposé sur Urson." />
-  <meta name="robots" content="noindex, nofollow" />
+  <title>Fin du service — Urson</title>
+  <meta name="description" content="Urson s'arrête le 18 octobre 2026 : ce qui change d'ici là, ce qui est effacé, ce qui est gardé, comment obtenir une copie de ses données." />
   <meta name="theme-color" content="#FFF8F3" />
-  <link rel="canonical" href="https://ursonapp.fr/pro/confirmer/" />
+  <link rel="canonical" href="https://ursonapp.fr/fin-du-service/" />
   <link rel="icon" href="/assets/favicon.png" />
   <link rel="apple-touch-icon" href="/assets/urson-icone.png" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Urson" />
   <meta property="og:locale" content="fr_FR" />
-  <meta property="og:title" content="Confirmer votre demande — Urson" />
-  <meta property="og:description" content="Confirmer, par e-mail, une demande ou un signalement déposé sur Urson." />
-  <meta property="og:url" content="https://ursonapp.fr/pro/confirmer/" />
+  <meta property="og:title" content="Fin du service — Urson" />
+  <meta property="og:description" content="Urson s'arrête le 18 octobre 2026 : ce qui change d'ici là, ce qui est effacé, ce qui est gardé, comment obtenir une copie de ses données." />
+  <meta property="og:url" content="https://ursonapp.fr/fin-du-service/" />
   <meta property="og:image" content="https://ursonapp.fr/assets/urson-icone.png" />
   <meta name="twitter:card" content="summary" />
   <!--
@@ -142,17 +141,6 @@
       main { padding-top: 28px; }
       .carte { padding: 20px; }
     }
-    .conf-bouton {
-      height: 48px; padding: 0 26px; border: 0; border-radius: 999px;
-      background: var(--coral-deep); color: var(--bg-surface);
-      font: inherit; font-size: 16px; font-weight: 600; cursor: pointer;
-    }
-    .conf-bouton:hover { background: var(--coral); }
-    .conf-bouton:disabled { background: var(--fg-3); cursor: default; }
-    .conf-message { margin: 16px 0 0; padding: 14px 16px; border-radius: 14px; font-size: 16px; background: var(--bg-soft); color: var(--fg-1); }
-    .conf-message p { margin: 0; }
-    .conf-message p + p { margin-top: 8px; }
-    [hidden] { display: none !important; }
   </style>
 </head>
 <body>
@@ -163,117 +151,65 @@
         Urson
       </a>
       <nav class="nav" aria-label="Pages du site">
-        <a href="/fin-du-service/">Fin du service</a>
+        <a href="/fin-du-service/" aria-current="page">Fin du service</a>
         <a href="/aide/">Aide</a>
         <a href="/confidentialite/">Confidentialité</a>
         <a href="/conditions/">Conditions</a>
       </nav>
     </div>
   </header>
-  <div class="avis-fin" role="region" aria-label="Fin du service">
-    <div class="enveloppe"><strong>Urson s'arrête le 18 octobre 2026.</strong> <a href="/fin-du-service/">Ce que ça change pour toi</a></div>
-  </div>
 
   <main>
     <div class="enveloppe">
-      <h1>Confirmer votre demande</h1>
-      <p class="chapeau">Une dernière étape pour que votre demande d&rsquo;espace organisateur parvienne à l&rsquo;équipe.</p>
+      <h1>Urson s'arrête le 18 octobre 2026</h1>
+      <p class="chapeau">Merci aux familles et aux organisateurs qui ont testé Urson. L'avis a été mis en ligne le 4 octobre 2026 ; le service prend fin le dimanche 18 octobre 2026.</p>
 
-      <div class="carte" id="conf-action">
-        <p>Un clic confirme que cette adresse e-mail est bien la vôtre. Sans lui, votre demande n&rsquo;est pas transmise et aucun compte n&rsquo;est créé.</p>
-        <p><button type="button" class="conf-bouton" id="conf-bouton">Confirmer ma demande</button></p>
+      <div class="carte">
+        <h2>D'ici le 18 octobre</h2>
+        <p>L'app reste ouverte en lecture : tu peux relire tes données et supprimer ton compte toi-même, depuis l'app (Profil → Supprimer mon compte) ou sur <a href="/suppression-de-compte/">cette page</a>.</p>
+        <p>Depuis le 4 octobre, plus aucun compte ne se crée, plus aucun dépôt, aucune correction ni photo ne s'enregistre, et trois fonctions sont suspendues côté serveur : le partage des sorties (foyer, amis, groupes), l'entrée dans un foyer par code et la connexion par e-mail. Un parent déjà connecté reste connecté et garde la lecture de ses propres données.</p>
+        <p>Le signalement d'un contenu reste ouvert jusqu'au bout : <a href="/signaler-un-contenu/">signaler un contenu</a>.</p>
       </div>
 
-      <div class="conf-message" id="conf-message" role="status" aria-live="polite" hidden></div>
+      <div class="carte">
+        <h2>Le 18 octobre</h2>
+        <p>Tout est effacé le jour même : comptes, profils, enfants, foyers, sorties, amis, groupes, favoris, invitations, identifiants de notification, relevés d'usage, retours, dépôts, photos et corrections, visuels et espaces des organisateurs, statistiques, journaux. La base de données, les fichiers et les fonctions hébergés chez Supabase sont supprimés, sauvegardes comprises. Rien n'est transmis à personne.</p>
+        <p>Après cette date, l'application ne fonctionne plus. Désinstalle-la : elle garde encore sur ton téléphone ce qu'elle avait mis en cache.</p>
+      </div>
 
-      <p>Une question&nbsp;? Écrivez-nous à <a href="mailto:bonjour@ursonapp.fr">bonjour@ursonapp.fr</a>.</p>
+      <div class="carte">
+        <h2>Une copie de tes données</h2>
+        <p>Écris à <a href="mailto:bonjour@ursonapp.fr">bonjour@ursonapp.fr</a>, de préférence depuis l'adresse de ton compte, avant le 18 octobre 2026. Tu reçois une copie lisible (JSON ou CSV) de ce que tu as fourni : profil, enfants, foyer, sorties, favoris, dépôts, corrections. Une demande reçue avant la fin est traitée avant l'effacement ; après, il n'y a plus rien à copier.</p>
+        <p>Si tu utilisais Urson sans adresse e-mail, nous ne pouvons pas relier une demande à ton compte : tes données restent lisibles dans l'app jusqu'au 18 octobre, puis sont effacées avec les autres.</p>
+      </div>
 
-      <script>
-(function () {
-  'use strict';
+      <div class="carte">
+        <h2>Ce qui est gardé après la fin</h2>
+        <p>Hors de nos serveurs, dans une archive chiffrée que seul l'éditeur peut ouvrir, pour pouvoir prouver ce qui a été accepté si quelqu'un le conteste :</p>
+        <ul>
+          <li>la trace de l'accord aux conditions de dépôt (identifiant de l'ancien compte, date, texte accepté, informations techniques), 5 ans ;</li>
+          <li>les déclarations et accords des organisateurs (texte, date, e-mail, nom de la structure, adresse IP, navigateur) et les accords écrits des sources, 5 ans ;</li>
+          <li>le suivi des demandes de droits (date, type, réponse ; jamais les pièces d'identité, effacées dès la réponse), 3 ans après la réponse ;</li>
+          <li>les signalements et leur traitement, 3 ans après leur clôture ;</li>
+          <li>le registre des traitements, l'analyse d'impact, le registre des violations et la preuve d'effacement, sans donnée personnelle.</li>
+        </ul>
+        <p>Le détail, section « Fin du service » de la <a href="/confidentialite/">page Confidentialité</a>.</p>
+      </div>
 
-  // Domaine pas encore branché à l'écriture de cette page (comme signaler-un-contenu/ et
-  // suppression-de-compte/) : adresses en dur, jamais déduites de window.location. Clé
-  // publishable PUBLIQUE, déjà publique dans le bundle de l'app.
-  var BASE = 'https://cvycoezoimrbgpbxzrez.supabase.co';
-  var PUBLISHABLE_KEY = 'sb_publishable_unG8da619oJttOhHXHAMCg_JluofzV4';
-  var CONTACT = 'bonjour@ursonapp.fr';
-  var FONCTION = 'organizer-account';
-  var ACTION = 'confirm_request';
-  var MESSAGES = {"confirmed":["C’est confirmé, merci.","Votre demande est transmise à l’équipe, qui l’examine à la main et vous répond par e-mail sous deux jours ouvrés."],"invalid":["Ce lien n’est plus valable : il dure 24 heures et ne sert qu’une fois.","Refaites votre demande sur ursonapp.fr/pro, ou écrivez-nous à %CONTACT%."],"rate_limited":["Trop de tentatives depuis cette connexion. Réessayez dans une heure."],"incomplet":["Ce lien est incomplet. Ouvrez-le depuis l’e-mail que vous avez reçu, ou refaites votre demande sur ursonapp.fr/pro."],"erreur":["La confirmation n’a pas abouti. Réessayez dans un instant, ou écrivez-nous à %CONTACT%."]};
-  // Aucun appel ne pend indéfiniment (AbortController plutôt que AbortSignal.timeout,
-  // absent des navigateurs anciens).
-  var DELAI_MAX_MS = 15000;
+      <div class="carte">
+        <h2>Organisateurs</h2>
+        <p>Votre espace reste accessible en lecture, avec votre mot de passe, jusqu'au 18 octobre 2026 ; la connexion par code e-mail est suspendue. Plus aucun dépôt ni demande n'est accepté, et la mise en avant n'ouvrira pas. Le 18 octobre, vos visuels, votre logo, vos statistiques et votre espace sont supprimés. Vous gardez tous vos droits sur vos visuels ; pour en recevoir une copie avant la fin, écrivez-nous.</p>
+        <p>Vos déclarations de propriété et vos accords sur les visuels sont conservés 5 ans comme preuve, dans l'archive décrite ci-dessus.</p>
+      </div>
 
-  var elt = function (id) { return document.getElementById(id); };
+      <div class="carte">
+        <h2>Testeurs TestFlight et Google Play</h2>
+        <p>La dernière mise à jour de l'app porte cet avis et un écran de fin. Le 18 octobre, les builds de test sont retirés ; une app restée installée ne fonctionne plus et se désinstalle comme n'importe quelle autre.</p>
+      </div>
 
-  function message(cle) {
-    var zone = elt('conf-message');
-    zone.hidden = false;
-    zone.textContent = '';
-    (MESSAGES[cle] || MESSAGES.erreur).forEach(function (ligne) {
-      var p = document.createElement('p');
-      p.textContent = ligne.replace('%CONTACT%', CONTACT);
-      zone.appendChild(p);
-    });
-  }
-
-  // Le jeton est lu UNE fois, effacé de la barre d'adresse, puis gardé en mémoire seulement.
-  var jeton = null;
-  try {
-    var lu = new URLSearchParams(window.location.search).get('token');
-    if (lu && /^[0-9a-f]{64}$/i.test(lu.trim())) jeton = lu.trim();
-    if (window.location.search) window.history.replaceState(null, '', window.location.pathname);
-  } catch (erreur) {
-    jeton = null;
-  }
-
-  if (!jeton) {
-    elt('conf-action').hidden = true;
-    message('incomplet');
-    return;
-  }
-
-  elt('conf-bouton').addEventListener('click', function () {
-    var bouton = elt('conf-bouton');
-    bouton.disabled = true;
-    bouton.textContent = 'Un instant…';
-    var controleur = new AbortController();
-    var minuteur = setTimeout(function () { controleur.abort(); }, DELAI_MAX_MS);
-
-    fetch(BASE + '/functions/v1/' + FONCTION, {
-      method: 'POST',
-      signal: controleur.signal,
-      headers: { 'Content-Type': 'application/json', apikey: PUBLISHABLE_KEY },
-      body: JSON.stringify({ action: ACTION, token: jeton })
-    })
-      .then(function (r) {
-        return r.json().then(function (corps) { return { statut: r.status, corps: corps || {} }; });
-      })
-      .then(function (reponse) {
-        clearTimeout(minuteur);
-        var statut = reponse.corps.status;
-        if (statut === 'confirmed') {
-          elt('conf-action').hidden = true;
-          message(reponse.corps.already ? 'already' : 'confirmed');
-          return;
-        }
-        bouton.disabled = false;
-        bouton.textContent = 'Confirmer';
-        if (statut === 'invalid') { elt('conf-action').hidden = true; message('invalid'); return; }
-        if (statut === 'rate_limited') { message('rate_limited'); return; }
-        if (statut === 'unknown_target') { elt('conf-action').hidden = true; message('unknown_target'); return; }
-        message('erreur');
-      })
-      .catch(function () {
-        clearTimeout(minuteur);
-        bouton.disabled = false;
-        bouton.textContent = 'Confirmer';
-        message('erreur');
-      });
-  });
-})();
-      </script>
+      <div class="carte carte-douce">
+        <p>Nous écrire — une question, une copie, un effacement avant l'heure : <a href="mailto:bonjour@ursonapp.fr">bonjour@ursonapp.fr</a>. Réponse sous un mois au plus, en pratique bien avant.</p>
+      </div>
     </div>
   </main>
 
@@ -281,7 +217,6 @@
     <div class="enveloppe">
       <nav class="pied-liens" aria-label="Pied de page">
         <a href="/">Accueil</a>
-        <a href="/fin-du-service/">Fin du service</a>
         <a href="/aide/">Aide</a>
         <a href="/confidentialite/">Confidentialité</a>
         <a href="/conditions/">Conditions</a>

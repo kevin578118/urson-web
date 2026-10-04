@@ -86,6 +86,16 @@
       text-underline-offset: 4px;
     }
 
+    /* Bandeau d'annonce de la fin du service, sur toutes les pages */
+    .avis-fin {
+      background: var(--bg-soft);
+      border-bottom: 1px solid var(--line-medium);
+      color: var(--fg-1);
+      padding: 12px 0;
+      font-size: 15px;
+    }
+    .avis-fin a { color: var(--coral-deep); text-decoration: underline; }
+
     /* Contenu */
     main { padding: 40px 0 8px; }
     h1 { font-size: 30px; line-height: 1.25; margin: 0 0 12px; letter-spacing: -0.5px; }
@@ -141,18 +151,22 @@
         Urson
       </a>
       <nav class="nav" aria-label="Pages du site">
+        <a href="/fin-du-service/">Fin du service</a>
         <a href="/aide/">Aide</a>
         <a href="/confidentialite/">Confidentialité</a>
         <a href="/conditions/" aria-current="page">Conditions</a>
       </nav>
     </div>
   </header>
+  <div class="avis-fin" role="region" aria-label="Fin du service">
+    <div class="enveloppe"><strong>Urson s'arrête le 18 octobre 2026.</strong> <a href="/fin-du-service/">Ce que ça change pour toi</a></div>
+  </div>
 
   <main>
     <div class="enveloppe">
       <h1>Conditions d'utilisation</h1>
       <p class="chapeau">Les règles du jeu : ce que tu peux publier, ce qui ne passe pas, et ce qu'Urson garantit — ou pas.</p>
-      <p class="date-maj">Version 2026-10-02.1 · 2 octobre 2026</p>
+      <p class="date-maj">Version 2026-10-04.1 · 4 octobre 2026</p>
 
       <section class="carte" id="qui-edite">
         <h2 class="titre-emoji"><span class="emoji" aria-hidden="true">🐻</span> 1. Qui édite Urson, et ce que c'est</h2>
@@ -212,8 +226,12 @@
       </section>
 
       <section class="carte" id="disponibilite-service">
-        <h2 class="titre-emoji"><span class="emoji" aria-hidden="true">⚙️</span> 9. Disponibilité du service</h2>
-      <p>Urson est fourni en l'état, gratuitement, et évolue en permanence. Le service peut être interrompu, modifié ou arrêté, notamment pour maintenance. Les données restent récupérables et supprimables tant que le service existe ; en cas d'arrêt définitif, les comptes et leurs données seraient supprimés.</p>
+        <h2 class="titre-emoji"><span class="emoji" aria-hidden="true">⚙️</span> 9. Fin du service</h2>
+      <p>Urson s'arrête. L'avis a été mis en ligne le 4 octobre 2026 ; le service prend fin le 18 octobre 2026.</p>
+      <p>Jusqu'au 18 octobre 2026, tu peux ouvrir l'app, relire tes données et supprimer ton compte toi-même. Depuis le 4 octobre, plus aucun compte ne se crée, plus aucun dépôt, aucune correction ni photo ne s'enregistre, et trois fonctions sont suspendues côté serveur : le partage des sorties (foyer, amis, groupes), l'entrée dans un foyer par code et la connexion par e-mail. Chaque parent continue de lire ses propres données.</p>
+      <p>Le 18 octobre 2026, les comptes et toutes leurs données sont effacés : profils, enfants, foyers, sorties, amis, groupes, favoris, dépôts, photos, invitations et identifiants de notification. Le catalogue, les visuels des organisateurs et les espaces organisateurs disparaissent aussi. Rien n'est transmis à personne.</p>
+      <p>Pour recevoir une copie de tes données, écris à <a href="mailto:bonjour@ursonapp.fr">bonjour@ursonapp.fr</a> avant le 18 octobre 2026 : une demande reçue avant cette date est traitée avant l'effacement. Ce qui est gardé après la fin, et combien de temps, est décrit sur la page Confidentialité, section « Fin du service ».</p>
+      <p>Après la fin, l'application ne fonctionne plus. Désinstalle-la : elle garde encore sur ton téléphone ce qu'elle avait mis en cache.</p>
       </section>
 
       <section class="carte" id="modification-conditions">
@@ -242,6 +260,7 @@
     <div class="enveloppe">
       <nav class="pied-liens" aria-label="Pied de page">
         <a href="/">Accueil</a>
+        <a href="/fin-du-service/">Fin du service</a>
         <a href="/aide/">Aide</a>
         <a href="/confidentialite/">Confidentialité</a>
         <a href="/suppression-de-compte/">Supprimer mon compte</a>

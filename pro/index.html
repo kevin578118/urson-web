@@ -87,6 +87,16 @@
       text-underline-offset: 4px;
     }
 
+    /* Bandeau d'annonce de la fin du service, sur toutes les pages */
+    .avis-fin {
+      background: var(--bg-soft);
+      border-bottom: 1px solid var(--line-medium);
+      color: var(--fg-1);
+      padding: 12px 0;
+      font-size: 15px;
+    }
+    .avis-fin a { color: var(--coral-deep); text-decoration: underline; }
+
     /* Contenu */
     main { padding: 40px 0 8px; }
     h1 { font-size: 30px; line-height: 1.25; margin: 0 0 12px; letter-spacing: -0.5px; }
@@ -972,7 +982,7 @@
     }
     .pro-a-bouton--principal { background: var(--coral); border: 1px solid var(--coral); color: var(--fg-1); }
     .pro-a-bouton--secondaire { background: var(--bg-surface); border: 1px solid var(--line-medium); color: var(--fg-1); }
-    .pro-a-bouton:focus-visible, .pro-a-entete-connexion:focus-visible, .pro-a-case input:focus-visible {
+    .pro-a-bouton:focus-visible, .pro-a-entete-connexion:focus-visible {
       outline: 2px solid var(--coral-deep); outline-offset: 1px;
     }
     .pro-a-meta { font-size: 14px; color: var(--fg-2); margin: 0; }
@@ -992,14 +1002,13 @@
     .pro-a-capture--principale { width: 56%; max-width: 280px; position: relative; z-index: 2; }
     .pro-a-capture--seconde { width: 48%; max-width: 240px; margin: 14% 0 0 -10%; position: relative; z-index: 1; }
 
-    .pro-a-atouts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; margin: 0 0 48px; }
+    .pro-a-atouts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; margin: 0 0 48px; }
     .pro-a-atout {
       background: var(--bg-surface); border: 1px solid var(--line-soft); border-radius: 20px;
       padding: 24px; box-shadow: 0 1px 2px rgba(31, 41, 55, 0.04), 0 6px 20px rgba(232, 77, 77, 0.06);
     }
     .pro-a-atout h2 { font-size: 17px; line-height: 1.35; margin: 14px 0 6px; }
     .pro-a-atout p { font-size: 15px; line-height: 1.5; color: var(--fg-2); margin: 0; }
-    .pro-a-atout .pro-pastille-etat { margin-left: 6px; vertical-align: middle; }
     .pro-a-vignette {
       width: 52px; height: 52px; border-radius: 14px; background: var(--bg-soft);
       display: flex; align-items: center; justify-content: center; color: var(--coral-deep);
@@ -1007,40 +1016,15 @@
     .pro-a-vignette svg { width: 22px; height: 22px; }
 
     .pro-a-section-titre { font-size: 22px; line-height: 1.3; margin: 0 0 20px; }
-    .pro-a-etapes { list-style: none; padding: 0; margin: 0 0 48px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
-    .pro-a-etape { margin: 0; }
-    .pro-a-etape h3 { font-size: 17px; margin: 12px 0 6px; }
-    .pro-a-etape p { font-size: 15px; line-height: 1.5; color: var(--fg-2); margin: 0; }
-    .pro-a-num {
-      width: 38px; height: 38px; border-radius: 12px; background: var(--bg-soft); color: var(--fg-1);
-      display: flex; align-items: center; justify-content: center; font-weight: 800;
-    }
-
-    .pro-a-demande {
-      display: grid; grid-template-columns: 380px minmax(0, 1fr); gap: 48px; align-items: start;
-      scroll-margin-top: 88px;
-    }
-    .pro-a-demande-intro p { font-size: 15px; line-height: 1.55; color: var(--fg-2); }
-    .pro-a-encart { background: var(--bg-soft); border-radius: 14px; padding: 12px 15px; color: var(--fg-1); }
-    .pro-a-grille2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
-    .pro-a-grille2 .pro-champ { margin-bottom: 16px; }
-    .pro-a-case { min-height: 44px; }
-    .pro-a-envoyer {
-      min-height: 48px; padding: 0 24px; border-radius: 999px; border: 1px solid var(--coral);
-      background: var(--coral); color: var(--fg-1); font-family: inherit; font-size: 15px;
-      font-weight: 800; cursor: pointer;
-    }
-    .pro-a-envoyer:disabled { opacity: .5; cursor: default; }
-    .pro-a-envoyer:focus-visible { outline: 2px solid var(--coral-deep); outline-offset: 1px; }
+    .pro-a-fin { margin: 0 0 48px; max-width: 46em; }
+    .pro-a-fin p { font-size: 16px; line-height: 1.55; color: var(--fg-2); margin: 0; }
 
     @media (max-width: 720px) {
-      .pro-a-heros, .pro-a-atouts, .pro-a-etapes, .pro-a-demande, .pro-a-grille2 { grid-template-columns: minmax(0, 1fr); }
+      .pro-a-heros, .pro-a-atouts { grid-template-columns: minmax(0, 1fr); }
       .pro-a-heros { gap: 28px; padding-top: 8px; }
       .pro-a-heros h1 { font-size: 32px; }
       .pro-a-actions { flex-direction: column; }
-      .pro-a-bouton, .pro-a-envoyer { width: 100%; }
-      .pro-a-grille2 { gap: 0; }
-      .pro-a-demande { gap: 16px; }
+      .pro-a-bouton { width: 100%; }
     }
 
     .pro-l-tete { display: flex; align-items: flex-start; gap: 16px; flex-wrap: wrap; }
@@ -1159,12 +1143,16 @@
         Urson
       </a>
       <nav class="nav" aria-label="Pages du site">
+        <a href="/fin-du-service/">Fin du service</a>
         <a href="/aide/">Aide</a>
         <a href="/confidentialite/">Confidentialité</a>
         <a href="/conditions/">Conditions</a>
       </nav>
     </div>
   </header>
+  <div class="avis-fin" role="region" aria-label="Fin du service">
+    <div class="enveloppe"><strong>Urson s'arrête le 18 octobre 2026.</strong> <a href="/fin-du-service/">Ce que ça change pour toi</a></div>
+  </div>
 
   <main>
     <div class="enveloppe">
@@ -1466,29 +1454,25 @@
 
   // ── Accueil public et demande d'espace (lot 6, ./pro-accueil.mjs) ──────
 
-  // Clause lue AVANT tout rendu : sans elle, pas de formulaire (divergence silencieuse
-  // sinon, voir l'en-tête de pro.mjs). Échec → l'écran d'erreur réseau existant.
-  function chargeClauseDemande(suite) {
+  // Les demandes d'espace sont fermées (arrêt d'Urson, 18 octobre 2026) : plus de
+  // formulaire, plus d'appel serveur.
+  var MESSAGE_FERMETURE = 'Les demandes d’espace sont fermées depuis le 4 octobre 2026. Les organisateurs qui ont déjà un espace s’y connectent avec leur mot de passe jusqu’au 18 octobre, en lecture ; aucun nouveau dépôt n’est accepté. Le détail : <a href="/fin-du-service/">ursonapp.fr/fin-du-service/</a>.';
+
+  function afficheAccueil() {
     quitteRoutes();
     quitteAccueil();
-    afficheChargement();
-    appelApi('ownership_clause', {}, false).then(function (resultat) {
-      if (!resultat.ok || !resultat.data) { afficheErreurReseau(); return; }
-      clauseVersionCourante = resultat.data.version;
-      suite(resultat.data.text);
-    }).catch(function () { afficheErreurReseau(); });
+    rendAccueil();
   }
 
-  function afficheAccueil(opts) {
-    var versFormulaire = !!(opts && opts.versFormulaire);
-    chargeClauseDemande(function (clauseTexte) { rendAccueil(clauseTexte, versFormulaire); });
-  }
-
+  // Appelée par les écrans existants (« Faire une demande », déconnexion) : le même
+  // message de fermeture, quelle que soit la session.
   function afficheDemande() {
-    sb.auth.getSession().then(function (r) {
-      if (r.data && r.data.session) { chargeClauseDemande(rendDemandeSeule); return; }
-      afficheAccueil({ versFormulaire: true });
-    }).catch(function () { afficheAccueil({ versFormulaire: true }); });
+    quitteAccueil();
+    afficheEtatSimple(
+      'Les demandes d’espace sont fermées',
+      [MESSAGE_FERMETURE],
+      [{ libelle: 'Vous avez déjà un espace ? Se connecter', onClick: function () { afficheConnexion({}); } }]
+    );
   }
 
   // Le bouton « Se connecter » de la barre du site n'existe que sur l'accueil : tout
@@ -1516,36 +1500,16 @@
     barre.appendChild(bouton);
   }
 
-  function rendAccueil(clauseTexte, versFormulaire) {
+  function rendAccueil() {
     document.body.classList.add('pro-accueil-actif');
     poseBoutonConnexionEntete();
     app.innerHTML =
       herosAccueilHtml() +
       atoutsAccueilHtml() +
-      etapesAccueilHtml() +
-      '<section class="pro-a-demande" id="pro-demande" aria-labelledby="pro-a-titre-demande">' +
-        '<div class="pro-a-demande-intro">' +
-          '<h2 class="pro-a-section-titre" id="pro-a-titre-demande">Demander un espace</h2>' +
-          '<p>Nous vous écrivons d’abord pour confirmer votre adresse. Nous répondons sous deux jours ouvrés. L’adresse e-mail devient votre identifiant : choisissez celle que vous lisez.</p>' +
-          '<p class="pro-a-encart">Vous avez reçu un lien « Votre événement est dans Urson » ? Il continue de fonctionner, sans compte.</p>' +
-        '</div>' +
-        formulaireDemandeHtml(clauseTexte) +
-      '</section>';
+      finAccueilHtml();
 
-    document.getElementById('pro-a-vers-demande').addEventListener('click', function () { versFormulaireDemande(); });
     document.getElementById('pro-a-deja-espace').addEventListener('click', versConnexion);
-    cableFormulaireDemande();
-    if (versFormulaire) versFormulaireDemande();
-    else window.scrollTo(0, 0);
-  }
-
-  // Pas de fragment d'URL : la page route déjà par fragment une fois connecté.
-  function versFormulaireDemande() {
-    var section = document.getElementById('pro-demande');
-    if (!section) return;
-    section.scrollIntoView({ block: 'start' });
-    var premier = document.getElementById('pro-structure-nom');
-    if (premier) premier.focus({ preventScroll: true });
+    window.scrollTo(0, 0);
   }
 
   function herosAccueilHtml() {
@@ -1555,10 +1519,8 @@
         '<h1 id="pro-a-titre">Vos sorties, devant les familles du Cher.</h1>' +
         '<p class="pro-a-chapeau">Urson est l’application que les parents de Bourges et des alentours ouvrent pour choisir leur week-end. Publiez vos activités, votre lieu et suivez qui les regarde — sans passer par nous à chaque fois.</p>' +
         '<div class="pro-a-actions">' +
-          '<button type="button" class="pro-a-bouton pro-a-bouton--principal" id="pro-a-vers-demande">Demander un espace</button>' +
           '<button type="button" class="pro-a-bouton pro-a-bouton--secondaire" id="pro-a-deja-espace">J’ai déjà un espace</button>' +
         '</div>' +
-        '<p class="pro-a-meta">Gratuit pour publier, pour tout le monde.</p>' +
       '</div>' +
       maquetteAppHtml() +
     '</section>';
@@ -1585,106 +1547,14 @@
       '<div class="pro-a-atout">' + ico('<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>') +
         '<h2>Suivez ce que ça donne</h2>' +
         '<p>Consultations, favoris, familles qui ont dit « j’y vais » — sortie par sortie, semaine après semaine.</p></div>' +
-      '<div class="pro-a-atout">' + ico('<path d="M3 11v2a1 1 0 0 0 1 1h2l5 4V6L6 10H4a1 1 0 0 0-1 1z"/><path d="M15 9a4 4 0 0 1 0 6M18 6a8 8 0 0 1 0 12"/>') +
-        '<h2>Mettez une sortie en avant <span class="pro-pastille-etat">À venir</span></h2>' +
-        '<p>Pour un événement qui compte, vous pourrez bientôt réserver la première place de l’accueil ou des résultats, pour une semaine ou un mois.</p></div>' +
     '</section>';
   }
 
-  function etapesAccueilHtml() {
-    var etape = function (n, titre, texte) {
-      return '<li class="pro-a-etape"><span class="pro-a-num" aria-hidden="true">' + n + '</span><h3>' + titre + '</h3><p>' + texte + '</p></li>';
-    };
-    return '<section aria-labelledby="pro-a-titre-etapes">' +
-      '<h2 class="pro-a-section-titre" id="pro-a-titre-etapes">Comment ça marche</h2>' +
-      '<ol class="pro-a-etapes">' +
-        etape('1', 'Vous demandez un espace', 'Le nom de votre structure, une adresse e-mail que vous confirmez d’un clic. Nous vérifions à la main que vous êtes bien l’organisateur.') +
-        etape('2', 'Vous recevez votre accès', 'Un lien pour choisir votre mot de passe. Ensuite, e-mail et mot de passe suffisent — ou un code par e-mail si vous préférez.') +
-        etape('3', 'Vous publiez et vous suivez', 'Vos sorties, votre lieu, vos affiches, vos chiffres. Tout ce que vous déposez est relu avant de paraître.') +
-      '</ol>' +
+  function finAccueilHtml() {
+    return '<section class="pro-a-fin" aria-labelledby="pro-a-titre-fin">' +
+      '<h2 class="pro-a-section-titre" id="pro-a-titre-fin">Urson s’arrête le 18 octobre 2026</h2>' +
+      '<p>' + MESSAGE_FERMETURE + '</p>' +
     '</section>';
-  }
-
-  // Formulaire seul — visiteur connecté (compte refusé, aucun espace trouvé) :
-  // comportement d'avant le lot 6, avec le formulaire enrichi.
-  function rendDemandeSeule(clauseTexte) {
-    app.innerHTML =
-      '<p class="pro-eyebrow">Espace pro / asso</p>' +
-      '<h1>Demander un espace</h1>' +
-      '<p>Nous vous écrivons d’abord pour confirmer votre adresse. Nous répondons sous deux jours ouvrés. L’adresse e-mail devient votre identifiant : choisissez celle que vous lisez.</p>' +
-      formulaireDemandeHtml(clauseTexte) +
-      '<p><button type="button" class="pro-lien-retour" id="pro-lien-connexion">Vous avez déjà un espace ? Se connecter</button></p>';
-    document.getElementById('pro-lien-connexion').addEventListener('click', versConnexion);
-    cableFormulaireDemande();
-  }
-
-  // Libellés et ordre de la planche ; champs, plafonds et identifiants d'avant.
-  function formulaireDemandeHtml(clauseTexte) {
-    return '<form class="pro-carte pro-a-form" id="pro-form-demande">' +
-      '<div class="pro-a-grille2">' +
-        '<div class="pro-champ"><label class="pro-label" for="pro-structure-nom">Nom de la structure</label>' +
-          '<input class="pro-input" type="text" id="pro-structure-nom" required maxlength="200" /></div>' +
-        '<div class="pro-champ"><label class="pro-label" for="pro-structure-type">Type de structure</label>' +
-          '<select class="pro-input" id="pro-structure-type" required>' + optionsHtml(STRUCTURE_KINDS, 'Choisir…') + '</select></div>' +
-      '</div>' +
-      '<div class="pro-a-grille2">' +
-        '<div class="pro-champ"><label class="pro-label" for="pro-email">E-mail</label>' +
-          '<input class="pro-input" type="email" id="pro-email" required maxlength="254" placeholder="contact@votre-structure.fr" /></div>' +
-        '<div class="pro-champ"><label class="pro-label" for="pro-site">Site web (facultatif)</label>' +
-          '<input class="pro-input" type="text" id="pro-site" maxlength="300" placeholder="https://" /></div>' +
-      '</div>' +
-      '<div class="pro-a-grille2">' +
-        '<div class="pro-champ"><label class="pro-label" for="pro-contact-nom">Nom du contact (facultatif)</label>' +
-          '<input class="pro-input" type="text" id="pro-contact-nom" maxlength="120" /></div>' +
-        '<div class="pro-champ"><label class="pro-label" for="pro-telephone">Téléphone (facultatif)</label>' +
-          '<input class="pro-input" type="tel" id="pro-telephone" maxlength="40" /></div>' +
-      '</div>' +
-      '<div class="pro-champ">' +
-        '<label class="pro-label" for="pro-message">Ce que vous organisez (facultatif)</label>' +
-        '<textarea class="pro-input" id="pro-message" rows="3" maxlength="2000" placeholder="Quelques mots sur vos sorties habituelles"></textarea>' +
-      '</div>' +
-      '<label class="pro-case pro-a-case">' +
-        '<input type="checkbox" id="pro-lieu-case" />' +
-        '<span>Nous accueillons du public dans un lieu que nous aimerions voir dans le catalogue (vous pourrez le décrire ensuite).</span>' +
-      '</label>' +
-      '<label class="pro-case pro-a-case">' +
-        '<input type="checkbox" id="pro-clause-case" required />' +
-        '<span>' + ech(clauseTexte) + '</span>' +
-      '</label>' +
-      '<button type="submit" class="pro-a-envoyer">Envoyer la demande</button>' +
-      '<p class="pro-message" id="pro-message-demande" role="status" aria-live="polite"></p>' +
-    '</form>';
-  }
-
-  function cableFormulaireDemande() {
-    document.getElementById('pro-form-demande').addEventListener('submit', onEnvoiDemande);
-  }
-
-  function onEnvoiDemande(event) {
-    event.preventDefault();
-    var messageEl = document.getElementById('pro-message-demande');
-    var bouton = event.target.querySelector('button[type="submit"]');
-    var corps = {
-      email: document.getElementById('pro-email').value,
-      structure_name: document.getElementById('pro-structure-nom').value,
-      structure_kind: document.getElementById('pro-structure-type').value,
-      website_url: document.getElementById('pro-site').value,
-      contact_name: document.getElementById('pro-contact-nom').value,
-      phone: document.getElementById('pro-telephone').value,
-      message: document.getElementById('pro-message').value,
-      declared_place: document.getElementById('pro-lieu-case').checked === true,
-      clause_accepted: document.getElementById('pro-clause-case').checked,
-      clause_version: clauseVersionCourante
-    };
-    bouton.disabled = true;
-    definirMessage(messageEl, 'Envoi en cours…', false);
-    appelApi('request_account', corps, false).then(function () {
-      quitteAccueil();
-      afficheEnAttente();
-    }).catch(function () {
-      bouton.disabled = false;
-      definirMessage(messageEl, 'L’envoi n’a pas abouti, réessayez dans un instant.', true);
-    });
   }
 
   function afficheEnAttente() {
@@ -5596,7 +5466,7 @@
   // ── Fermer l'espace ──────────────────────────────────────────────────
   function carteFermetureHtml(c) {
     return '<div class="pro-carte" id="pro-p-fermeture"><h2>Fermer l’espace</h2>' +
-      '<p class="pro-sous-titre">Vos fiches publiées restent dans le catalogue, sans lien avec votre structure, sauf si vous demandez leur retrait avant. Vos statistiques et attestations sont conservées 3 ans, puis effacées.</p>' +
+      '<p class="pro-sous-titre">Vos fiches publiées restent dans le catalogue, sans lien avec votre structure, sauf si vous demandez leur retrait avant. Vos statistiques sont effacées avec l’espace ; vos attestations sont conservées 5 ans, puis effacées.</p>' +
       (c.closure_requested_at
         ? '<p class="pro-p-bandeau" role="status">Fermeture demandée le ' + ech(dateCourteFr(c.closure_requested_at)) + ' — nous revenons vers vous par e-mail.</p>'
         : '<button type="button" class="pro-bouton-secondaire pro-a-danger" style="width:auto;padding:0 18px" id="pro-p-fermer">Demander la fermeture</button><div id="pro-p-fermeture-zone"></div>') +
@@ -6364,7 +6234,7 @@
         '<p class="pro-eyebrow">Mise en avant</p>' +
         '<h1>Donner la première place à une sortie</h1>' +
         '<p class="pro-sous-titre">Pour une durée choisie, votre sortie passe devant les autres, là où les familles regardent. Toujours signalée «\u00a0Mis en avant\u00a0» aux parents.</p>' +
-      '</div>' + (ouvert ? '' : '<span class="pro-pastille-etat">À venir</span>') + '</div>' +
+      '</div>' + (ouvert ? '' : '<span class="pro-pastille-etat">Fermé</span>') + '</div>' +
       '<div class="pro-m-grille">';
     for (var i = 0; i < EMPLACEMENTS_MEA.length; i++) html += carteEmplacementMeaHtml(EMPLACEMENTS_MEA[i], ouvert, d);
     html += '</div>';
@@ -6373,15 +6243,7 @@
     var zone = contenuCoque();
     zone.innerHTML = html;
     cableLiensRoute(zone);
-    if (!ouvert) {
-      // L'adresse vient du serveur : textContent, jamais concaténée.
-      var aide = document.getElementById('pro-m-prevenir-aide');
-      if (aide) aide.textContent = 'Un seul e-mail, à ' + (d.email || 'l’adresse de votre espace') + ', le jour où la mise en avant ouvre.';
-      var caseEl = document.getElementById('pro-m-prevenir');
-      caseEl.checked = d.notify_opening === true;
-      caseEl.addEventListener('change', function (event) { onChangePrevenir(event.currentTarget); });
-      return;
-    }
+    if (!ouvert) return;
     for (var k = 0; k < EMPLACEMENTS_MEA.length; k++) cableFormulaireMea(EMPLACEMENTS_MEA[k][0], d, idPreselection);
     cableDemandesMea(zone);
   }
@@ -6400,13 +6262,13 @@
   function carteEmplacementMeaHtml(e, ouvert, d) {
     var html = '<section class="pro-carte" aria-labelledby="pro-m-titre-' + e[0] + '">' +
       '<div class="pro-m-carte-tete"><h2 id="pro-m-titre-' + e[0] + '">' + e[1] + '</h2>' +
-        (ouvert ? '' : '<span class="pro-pastille-etat">À venir</span>') + '</div>' +
+        (ouvert ? '' : '<span class="pro-pastille-etat">Fermé</span>') + '</div>' +
       apercuMeaHtml(e[0]) +
       '<p class="pro-m-aide">' + e[2] + '</p>';
     if (!ouvert) {
       html += '<div class="pro-m-durees">';
       for (var i = 0; i < DUREES_MEA.length; i++) {
-        html += '<button type="button" class="pro-pastille" disabled>' + DUREES_MEA[i] + ' jours<small>à venir</small></button>';
+        html += '<button type="button" class="pro-pastille" disabled>' + DUREES_MEA[i] + ' jours<small>fermé</small></button>';
       }
       return html + '</div></section>';
     }
@@ -6415,32 +6277,9 @@
 
   function carteBientotMeaHtml() {
     return '<section class="pro-carte pro-m-bientot">' +
-      '<div><h2>La mise en avant arrive bientôt</h2>' +
-        '<p>Vous pourrez réserver l’un de ces deux emplacements pour 7, 14 ou 30 jours. Aucune demande n’est encore ouverte.</p></div>' +
-      '<div><label class="pro-case pro-m-case"><input type="checkbox" id="pro-m-prevenir" />' +
-        '<span><strong>Me prévenir à l’ouverture</strong><small id="pro-m-prevenir-aide"></small></span></label>' +
-        '<p class="pro-message" id="pro-m-prevenir-message" role="status" aria-live="polite"></p></div>' +
+      '<div><h2>La mise en avant n’ouvrira pas : Urson s’arrête le 18 octobre 2026.</h2>' +
+        '<p>Aucune demande de mise en avant n’est acceptée.</p></div>' +
     '</section>';
-  }
-
-  function onChangePrevenir(caseEl) {
-    var messageEl = document.getElementById('pro-m-prevenir-message');
-    caseEl.disabled = true;
-    definirMessage(messageEl, 'Enregistrement…', false);
-    appelApi('update_preferences', { featured_notify_opening: caseEl.checked }, true).then(function (resultat) {
-      caseEl.disabled = false;
-      if (resultat.ok && resultat.data && resultat.data.ok) {
-        if (miseEnAvantCache) miseEnAvantCache.notify_opening = resultat.data.featured_notify_opening === true;
-        definirMessage(messageEl, caseEl.checked ? 'C’est noté\u00a0: nous vous écrirons à l’ouverture.' : 'C’est noté\u00a0: pas d’e-mail à l’ouverture.', false);
-        return;
-      }
-      caseEl.checked = !caseEl.checked;
-      definirMessage(messageEl, 'L’enregistrement n’a pas abouti, réessayez.', true);
-    }).catch(function () {
-      caseEl.disabled = false;
-      caseEl.checked = !caseEl.checked;
-      definirMessage(messageEl, 'L’enregistrement n’a pas abouti, réessayez.', true);
-    });
   }
 
   // ── Formulaire (ouvert pour ce compte) ───────────────────────────────
@@ -6789,10 +6628,10 @@
   }
 
   // ── Cartes « Mise en avant » du tableau de bord et d'une sortie ──────
-  var PHRASE_A_VENIR_MEA = 'Bientôt, vous pourrez placer une sortie en tête de l’accueil ou des résultats pour une durée choisie.';
+  var PHRASE_A_VENIR_MEA = 'La mise en avant n’ouvrira pas : Urson s’arrête le 18 octobre 2026.';
 
   function carteAvenirMeaHtml(phrase) {
-    return '<div class="pro-t-entete-carte"><h2>Mise en avant</h2><span class="pro-pastille-etat">À venir</span></div>' +
+    return '<div class="pro-t-entete-carte"><h2>Mise en avant</h2><span class="pro-pastille-etat">Fermé</span></div>' +
       '<p class="pro-sous-titre" style="margin:6px 0 0">' + phrase + '</p>';
   }
 
@@ -8267,6 +8106,7 @@
     <div class="enveloppe">
       <nav class="pied-liens" aria-label="Pied de page">
         <a href="/">Accueil</a>
+        <a href="/fin-du-service/">Fin du service</a>
         <a href="/aide/">Aide</a>
         <a href="/confidentialite/">Confidentialité</a>
         <a href="/conditions/">Conditions</a>

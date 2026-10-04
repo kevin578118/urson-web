@@ -86,6 +86,16 @@
       text-underline-offset: 4px;
     }
 
+    /* Bandeau d'annonce de la fin du service, sur toutes les pages */
+    .avis-fin {
+      background: var(--bg-soft);
+      border-bottom: 1px solid var(--line-medium);
+      color: var(--fg-1);
+      padding: 12px 0;
+      font-size: 15px;
+    }
+    .avis-fin a { color: var(--coral-deep); text-decoration: underline; }
+
     /* Contenu */
     main { padding: 40px 0 8px; }
     h1 { font-size: 30px; line-height: 1.25; margin: 0 0 12px; letter-spacing: -0.5px; }
@@ -213,12 +223,16 @@
         Urson
       </a>
       <nav class="nav" aria-label="Pages du site">
+        <a href="/fin-du-service/">Fin du service</a>
         <a href="/aide/">Aide</a>
         <a href="/confidentialite/">Confidentialité</a>
         <a href="/conditions/">Conditions</a>
       </nav>
     </div>
   </header>
+  <div class="avis-fin" role="region" aria-label="Fin du service">
+    <div class="enveloppe"><strong>Urson s'arrête le 18 octobre 2026.</strong> <a href="/fin-du-service/">Ce que ça change pour toi</a></div>
+  </div>
 
   <main>
     <div class="enveloppe">
@@ -557,6 +571,7 @@
     <div class="enveloppe">
       <nav class="pied-liens" aria-label="Pied de page">
         <a href="/">Accueil</a>
+        <a href="/fin-du-service/">Fin du service</a>
         <a href="/aide/">Aide</a>
         <a href="/confidentialite/">Confidentialité</a>
         <a href="/conditions/">Conditions</a>

@@ -86,6 +86,16 @@
       text-underline-offset: 4px;
     }
 
+    /* Bandeau d'annonce de la fin du service, sur toutes les pages */
+    .avis-fin {
+      background: var(--bg-soft);
+      border-bottom: 1px solid var(--line-medium);
+      color: var(--fg-1);
+      padding: 12px 0;
+      font-size: 15px;
+    }
+    .avis-fin a { color: var(--coral-deep); text-decoration: underline; }
+
     /* Contenu */
     main { padding: 40px 0 8px; }
     h1 { font-size: 30px; line-height: 1.25; margin: 0 0 12px; letter-spacing: -0.5px; }
@@ -158,6 +168,7 @@
       font-size: 15px;
       font-weight: 700;
     }
+    .pastille a, a.pastille { text-decoration: none; color: var(--fg-1); }
     .grille { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
     .grille .carte { margin-bottom: 0; }
     .grille h3 { font-size: 17px; margin: 10px 0 6px; }
@@ -181,20 +192,24 @@
         Urson
       </a>
       <nav class="nav" aria-label="Pages du site">
+        <a href="/fin-du-service/">Fin du service</a>
         <a href="/aide/">Aide</a>
         <a href="/confidentialite/">Confidentialité</a>
         <a href="/conditions/">Conditions</a>
       </nav>
     </div>
   </header>
+  <div class="avis-fin" role="region" aria-label="Fin du service">
+    <div class="enveloppe"><strong>Urson s'arrête le 18 octobre 2026.</strong> <a href="/fin-du-service/">Ce que ça change pour toi</a></div>
+  </div>
 
   <main>
     <div class="enveloppe">
       <section class="heros">
-        <h1>Le week-end arrive. On fait quoi ?</h1>
-        <p>Urson rassemble les sorties et les lieux à faire avec des enfants autour de Bourges. Tu dis qui t'accompagne et jusqu'où tu veux aller — l'app propose.</p>
+        <h1>Urson s'arrête le 18 octobre 2026</h1>
+        <p>Urson rassemblait les sorties et les lieux à faire avec des enfants autour de Bourges. Merci aux familles qui l'ont testé. L'app reste ouverte en lecture jusqu'au 18 octobre ; ensuite, les comptes et leurs données sont effacés.</p>
         <div class="pastilles">
-          <span class="pastille">Bientôt sur iPhone et Android</span>
+          <a class="pastille" href="/fin-du-service/">Ce que ça change pour toi</a>
         </div>
         <img src="/assets/urson-peek.png" alt="Urson, l'ourson blanc de l'application" width="380" height="207" />
       </section>
@@ -252,9 +267,9 @@
         <p>Le détail, section par section : <a href="/confidentialite/">notre page Confidentialité</a>.</p>
       </div>
 
-      <h2>Et si je veux l'essayer ?</h2>
+      <h2>Et maintenant ?</h2>
       <div class="carte">
-        <p>Urson est en cours de développement, testé par quelques familles de la région. L'application arrivera sur l'App Store et sur Google Play ; en attendant, tu peux écrire à <a href="mailto:bonjour@ursonapp.fr">bonjour@ursonapp.fr</a> — pour donner un coup de main, signaler un lieu qui manque, ou juste savoir où ça en est.</p>
+        <p>Le service s'arrête le 18 octobre 2026. Tout est expliqué sur la page <a href="/fin-du-service/">Fin du service</a> : ce qui change d'ici là, ce qui est effacé, comment recevoir une copie de tes données. Pour toute question : <a href="mailto:bonjour@ursonapp.fr">bonjour@ursonapp.fr</a>.</p>
       </div>
     </div>
   </main>
@@ -262,6 +277,7 @@
   <footer class="pied">
     <div class="enveloppe">
       <nav class="pied-liens" aria-label="Pied de page">
+        <a href="/fin-du-service/">Fin du service</a>
         <a href="/aide/">Aide</a>
         <a href="/confidentialite/">Confidentialité</a>
         <a href="/conditions/">Conditions</a>

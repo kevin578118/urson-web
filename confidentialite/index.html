@@ -86,6 +86,16 @@
       text-underline-offset: 4px;
     }
 
+    /* Bandeau d'annonce de la fin du service, sur toutes les pages */
+    .avis-fin {
+      background: var(--bg-soft);
+      border-bottom: 1px solid var(--line-medium);
+      color: var(--fg-1);
+      padding: 12px 0;
+      font-size: 15px;
+    }
+    .avis-fin a { color: var(--coral-deep); text-decoration: underline; }
+
     /* Contenu */
     main { padding: 40px 0 8px; }
     h1 { font-size: 30px; line-height: 1.25; margin: 0 0 12px; letter-spacing: -0.5px; }
@@ -141,18 +151,34 @@
         Urson
       </a>
       <nav class="nav" aria-label="Pages du site">
+        <a href="/fin-du-service/">Fin du service</a>
         <a href="/aide/">Aide</a>
         <a href="/confidentialite/" aria-current="page">Confidentialité</a>
         <a href="/conditions/">Conditions</a>
       </nav>
     </div>
   </header>
+  <div class="avis-fin" role="region" aria-label="Fin du service">
+    <div class="enveloppe"><strong>Urson s'arrête le 18 octobre 2026.</strong> <a href="/fin-du-service/">Ce que ça change pour toi</a></div>
+  </div>
 
   <main>
     <div class="enveloppe">
       <h1>Confidentialité</h1>
       <p class="chapeau">Urson est une application en cours de développement, éditée à titre personnel par Kevin Levesque. Cette page dit exactement ce que l'app enregistre, pourquoi, combien de temps, et ce qu'elle n'enregistre pas.</p>
-      <p class="date-maj">Dernière mise à jour : 3 octobre 2026</p>
+      <p class="date-maj">Dernière mise à jour : 4 octobre 2026</p>
+
+      <section class="carte" id="fin-du-service">
+        <h2 class="titre-emoji"><span class="emoji" aria-hidden="true">🏁</span> Fin du service</h2>
+        <p>Urson s'arrête. L'avis a été mis en ligne le 4 octobre 2026 ; le service prend fin le 18 octobre 2026. Cette section dit ce qui change d'ici là, ce qui est effacé, ce qui est gardé et jusqu'à quand.</p>
+        <p>D'ici la fin :</p>
+        <ul><li>plus aucun compte ne se crée et plus aucune adresse e-mail ne se rattache à un compte ;</li><li>les dépôts (affiches, programmes, liens), les corrections, les photos, les demandes d'espace organisateur et de mise en avant sont fermés ; le signalement d'un contenu reste ouvert jusqu'au bout ;</li><li>trois fonctions sont suspendues côté serveur : le partage des sorties avec le foyer, les amis et les groupes, l'entrée dans un foyer par code, et la connexion par la seule boîte e-mail. Chacun garde la lecture de ses propres données, et un parent déjà connecté reste connecté ;</li><li>tes droits s'exercent comme avant (section « Tes droits ») ; une demande reçue avant le 18 octobre 2026 est traitée avant l'effacement. Tu peux supprimer ton compte dès maintenant, depuis l'app ou sur <a href="https://ursonapp.fr/suppression-de-compte/">https://ursonapp.fr/suppression-de-compte/</a></li></ul>
+        <p>Le 18 octobre 2026, tout est effacé le jour même : comptes, profils, enfants, foyers, sorties, amitiés, groupes, favoris, invitations, identifiants de notification, relevés d'usage, retours, dépôts et leur suivi, photos et corrections, visuels, logos et espaces des organisateurs, statistiques, journaux. La base de données, les fichiers et les fonctions hébergés chez Supabase sont supprimés, sauvegardes comprises. Les prestataires effacent ensuite leurs propres copies dans leurs délais : Resend sous 90 jours, Sentry et Expo à la suppression des projets. Rien n'est transmis à un tiers ni à un repreneur.</p>
+        <p>Ce qui est gardé après la fin, hors de nos serveurs, dans une archive chiffrée que seul l'éditeur peut ouvrir, pour pouvoir prouver ce qui a été accepté si quelqu'un le conteste :</p>
+        <ul><li>la trace de l'accord aux conditions de dépôt (identifiant de l'ancien compte, date, texte accepté, informations techniques), 5 ans après la fin ;</li><li>les déclarations et accords des organisateurs (texte, date, e-mail, nom de la structure, adresse IP, navigateur) et les accords écrits des sources, 5 ans après la fin ;</li><li>le suivi des demandes de droits (date, type, réponse ; jamais les pièces d'identité, effacées dès la réponse), 3 ans après la réponse ;</li><li>les signalements et leur traitement, 3 ans après leur clôture, comme annoncé plus bas ;</li><li>le registre des traitements, l'analyse d'impact, le registre des violations et la preuve d'effacement, qui ne contiennent aucune donnée personnelle.</li></ul>
+        <p>Après la fin, l'application ne fonctionne plus : désinstalle-la, elle garde encore sur ton téléphone ce qu'elle avait mis en cache. Le site ursonapp.fr reste en ligne avec cette page et l'adresse de contact, <a href="mailto:bonjour@ursonapp.fr">bonjour@ursonapp.fr</a>, tant que l'archive existe.</p>
+        <p>Pour prévenir de l'arrêt, un e-mail unique est envoyé aux comptes qui ont une adresse et aux organisateurs. C'est la seule fois où l'adresse d'un compte sert à autre chose que le code de connexion.</p>
+      </section>
 
       <section class="carte" id="responsable">
         <h2 class="titre-emoji"><span class="emoji" aria-hidden="true">🧑‍💼</span> Qui est responsable de tes données</h2>
@@ -162,7 +188,8 @@
 
       <section class="carte" id="connexion">
         <h2 class="titre-emoji"><span class="emoji" aria-hidden="true">🔑</span> Comment tu te connectes</h2>
-        <p>Les parents se connectent sans mot de passe : tu saisis ton adresse email, tu reçois un code à usage unique, et c'est tout. Un mot de passe n'existe que si tu en as choisi un sur l'espace organisateur d'ursonapp.fr/pro/ — il vaut alors aussi dans l'app — ou pour le compte de démonstration fourni aux examinateurs des stores. Il est gardé sous forme d'empreinte, que personne ne peut relire, pas même nous. Ton adresse sert uniquement à t'identifier et à t'envoyer ce code.</p>
+        <p>Les parents se connectent sans mot de passe : tu saisis ton adresse email, tu reçois un code à usage unique, et c'est tout. Un mot de passe n'existe que si tu en as choisi un sur l'espace organisateur d'ursonapp.fr/pro/ — il vaut alors aussi dans l'app — ou pour le compte de démonstration fourni aux examinateurs des stores. Il est gardé sous forme d'empreinte, que personne ne peut relire, pas même nous. Ton adresse sert à t'identifier, à t'envoyer ce code et, une seule fois, à te prévenir de l'arrêt du service.</p>
+        <p>Depuis le 4 octobre 2026, la connexion par e-mail est suspendue jusqu'à la fin du service (section « Fin du service ») : un parent déjà connecté reste connecté, personne ne peut plus se connecter avec la seule boîte e-mail.</p>
       </section>
 
       <section class="carte" id="ce-que-tu-renseignes">
@@ -296,6 +323,7 @@
     <div class="enveloppe">
       <nav class="pied-liens" aria-label="Pied de page">
         <a href="/">Accueil</a>
+        <a href="/fin-du-service/">Fin du service</a>
         <a href="/aide/">Aide</a>
         <a href="/conditions/">Conditions</a>
         <a href="/suppression-de-compte/">Supprimer mon compte</a>
