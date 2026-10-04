@@ -1526,7 +1526,7 @@
       '<section class="pro-a-demande" id="pro-demande" aria-labelledby="pro-a-titre-demande">' +
         '<div class="pro-a-demande-intro">' +
           '<h2 class="pro-a-section-titre" id="pro-a-titre-demande">Demander un espace</h2>' +
-          '<p>Nous répondons sous deux jours ouvrés. L’adresse e-mail devient votre identifiant : choisissez celle que vous lisez.</p>' +
+          '<p>Nous vous écrivons d’abord pour confirmer votre adresse. Nous répondons sous deux jours ouvrés. L’adresse e-mail devient votre identifiant : choisissez celle que vous lisez.</p>' +
           '<p class="pro-a-encart">Vous avez reçu un lien « Votre événement est dans Urson » ? Il continue de fonctionner, sans compte.</p>' +
         '</div>' +
         formulaireDemandeHtml(clauseTexte) +
@@ -1598,7 +1598,7 @@
     return '<section aria-labelledby="pro-a-titre-etapes">' +
       '<h2 class="pro-a-section-titre" id="pro-a-titre-etapes">Comment ça marche</h2>' +
       '<ol class="pro-a-etapes">' +
-        etape('1', 'Vous demandez un espace', 'Le nom de votre structure, une adresse e-mail. Nous vérifions à la main que vous êtes bien l’organisateur.') +
+        etape('1', 'Vous demandez un espace', 'Le nom de votre structure, une adresse e-mail que vous confirmez d’un clic. Nous vérifions à la main que vous êtes bien l’organisateur.') +
         etape('2', 'Vous recevez votre accès', 'Un lien pour choisir votre mot de passe. Ensuite, e-mail et mot de passe suffisent — ou un code par e-mail si vous préférez.') +
         etape('3', 'Vous publiez et vous suivez', 'Vos sorties, votre lieu, vos affiches, vos chiffres. Tout ce que vous déposez est relu avant de paraître.') +
       '</ol>' +
@@ -1611,7 +1611,7 @@
     app.innerHTML =
       '<p class="pro-eyebrow">Espace pro / asso</p>' +
       '<h1>Demander un espace</h1>' +
-      '<p>Nous répondons sous deux jours ouvrés. L’adresse e-mail devient votre identifiant : choisissez celle que vous lisez.</p>' +
+      '<p>Nous vous écrivons d’abord pour confirmer votre adresse. Nous répondons sous deux jours ouvrés. L’adresse e-mail devient votre identifiant : choisissez celle que vous lisez.</p>' +
       formulaireDemandeHtml(clauseTexte) +
       '<p><button type="button" class="pro-lien-retour" id="pro-lien-connexion">Vous avez déjà un espace ? Se connecter</button></p>';
     document.getElementById('pro-lien-connexion').addEventListener('click', versConnexion);
@@ -1689,8 +1689,11 @@
 
   function afficheEnAttente() {
     afficheEtatSimple(
-      'Demande envoyée',
-      ["Merci. Un administrateur Urson va l'examiner ; vous recevrez un e-mail dès qu'une décision sera prise."],
+      'Confirmez votre adresse',
+      [
+        "Nous venons d'écrire à l'adresse indiquée. Cliquez sur le lien du message pour que votre demande soit transmise à l'équipe : il reste valable 24 heures, et sans ce clic rien n'est transmis.",
+        "Pas de message au bout de quelques minutes ? Regardez vos courriers indésirables. Une seule demande est prise par adresse et par jour.",
+      ],
       [{ libelle: 'Vous avez déjà un espace ? Se connecter', onClick: function () { afficheConnexion({}); } }]
     );
   }

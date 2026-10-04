@@ -231,8 +231,9 @@
         <p>Nous relisons chaque signalement, un par un, et nous répondons
           <strong>dès que possible, en général sous 48&nbsp;heures</strong>. Si le contenu ne devrait pas être
           là, il est retiré.</p>
-        <p>Votre adresse e-mail ne sert qu&rsquo;à vous répondre. Elle n&rsquo;est jamais
-          affichée, jamais utilisée pour autre chose.</p>
+        <p>Nous vous écrivons d&rsquo;abord un e-mail de confirmation&nbsp;: un clic sur le
+          lien qu&rsquo;il contient enregistre votre signalement. Votre adresse ne sert qu&rsquo;à
+          cela et à vous répondre. Elle n&rsquo;est jamais affichée, jamais utilisée pour autre chose.</p>
       </div>
 
       <div class="carte sig-etape">
@@ -284,7 +285,7 @@
             <div class="sig-champ">
               <label class="sig-label" for="sig-email">Votre adresse e-mail</label>
               <input class="sig-input" type="email" id="sig-email" autocomplete="email"
-                maxlength="200" placeholder="pour vous répondre" />
+                maxlength="200" placeholder="pour confirmer, puis vous répondre" />
             </div>
             <button class="sig-bouton sig-bouton--large" type="submit" id="sig-envoyer">Envoyer le signalement</button>
           </div>
@@ -509,18 +510,12 @@
     var corps = reponse.corps || {};
 
     if (reponse.statut === 200 && corps.ok) {
-      if (corps.already) {
-        message([
-          'Nous avions déjà reçu ce signalement de votre part.',
-          'S’il est resté sans réponse, écrivez-nous directement à ' + CONTACT + '.'
-        ], true);
-        return;
-      }
       elt('sig-formulaire').hidden = true;
       elt('sig-bloc-choisie').hidden = true;
       message([
-        'C’est reçu, merci.',
-        'Nous relisons chaque signalement et vous répondons dès que possible, en général sous 48 heures, à l’adresse que vous venez de laisser.'
+        'Un e-mail de confirmation vient de partir à l’adresse que vous avez laissée.',
+        'Cliquez sur le lien qu’il contient pour que votre signalement soit enregistré : sans ce clic, rien n’est transmis. Le lien reste valable 24 heures.',
+        'Pas de message au bout de quelques minutes ? Regardez vos courriers indésirables.'
       ], true);
       return;
     }
@@ -531,9 +526,13 @@
     }
     if (corps.error === 'rate_limited') {
       message([
-        'Beaucoup de signalements sont arrivés aujourd’hui, celui-ci n’a pas pu être enregistré.',
+        'Trop de demandes aujourd’hui depuis cette connexion ou pour cette adresse.',
         'Réessayez demain, ou écrivez-nous à ' + CONTACT + ' — nous traiterons votre demande de la même façon.'
       ], false);
+      return;
+    }
+    if (corps.error === 'mail_failed') {
+      message(['Nous n’avons pas pu envoyer l’e-mail de confirmation. Vérifiez l’adresse, réessayez dans un instant, ou écrivez-nous à ' + CONTACT + '.'], false);
       return;
     }
     message(['Le signalement n’a pas pu être enregistré. Écrivez-nous à ' + CONTACT + '.'], false);
