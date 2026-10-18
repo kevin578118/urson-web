@@ -3,26 +3,23 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Page introuvable — Urson</title>
-  <meta name="description" content="Cette page n'existe pas sur ursonapp.fr." />
+  <title>Urson s'est arrêtée — 18 octobre 2026</title>
+  <meta name="description" content="Urson, l'application de sorties enfants autour de Bourges, s'est arrêtée le 18 octobre 2026. Ce qui a été effacé, ce qui est gardé et jusqu'à quand, comment nous écrire." />
   <meta name="theme-color" content="#FFF8F3" />
-  <link rel="canonical" href="https://ursonapp.fr/404.html" />
+  <link rel="canonical" href="https://ursonapp.fr/" />
   <link rel="icon" href="/assets/favicon.png" />
   <link rel="apple-touch-icon" href="/assets/urson-icone.png" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Urson" />
   <meta property="og:locale" content="fr_FR" />
-  <meta property="og:title" content="Page introuvable — Urson" />
-  <meta property="og:description" content="Cette page n'existe pas sur ursonapp.fr." />
-  <meta property="og:url" content="https://ursonapp.fr/404.html" />
+  <meta property="og:title" content="Urson s'est arrêtée — 18 octobre 2026" />
+  <meta property="og:description" content="Urson, l'application de sorties enfants autour de Bourges, s'est arrêtée le 18 octobre 2026. Ce qui a été effacé, ce qui est gardé et jusqu'à quand, comment nous écrire." />
+  <meta property="og:url" content="https://ursonapp.fr/" />
   <meta property="og:image" content="https://ursonapp.fr/assets/urson-icone.png" />
   <meta name="twitter:card" content="summary" />
   <!--
-    Page générée par scripts/build-web-pages.mjs dans le dépôt applicatif.
-    Ne pas modifier ici : la correction serait écrasée à la publication
-    suivante. Les textes de « Confidentialité » et « Aide » viennent de
-    app-activites-enfants/lib/{confidentialite,aide}Content.ts, qui servent
-    aussi les écrans de l'app.
+    Page générée par scripts/build-web-pages.mjs --fin dans le dépôt applicatif.
+    Ne pas modifier ici : la correction serait écrasée à la publication suivante.
   -->
   <style>
     :root {
@@ -141,57 +138,64 @@
       main { padding-top: 28px; }
       .carte { padding: 20px; }
     }
+    .fin-chapeau { font-size: 19px; color: var(--fg-2); margin-bottom: 28px; }
+    .fin-liste-serree li { margin-bottom: 4px; }
+    .fin-mentions { color: var(--fg-2); font-size: 15px; }
+    .fin-mentions h2 { color: var(--fg-1); }
+    .fin-mentions p { margin-bottom: 10px; }
   </style>
 </head>
 <body>
   <header class="entete">
     <div class="enveloppe">
-      <a class="marque" href="/">
+      <span class="marque">
         <img src="/assets/urson-icone.png" alt="" width="34" height="34" />
         Urson
-      </a>
-      <nav class="nav" aria-label="Pages du site">
-        <a href="/fin-du-service/">Fin du service</a>
-        <a href="/aide/">Aide</a>
-        <a href="/confidentialite/">Confidentialité</a>
-        <a href="/conditions/">Conditions</a>
-      </nav>
+      </span>
     </div>
   </header>
-  <div class="avis-fin" role="region" aria-label="Fin du service">
-    <div class="enveloppe"><strong>Urson s'arrête le 18 octobre 2026.</strong> <a href="/fin-du-service/">Ce que ça change pour toi</a></div>
-  </div>
-
   <main>
     <div class="enveloppe">
-      <h1>Cette page n'existe pas</h1>
-      <p class="chapeau">Le lien est peut-être ancien, ou mal recopié.</p>
+      <h1>Urson s'est arrêtée le 18 octobre 2026</h1>
+      <p class="fin-chapeau">Merci aux familles et aux organisateurs qui l'ont testée. Le service a pris fin le dimanche 18 octobre 2026, comme annoncé le 4 octobre. Il n'y a ni remplaçant ni repreneur.</p>
+
       <div class="carte">
-        <ul>
-          <li><a href="/">L'accueil d'Urson</a></li>
-          <li><a href="/aide/">Aide &amp; conseils</a></li>
-          <li><a href="/confidentialite/">Confidentialité</a></li>
-          <li><a href="/conditions/">Conditions d'utilisation</a></li>
-          <li><a href="/suppression-de-compte/">Supprimer mon compte</a></li>
+        <h2>Ce qui a été effacé</h2>
+        <p>Le 18 octobre 2026, tout : comptes, profils, enfants, foyers, sorties, amis, groupes, favoris, invitations, identifiants de notification, relevés d'usage, retours, dépôts, photos et corrections, visuels et espaces des organisateurs, statistiques, journaux. La base de données, les fichiers et les fonctions hébergés chez Supabase ont été supprimés, sauvegardes comprises. Rien n'a été transmis à personne.</p>
+        <p>Les prestataires effacent ensuite leurs propres copies dans leurs délais : les e-mails envoyés (Resend) sous 90 jours, les rapports d'erreur (Sentry) et les mises à jour de l'app (Expo) à la suppression de leurs projets.</p>
+      </div>
+
+      <div class="carte">
+        <h2>Si l'app est encore sur ton téléphone</h2>
+        <p>Elle ne fonctionne plus : les builds de test ont été retirés de TestFlight et de Google Play. Désinstalle-la comme n'importe quelle application ; ce qu'elle gardait en cache sur ton téléphone part avec elle.</p>
+      </div>
+
+      <div class="carte">
+        <h2>Ce qui est gardé, et jusqu'à quand</h2>
+        <p>Hors de tout serveur, dans une archive chiffrée que seul l'éditeur peut ouvrir, pour pouvoir prouver ce qui a été accepté si quelqu'un le conteste :</p>
+        <ul class="fin-liste-serree">
+          <li>la trace de l'accord aux conditions de dépôt (identifiant de l'ancien compte, date, texte accepté, informations techniques), jusqu'au 18 octobre 2031 ;</li>
+          <li>les accords écrits des sources dont les documents ont été montrés dans l'app, jusqu'au 18 octobre 2031 ;</li>
+          <li>le suivi des demandes de droits (date, type, réponse ; jamais les pièces d'identité, effacées dès la réponse), 3 ans après la réponse ;</li>
+          <li>le registre des traitements, l'analyse d'impact, le registre des violations et la preuve d'effacement, qui ne contiennent aucune donnée personnelle.</li>
         </ul>
+        <p>Tes droits s'exercent encore sur cette archive : accès, rectification, effacement de ce qui te concerne. Écris-nous.</p>
+      </div>
+
+      <div class="carte carte-douce">
+        <h2>Nous écrire</h2>
+        <p>Une question, une demande sur l'archive : <a href="mailto:bonjour@ursonapp.fr">bonjour@ursonapp.fr</a>. Réponse sous un mois au plus.</p>
+        <p>Les messages envoyés à cette adresse arrivent dans une boîte hébergée par OVH (France) et sont relus depuis une boîte Gmail (Google). Une pièce d'identité jointe est effacée dès la réponse ; le message lui-même est supprimé des deux boîtes une fois la demande close, et seul le suivi décrit ci-dessus (date, type, réponse) est gardé.</p>
+        <p>Cette adresse répond au moins jusqu'en juillet 2027. Si elle doit changer, le nouveau contact sera écrit ici.</p>
+      </div>
+
+      <div class="carte fin-mentions">
+        <h2>Mentions</h2>
+        <p>Urson était éditée à titre personnel par Kevin Levesque, joignable à <a href="mailto:bonjour@ursonapp.fr">bonjour@ursonapp.fr</a>.</p>
+        <p>Cette page est hébergée par GitHub, Inc., 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, États-Unis. Pour la servir, GitHub reçoit l'adresse IP de ton navigateur, son identification et l'adresse de la page demandée ; ce qu'il en conserve n'est pas connu de l'éditeur. La page ne charge aucune police, aucun script ni aucune image depuis un autre site, et ne mesure pas l'audience.</p>
+        <p>C'est la seule page du site : les anciennes adresses d'ursonapp.fr y renvoient.</p>
       </div>
     </div>
   </main>
-
-  <footer class="pied">
-    <div class="enveloppe">
-      <nav class="pied-liens" aria-label="Pied de page">
-        <a href="/">Accueil</a>
-        <a href="/fin-du-service/">Fin du service</a>
-        <a href="/aide/">Aide</a>
-        <a href="/confidentialite/">Confidentialité</a>
-        <a href="/conditions/">Conditions</a>
-        <a href="/suppression-de-compte/">Supprimer mon compte</a>
-        <a href="/signaler-un-contenu/">Signaler un contenu</a>
-      </nav>
-      <p>Une question, une remarque, une erreur dans une fiche ? Écris à <a href="mailto:bonjour@ursonapp.fr">bonjour@ursonapp.fr</a>.</p>
-      <p class="mentions">Urson est éditée à titre personnel par Kevin Levesque, joignable à <a href="mailto:bonjour@ursonapp.fr">bonjour@ursonapp.fr</a>. Site hébergé par GitHub, Inc., 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, États-Unis. Base de données de l'app hébergée par Supabase Pte. Ltd., 65 Chulia Street #38-02/03, OCBC Centre, Singapour 049513, dans un centre de données à Paris.</p>
-    </div>
-  </footer>
 </body>
 </html>
